@@ -1,7 +1,7 @@
 <template>
-  <div itemscope itemtype="http://schema.org/Article" class="description">
+  <div itemscope itemtype="http://schema.org/Thing" class="description">
     <div class="col-sm-12 col-md-8">
-      <h2>Une extension pour vous aider dans votre recherche de location</h2>
+      <h2 itemprop="name">Une extension pour vous aider dans votre recherche de location</h2>
 
       <p itemprop="description">
         Cette extension permet de savoir si le prix de votre loyer (ou futur loyer) est
