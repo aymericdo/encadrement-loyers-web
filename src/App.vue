@@ -1,28 +1,22 @@
 <template>
   <div id="app">
-    <TopBar />
-    <Body />
+    <router-view />
   </div>
 </template>
 
-<script>
-import Body from "./components/Body.vue";
-import TopBar from "./components/TopBar.vue";
-
-export default {
-  name: "app",
-  components: {
-    Body,
-    TopBar
-  }
-};
-</script>
-
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: "Garnett", "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: #9e9e9e;
+  display: flex;
+  flex-direction: row;
+  background-color: #050505;
+  width: 100vw;
+  justify-content: center;
+  font-size: 22px;
+  letter-spacing: -0.23px;
+  line-height: 34px;
 }
 </style>

@@ -1,0 +1,14 @@
+button:focus {
+  outline-style: none !important;
+  box-shadow: none !important;
+  border-color: transparent;
+}
+
+html,
+body {
+  background-color: #050505;
+}
+
+ul li {
+  list-style: none;
+}
