@@ -1,9 +1,9 @@
 <template>
-  <div class="section sectionHow">
-    <div class="sectionTitle leftPart">
+  <div class="section section-how">
+    <div class="section-title left-part">
       <h3>Comment?</h3>
     </div>
-    <div class="rightPart">
+    <div class="right-part">
       <h4>L’extension vous donne automatiquement le prix le plus haut que vous devriez payer.</h4>
       <p>Selon les critères trouvés sur la page du logement.</p>
       <Carousel />
@@ -14,23 +14,22 @@
 </template>
 
 <script>
-import Carousel from './Carousel';
+import Carousel from "./Carousel";
 
 export default {
   name: "sectionHow",
   components: {
     Carousel
   }
-}
+};
 </script>
 
-<style>
-.rightPart h4{
+<style scoped>
+.right-part h4 {
   margin-bottom: 8px;
-  color: #CFCFCF;
+  color: #cfcfcf;
   line-height: 34px;
   letter-spacing: -0.22px;
   font-weight: 500;
 }
-
 </style>

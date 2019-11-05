@@ -1,16 +1,15 @@
 <template>
-  <div class="section sectionWherey">
-    <div class="sectionTitle leftPart">
+  <div class="section section-wherey">
+    <div class="section-title left-part">
       <h3>Où?</h3>
     </div>
-    <div class="rightPart">
+    <div class="right-part">
       <WebsiteList />
     </div>
   </div>
-
 </template>
 <script>
-import WebsiteList from './WebsiteList.vue'
+import WebsiteList from "./WebsiteList.vue";
 
 export default {
   name: "SectionWhere",
@@ -22,7 +21,7 @@ export default {
 </script>
 
 <style scoped>
-ul{
+ul {
   padding: 0;
 }
 </style>

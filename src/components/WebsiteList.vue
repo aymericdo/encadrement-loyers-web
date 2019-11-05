@@ -1,44 +1,44 @@
 <template>
-  <ul class="websiteList">
-    <li class="websiteItem">
-      <div class="itemContent">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo">
+  <ul class="website-list">
+    <li class="website-item">
+      <div class="item-content">
+        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
         <p>LeBoncoin</p>
       </div>
     </li>
-    <li class="websiteItem">
-      <div class="itemContent">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo">
+    <li class="website-item">
+      <div class="item-content">
+        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
         <p>SeLegoer</p>
       </div>
     </li>
-    <li class="websiteItem">
-      <div class="itemContent">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo">
+    <li class="website-item">
+      <div class="item-content">
+        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
         <p>Louer Agile</p>
       </div>
     </li>
-    <li class="websiteItem">
-      <div class="itemContent">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo">
+    <li class="website-item">
+      <div class="item-content">
+        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
         <p>PAP</p>
       </div>
     </li>
-    <li class="websiteItem">
-      <div class="itemContent">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo">
+    <li class="website-item">
+      <div class="item-content">
+        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
         <p>Logic Immo</p>
       </div>
     </li>
-    <li class="websiteItem">
-      <div class="itemContent">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo">
+    <li class="website-item">
+      <div class="item-content">
+        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
         <p>Le Figaro Immobilier</p>
       </div>
     </li>
-    <li class="websiteItem">
-      <div class="itemContent">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo">
+    <li class="website-item">
+      <div class="item-content">
+        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
         <p>Orpi</p>
       </div>
     </li>
@@ -52,10 +52,9 @@ export default {
 };
 </script>
 
-<style>
-.websiteList li{
-  width: 100%;
-  background-color: #0F0F0F;
+<style scoped>
+.website-list li {
+  background-color: #0f0f0f;
   height: 82px;
   padding: 0 32px;
   margin-bottom: 24px;
@@ -66,20 +65,20 @@ export default {
   font-weight: 500;
 }
 
-li .itemContent{
+li .item-content {
   display: flex;
   flex-direction: row;
   height: auto;
   justify-self: center;
 }
 
-.itemContent img{
+.item-content img {
   width: 24px;
   height: 24px;
   margin-right: 16px;
 }
 
-.itemContent p{
+.item-content p {
   margin: 0;
 }
 </style>

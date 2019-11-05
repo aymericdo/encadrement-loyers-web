@@ -1,17 +1,20 @@
 <template>
   <div itemscope itemtype="http://schema.org/Thing" class="heroHeader">
-    <div class="heroHeading">
+    <div class="hero-heading">
       <h1 itemprop="title">
-        <span class="yellowText">Encadrement</span> est une extension pour vous aider dans votre recherche de location à <span class="blueText">Pa</span>ri<span class="redText">s.</span>
+        <span class="yellow-text">Encadrement</span> est une extension pour vous aider dans votre recherche de location à
+        <span class="blue-text">Pa</span>ri<span class="red-text">s.</span>
       </h1>
-      <h2 itemprop="description">Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous saurez.</h2>
+      <h2
+        itemprop="description"
+      >Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous saurez.</h2>
     </div>
     <ButtonGroup />
   </div>
 </template>
 
 <script>
-import ButtonGroup from './ButtonGroup'
+import ButtonGroup from "./ButtonGroup";
 export default {
   name: "Hero",
   components: {
@@ -21,15 +24,12 @@ export default {
 };
 </script>
 
-<style>
-/* .heroHeader{
-  padding-top: calc((100vw - 856px) / 3);
-} */
-.heroHeading{
+<style scoped>
+.hero-heading {
   max-width: 856px;
   width: 100%;
 }
-.heroHeading h1{
+.hero-heading h1 {
   font-family: Garnett;
   font-weight: 700;
   font-style: normal;
@@ -40,36 +40,36 @@ export default {
   margin-bottom: 24px;
 }
 
-.heroHeading h2 {
+.hero-heading h2 {
   font-family: Garnett;
   font-weight: 500;
   font-style: normal;
   font-size: 22px;
-  color: #9E9E9E;
+  color: #9e9e9e;
   letter-spacing: -0.02px;
   line-height: 32px;
   margin-bottom: 88px;
 }
 
-.yellowText{
-  color: #FDCD56;
+.yellow-text {
+  color: #fdcd56;
   display: inline-block;
 }
 
-.blueText{
-  color: #26A1FF;
+.blue-text {
+  color: #26a1ff;
   display: inline-block;
 }
 
-.redText{
-  color: #FFACA6;
+.red-text {
+  color: #ffaca6;
   display: inline-block;
 }
 
-.yellowText::after{
+.yellow-text::after {
   content: "";
   position: relative;
-  background-color: #FDCD56;
+  background-color: #fdcd56;
   width: 100%;
   height: 4px;
   left: 0;
