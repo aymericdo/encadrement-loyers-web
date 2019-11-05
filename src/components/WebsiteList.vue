@@ -2,43 +2,43 @@
   <ul class="website-list">
     <li class="website-item">
       <div class="item-content">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
+        <img src="@/assets/images/icon--chrome.svg" alt="-logo" />
         <p>LeBoncoin</p>
       </div>
     </li>
     <li class="website-item">
       <div class="item-content">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
+        <img src="@/assets/images/icon--chrome.svg" alt="-logo" />
         <p>SeLegoer</p>
       </div>
     </li>
     <li class="website-item">
       <div class="item-content">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
+        <img src="@/assets/images/icon--chrome.svg" alt="-logo" />
         <p>Louer Agile</p>
       </div>
     </li>
     <li class="website-item">
       <div class="item-content">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
+        <img src="@/assets/images/icon--chrome.svg" alt="-logo" />
         <p>PAP</p>
       </div>
     </li>
     <li class="website-item">
       <div class="item-content">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
+        <img src="@/assets/images/icon--chrome.svg" alt="-logo" />
         <p>Logic Immo</p>
       </div>
     </li>
     <li class="website-item">
       <div class="item-content">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
+        <img src="@/assets/images/icon--chrome.svg" alt="-logo" />
         <p>Le Figaro Immobilier</p>
       </div>
     </li>
     <li class="website-item">
       <div class="item-content">
-        <img src="../assets/images/icon--chrome.svg" alt="-logo" />
+        <img src="@/assets/images/icon--chrome.svg" alt="-logo" />
         <p>Orpi</p>
       </div>
     </li>
