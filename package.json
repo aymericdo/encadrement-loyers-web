@@ -12,6 +12,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",
     "core-js": "^3.3.2",
+    "hooper": "^0.3.4",
     "vue": "^2.6.10"
   },
   "devDependencies": {
