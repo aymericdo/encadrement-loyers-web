@@ -69,7 +69,7 @@ li .item-content {
   display: flex;
   flex-direction: row;
   height: auto;
-  justify-self: center;
+  align-items: center;
 }
 
 .item-content img {

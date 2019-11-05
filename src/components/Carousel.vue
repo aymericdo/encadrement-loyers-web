@@ -54,8 +54,8 @@ export default {
 
 <style>
 .hooper > .hooper-list {
-  border: solid 1px transparent !important;
-  border-radius: 10px !important;
+  border: solid 1px transparent;
+  border-radius: 10px;
 }
 </style>
 
@@ -71,7 +71,6 @@ export default {
   margin-bottom: 8px;
 }
 .hooper li {
-  border-radius: 10px;
   background-color: #0f0f0f;
   background-position: center;
   background-size: cover;
