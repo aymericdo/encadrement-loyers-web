@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import FourOhFour from '../views/FourOhFour.vue'
 
 Vue.use(VueRouter)
 
@@ -17,7 +18,11 @@ const routes = [
     // this generates a separate chunk (stats.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "stats" */ '../views/Stats.vue')
-  }
+  },
+  {
+    path: '/*',
+    component: FourOhFour,
+  },
 ]
 
 const router = new VueRouter({
