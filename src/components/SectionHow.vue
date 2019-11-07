@@ -26,8 +26,9 @@ export default {
 
 <style scoped>
 .right-part h4 {
+  margin: 0;
   margin-bottom: 8px;
-  color: #cfcfcf;
+  color: #fdcd56;
   line-height: 34px;
   letter-spacing: -0.22px;
   font-weight: 500;

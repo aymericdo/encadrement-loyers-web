@@ -1,9 +1,12 @@
 <template>
-  <div itemscope itemtype="http://schema.org/Thing" class="heroHeader">
+  <div itemscope itemtype="http://schema.org/Thing" class="hero-header">
     <div class="hero-heading">
       <h1 itemprop="title">
         <span class="yellow-text">Encadrement</span> est une extension pour vous aider dans votre recherche de location à
-        <span class="blue-text">Pa</span>ri<span class="red-text">s.</span>
+        <div class="paris-word">
+          <span class="blue-text">Pa</span>ri
+          <span class="red-text">s.</span>
+        </div>
       </h1>
       <h2
         itemprop="description"
@@ -51,7 +54,7 @@ export default {
   margin-bottom: 88px;
 }
 
-@media screen and (max-width: 870px) {
+@media screen and (max-width: 856px) {
   .hero-heading h1 {
     font-size: 40px;
     line-height: 48px;
@@ -61,6 +64,11 @@ export default {
     font-size: 18px;
     line-height: 28px;
   }
+}
+
+.paris-word {
+  display: inline-flex;
+  flex-wrap: nowrap;
 }
 
 .yellow-text {

@@ -11,6 +11,10 @@
       <span>
         <a href="https://www.linkedin.com/in/lucienlandanger/">Lucien Landanger</a>
       </span>
+      <br />
+      <span>
+        <a href="https://buymeacoff.ee/DnzzL">☕️Buy us a coffee</a>
+      </span>
     </p>
   </footer>
 </template>
@@ -21,7 +25,7 @@ export default {
 };
 </script>
 <style scoped>
-footer {
+footer.section {
   flex-direction: column;
 }
 footer p {

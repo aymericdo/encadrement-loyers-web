@@ -1,12 +1,14 @@
 <template>
   <div id="home">
     <div class="center-wrapper">
-      <Hero />
-      <SectionWhy />
-      <SectionWhere />
-      <SectionHow />
-      <SectionDisclaimer />
-      <Footer />
+      <div>
+        <Hero />
+        <SectionWhy />
+        <SectionWhere />
+        <SectionHow />
+        <SectionDisclaimer />
+        <Footer />
+      </div>
     </div>
   </div>
 </template>
@@ -34,17 +36,22 @@ export default {
 
 <style scoped>
 #home {
-  width: 100%;
+  min-width: 100%;
   display: flex;
   justify-content: center;
-  padding: 20px;
+  max-width: 856px;
+  margin-top: 10%;
+  padding: 0;
 }
 
 .center-wrapper {
   display: flex;
-  flex-direction: column;
-  max-width: 856px;
-  width: 100%;
-  padding: 10% 0;
+  justify-content: center;
+  width: calc(100% - 48px);
+  padding: 0 24px;
+}
+
+.center-wrapper > div {
+  max-width: 100%;
 }
 </style>

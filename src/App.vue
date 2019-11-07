@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: row;
   background-color: #050505;
-  width: 100vw;
+  width: 100%;
   justify-content: center;
   font-size: 22px;
   letter-spacing: -0.23px;
@@ -46,9 +46,15 @@
   width: 100%;
 }
 
-@media screen and (max-width: 870px) {
+@media screen and (max-width: 856px) {
+  .section-title h3 {
+    margin: 0;
+    margin-bottom: 8px;
+  }
+
   .section {
     flex-direction: column;
+    margin: 30px 0 0 0;
   }
 
   .right-part {

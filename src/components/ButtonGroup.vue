@@ -91,6 +91,12 @@ export default {
   flex-direction: row;
 }
 
+@media screen and (max-width: 856px) {
+  .button-group {
+    display: none;
+  }
+}
+
 .button-group a {
   text-decoration: none;
 }
@@ -126,6 +132,12 @@ button svg {
 
 button svg path {
   fill: #fff;
+}
+
+@media screen and (max-width: 856px) {
+  .button-group button {
+    height: inherit;
+  }
 }
 
 .button-group a:first-child button {
