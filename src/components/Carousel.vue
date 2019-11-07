@@ -1,17 +1,17 @@
 <template>
   <div class="carousel">
-    <hooper ref="carousel" @slide="updateCarousel" :settings="hooperSettings">
-      <slide></slide>
-      <slide></slide>
-      <slide></slide>
-      <slide></slide>
-      <slide></slide>
-      <slide></slide>
-      <slide></slide>
-    </hooper>
-    <div class="button-group--s">
-      <button @click.prevent="slidePrev" class="carousel-control" id="precedent">Prec.</button>
-      <button @click.prevent="slideNext" class="carousel-control" id="suivant">Suiv.</button>
+    <Hooper ref="carousel" @slide="updateCarousel" :settings="hooperSettings">
+      <Slide v-for="(item, index) in items" v-bind:key="index"></Slide>
+    </Hooper>
+    <div class="button-group">
+      <span class="carousel-title">
+        Exemple sur
+        <b>{{items[currentSlide].website}}</b>
+      </span>
+      <div>
+        <button @click.prevent="slidePrev" class="carousel-control" id="precedent">Prec.</button>
+        <button @click.prevent="slideNext" class="carousel-control" id="suivant">Suiv.</button>
+      </div>
     </div>
   </div>
 </template>
@@ -29,11 +29,21 @@ export default {
   props: {},
   data() {
     return {
+      currentSlide: 0,
       hooperSettings: {
         itemsToShow: 1,
         centerMode: true
       },
-      carouselData: 0
+      carouselData: 0,
+      items: [
+        { website: "immobilier.lefigaro.fr" },
+        { website: "leboncoin.fr" },
+        { website: "seloger.com" },
+        { website: "pap.fr" },
+        { website: "orpi.com" },
+        { website: "loueragile.fr" },
+        { website: "logic-immo.com" }
+      ]
     };
   },
   watch: {
@@ -47,6 +57,9 @@ export default {
     },
     slideNext() {
       this.$refs.carousel.slideNext();
+    },
+    updateCarousel(e) {
+      this.currentSlide = e.currentSlide;
     }
   }
 };
@@ -69,6 +82,9 @@ export default {
 .hooper {
   height: 340px;
   margin-bottom: 8px;
+}
+.hooper:focus {
+  outline: none;
 }
 .hooper li {
   background-color: #0f0f0f;
@@ -96,11 +112,26 @@ export default {
 .hooper li:nth-child(7) {
   background-image: url("../assets/images/logicimmo.png");
 }
-.button-group--s {
-  float: left;
+.button-group {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
+
+.button-group > div {
+  display: flex;
+}
+
+.button-group > .carousel-title {
+  font-size: 12px;
+  line-height: 16px;
+  color: #9e9e9e;
+}
+
+.button-group > .carousel-title > b {
+  font-weight: 500;
+}
+
 button.carousel-control {
   font-size: 12px;
   font-weight: 500;
@@ -112,11 +143,13 @@ button.carousel-control {
   border: none;
   cursor: pointer;
 }
+
 button#precedent {
   border-right: solid 1px #222222;
   padding-right: 8px;
   margin-right: 1px;
 }
+
 button#suivant {
   padding-left: 8px;
 }
