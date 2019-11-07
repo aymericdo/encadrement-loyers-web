@@ -44,6 +44,7 @@ export default {
   display: flex;
   flex-direction: column;
   max-width: 856px;
+  width: 100%;
   padding: 10% 0;
 }
 </style>

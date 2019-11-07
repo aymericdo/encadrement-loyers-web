@@ -3,7 +3,10 @@
     <div class="hero-heading">
       <h1 itemprop="title">
         <span class="yellow-text">Encadrement</span> est une extension pour vous aider dans votre recherche de location à
-        <span class="blue-text">Pa</span>ri<span class="red-text">s.</span>
+        <span
+          class="blue-text"
+        >Pa</span>ri
+        <span class="red-text">s.</span>
       </h1>
       <h2
         itemprop="description"
@@ -49,6 +52,18 @@ export default {
   letter-spacing: -0.02px;
   line-height: 32px;
   margin-bottom: 88px;
+}
+
+@media screen and (max-width: 870px) {
+  .hero-heading h1 {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
+  .hero-heading h2 {
+    font-size: 18px;
+    line-height: 28px;
+  }
 }
 
 .yellow-text {
