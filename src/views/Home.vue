@@ -32,13 +32,12 @@ export default {
 };
 </script>
 
-<style>
-.section-title h3 {
-  font-weight: 700;
-  font-size: 38px;
-  color: #f7f7f5;
-  letter-spacing: -0.31px;
-  line-height: 52px;
+<style scoped>
+#home {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 
 .center-wrapper {
@@ -46,23 +45,5 @@ export default {
   flex-direction: column;
   max-width: 856px;
   padding: 10% 0;
-}
-
-.section {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  margin: 160px 0 0 0;
-}
-
-.section-title {
-  max-width: 248px;
-  width: 100%;
-}
-
-.right-part {
-  margin-left: 56px;
-  max-width: 552px;
-  width: 100%;
 }
 </style>
