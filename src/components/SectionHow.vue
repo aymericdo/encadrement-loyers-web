@@ -1,8 +1,6 @@
 <template>
   <div class="section section-how">
-    <div class="section-title left-part">
-      <h3>Comment?</h3>
-    </div>
+    <SectionTitle class="left-part" :title="'Comment?'" />
     <div class="right-part">
       <h4>L’extension vous donne automatiquement le prix le plus haut que vous devriez payer.</h4>
       <p>Selon les critères trouvés sur la page du logement.</p>
@@ -14,20 +12,25 @@
 </template>
 
 <script>
+import SectionTitle from "@/shared/SectionTitle";
 import Carousel from "./Carousel";
 
 export default {
-  name: "sectionHow",
+  name: "SectionHow",
   components: {
-    Carousel
+    Carousel,
+    SectionTitle
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/scss/variables.scss";
+
 .right-part h4 {
+  margin: 0;
   margin-bottom: 8px;
-  color: #cfcfcf;
+  color: $yellow;
   line-height: 34px;
   letter-spacing: -0.22px;
   font-weight: 500;

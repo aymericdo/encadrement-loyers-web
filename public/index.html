@@ -9,7 +9,8 @@
     content="Encadrement loyers est une extension qui permet de savoir en direct si l'annonce respecte ou non l'encadrement des loyers à Paris">
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <meta property="og:title" content="Encadrement loyers Paris (disponible sur chrome et firefox)" />
-  <meta property="og:description" content="Encadrement loyers est une extension qui permet de savoir en direct si l'annonce respecte ou non l'encadrement des loyers à Paris" />
+  <meta property="og:description"
+    content="Encadrement loyers est une extension qui permet de savoir en direct si l'annonce respecte ou non l'encadrement des loyers à Paris" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="http://encadrement-loyers.fr/" />
   <meta property="og:image" content="http://encadrement-loyers.fr/favicon.ico" />
@@ -49,6 +50,18 @@
       </div>
     </noscript>
     <!-- End Quantcast tag -->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151903339-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      gtag('config', 'UA-151903339-1');
+    </script>
+    <!-- End Google Analytics tag -->
+
   </footer>
 </body>
 

@@ -10,7 +10,7 @@ import vegaEmbed from "vega-embed";
 export default {
   name: "stats",
   mounted: function() {
-    fetch('http://localhost:3000/stats/map')
+    fetch('https://encadrement-loyers.herokuapp.com/stats/map')
         .then(res => res.json())
         .then(spec => {
           vegaEmbed('#map', spec);

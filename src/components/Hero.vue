@@ -1,9 +1,12 @@
 <template>
-  <div itemscope itemtype="http://schema.org/Thing" class="heroHeader">
+  <div itemscope itemtype="http://schema.org/Thing" class="hero-header">
     <div class="hero-heading">
       <h1 itemprop="title">
         <span class="yellow-text">Encadrement</span> est une extension pour vous aider dans votre recherche de location à
-        <span class="blue-text">Pa</span>ri<span class="red-text">s.</span>
+        <div class="paris-word">
+          <span class="blue-text">Pa</span>ri
+          <span class="red-text">s.</span>
+        </div>
       </h1>
       <h2
         itemprop="description"
@@ -19,12 +22,13 @@ export default {
   name: "Hero",
   components: {
     ButtonGroup
-  },
-  props: {}
+  }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/scss/variables.scss";
+
 .hero-heading {
   max-width: 856px;
   width: 100%;
@@ -45,13 +49,12 @@ export default {
   font-weight: 500;
   font-style: normal;
   font-size: 22px;
-  color: #9e9e9e;
+  color: $lightgrey;
   letter-spacing: -0.02px;
   line-height: 32px;
-  margin-bottom: 88px;
 }
 
-@media screen and (max-width: 870px) {
+@media screen and (max-width: 856px) {
   .hero-heading h1 {
     font-size: 40px;
     line-height: 48px;
@@ -63,8 +66,13 @@ export default {
   }
 }
 
+.paris-word {
+  display: inline-flex;
+  flex-wrap: nowrap;
+}
+
 .yellow-text {
-  color: #fdcd56;
+  color: $yellow;
   display: inline-block;
 }
 
@@ -81,7 +89,7 @@ export default {
 .yellow-text::after {
   content: "";
   position: relative;
-  background-color: #fdcd56;
+  background-color: $yellow;
   width: 100%;
   height: 4px;
   left: 0;

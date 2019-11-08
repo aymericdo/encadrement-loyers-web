@@ -1,0 +1,51 @@
+/* Webfont: Garnett-Black */
+@font-face {
+    font-family: 'Garnett';
+    src: url('./assets/fonts/Garnett-Medium.eot'); /* IE9 Compat Modes */
+    src: url('./assets/fonts/Garnett-Medium.woff') format('woff'), /* Modern Browsers */ 
+         url('./assets/fonts/Garnett-Medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('./assets/fonts/Garnett-Medium.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('./assets/fonts/Garnett-Medium.svg#Garnett-Medium') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: 500;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: Garnett-Bold */
+@font-face {
+    font-family: 'Garnett';
+    src: url('./assets/fonts/Garnett-Bold.eot'); /* IE9 Compat Modes */
+    src: url('./assets/fonts/Garnett-Bold.woff') format('woff'), /* Modern Browsers */
+         url('./assets/fonts/Garnett-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('./assets/fonts/Garnett-Bold.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('./assets/fonts/Garnett-Bold.svg#Garnett-Bold') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: 700;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: Garnett-Regular */
+@font-face {
+    font-family: 'Garnett';
+    src: url('./assets/fonts/Garnett-Regular.eot'); /* IE9 Compat Modes */
+    src: url('./assets/fonts/Garnett-Regular.woff') format('woff'), /* Modern Browsers */
+         url('./assets/fonts/Garnett-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('./assets/fonts/Garnett-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('./assets/fonts/Garnett-Regular.svg#Garnett-Regular') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: Garnett-SemiBold */
+@font-face {
+    font-family: 'Garnett';
+    src: url('./assets/fonts/Garnett-SemiBold.eot'); /* IE9 Compat Modes */
+    src: url('./assets/fonts/Garnett-SemiBold.woff') format('woff'), /* Modern Browsers */
+         url('./assets/fonts/Garnett-SemiBold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('./assets/fonts/Garnett-SemiBold.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('./assets/fonts/Garnett-SemiBold.svg#Garnett-SemiBold') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: 600;
+    text-rendering: optimizeLegibility;
+}

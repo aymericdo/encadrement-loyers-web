@@ -76,7 +76,6 @@
 <script>
 export default {
   name: "ButtonGroup",
-  props: {},
   data() {
     return {
       isFirefox: typeof InstallTrigger !== "undefined"
@@ -85,10 +84,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/scss/variables.scss";
+
 .button-group {
   display: flex;
   flex-direction: row;
+}
+
+@media screen and (max-width: 856px) {
+  .button-group {
+    display: none;
+  }
 }
 
 .button-group a {
@@ -108,7 +115,7 @@ export default {
   padding: 0 24px;
   color: #fff;
   border-radius: 10px;
-  background-color: #222222;
+  background-color: $deepgrey;
   border: none;
   font-weight: 600;
   font-size: 16px;
@@ -128,9 +135,15 @@ button svg path {
   fill: #fff;
 }
 
+@media screen and (max-width: 856px) {
+  .button-group button {
+    height: inherit;
+  }
+}
+
 .button-group a:first-child button {
-  background-color: #fdcd56;
-  color: #050505;
+  background-color: $yellow;
+  color: $deepblack;
 }
 
 .button-group a:first-child button svg path {
