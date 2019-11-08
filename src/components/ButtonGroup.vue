@@ -76,7 +76,7 @@
 <script>
 export default {
   name: "ButtonGroup",
-  data() {
+  data: function() {
     return {
       isFirefox: typeof InstallTrigger !== "undefined"
     };
@@ -90,6 +90,7 @@ export default {
 .button-group {
   display: flex;
   flex-direction: row;
+  margin-top: 88px;
 }
 
 @media screen and (max-width: 856px) {

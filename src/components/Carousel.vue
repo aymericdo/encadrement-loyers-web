@@ -26,7 +26,7 @@ export default {
     Hooper,
     Slide
   },
-  data() {
+  data: function() {
     return {
       currentSlide: 0,
       hooperSettings: {

@@ -1,8 +1,36 @@
 <template>
   <div id="app">
     <router-view />
+    <audio ref="player">
+      <source src="@/assets/sounds/asymetrie.mp3" type="audio/mp3" />
+    </audio>
   </div>
 </template>
+
+<script>
+export default {
+  name: "App",
+  data: function() {
+    return {
+      hits: []
+    };
+  },
+  mounted: function() {
+    document.addEventListener("keydown", event => {
+      if (event.keyCode === 16) {
+        this.hits.push(Date.now());
+        if (this.hits.length > 5) {
+          this.hits.shift();
+        }
+
+        if (this.hits[4] - this.hits[0] < 600) {
+          this.$refs.player.play();
+        }
+      }
+    });
+  }
+};
+</script>
 
 <style lang="scss">
 @import "@/assets/scss/garnett.scss";
