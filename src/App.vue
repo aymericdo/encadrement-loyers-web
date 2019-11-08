@@ -4,15 +4,18 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
+@import "@/assets/scss/garnett.scss";
+@import "@/assets/scss/variables.scss";
+
 #app {
   font-family: "Garnett", "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #9e9e9e;
+  color: $lightgrey;
   display: flex;
   flex-direction: row;
-  background-color: #050505;
+  background-color: $deepblack;
   width: 100%;
   justify-content: center;
   font-size: 22px;
@@ -20,12 +23,29 @@
   line-height: 34px;
 }
 
-.section-title h3 {
-  font-weight: 700;
-  font-size: 38px;
-  color: #f7f7f5;
-  letter-spacing: -0.31px;
-  line-height: 52px;
+html,
+body {
+  background-color: $deepblack;
+  margin: 0;
+}
+
+ul li {
+  list-style: none;
+}
+
+a,
+a:visited {
+  color: $yellow !important;
+}
+
+p {
+  margin: 0;
+}
+
+button:focus {
+  outline-style: none !important;
+  box-shadow: none !important;
+  border-color: transparent;
 }
 
 .section {
@@ -35,11 +55,6 @@
   margin: 160px 0 0 0;
 }
 
-.section-title {
-  max-width: 248px;
-  width: 100%;
-}
-
 .right-part {
   margin-left: 56px;
   max-width: 552px;
@@ -47,14 +62,9 @@
 }
 
 @media screen and (max-width: 856px) {
-  .section-title h3 {
-    margin: 0;
-    margin-bottom: 8px;
-  }
-
   .section {
     flex-direction: column;
-    margin: 30px 0 0 0;
+    margin: 88px 0 0 0;
   }
 
   .right-part {

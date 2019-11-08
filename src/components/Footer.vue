@@ -11,25 +11,35 @@
       <span>
         <a href="https://www.linkedin.com/in/lucienlandanger/">Lucien Landanger</a>
       </span>
-      <br />
-      <span>
-        <a href="https://buymeacoff.ee/DnzzL">☕️Buy us a coffee</a>
+      <br class="footer-br" />
+      <span class="buy-us-coffee">
+        <a href="https://buymeacoff.ee/DnzzL">☕️ Buy us a coffee</a>
       </span>
     </p>
   </footer>
 </template>
 <script>
 export default {
-  name: "Footer",
-  props: {}
+  name: "Footer"
 };
 </script>
 <style scoped>
-footer.section {
+.section {
   flex-direction: column;
 }
-footer p {
+
+p {
   font-size: 12px;
   text-align: center;
+}
+
+@media screen and (max-width: 856px) {
+  .footer-br {
+    display: none;
+  }
+
+  .buy-us-coffee {
+    margin-left: 8px;
+  }
 }
 </style>

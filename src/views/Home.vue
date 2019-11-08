@@ -22,7 +22,7 @@ import SectionDisclaimer from "@/components/SectionDisclaimer.vue";
 import Footer from "@/components/Footer.vue";
 
 export default {
-  name: "home",
+  name: "Home",
   components: {
     Hero,
     SectionWhy,

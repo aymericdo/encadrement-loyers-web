@@ -26,7 +26,6 @@ export default {
     Hooper,
     Slide
   },
-  props: {},
   data() {
     return {
       currentSlide: 0,
@@ -72,7 +71,9 @@ export default {
 }
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/scss/variables.scss";
+
 .carousel {
   display: flex;
   flex-direction: column;
@@ -87,8 +88,7 @@ export default {
   outline: none;
 }
 .hooper li {
-  background-color: #0f0f0f;
-  background-position: center;
+  background-position: left;
   background-size: cover;
 }
 .hooper li:nth-child(1) {
@@ -110,6 +110,7 @@ export default {
   background-image: url("../assets/images/loueragile.png");
 }
 .hooper li:nth-child(7) {
+  background-position: center;
   background-image: url("../assets/images/logicimmo.png");
 }
 .button-group {
@@ -125,7 +126,7 @@ export default {
 .button-group > .carousel-title {
   font-size: 12px;
   line-height: 16px;
-  color: #9e9e9e;
+  color: $lightgrey;
 }
 
 .button-group > .carousel-title > b {
@@ -135,7 +136,7 @@ export default {
 button.carousel-control {
   font-size: 12px;
   font-weight: 500;
-  color: #fdcd56;
+  color: $yellow;
   letter-spacing: -0.12px;
   line-height: 16px;
   background: transparent;
@@ -145,12 +146,19 @@ button.carousel-control {
 }
 
 button#precedent {
-  border-right: solid 1px #222222;
+  border-right: solid 1px $deepgrey;
   padding-right: 8px;
   margin-right: 1px;
 }
 
 button#suivant {
   padding-left: 8px;
+}
+
+@media screen and (max-width: 856px) {
+  button#precedent,
+  button#suivant {
+    display: none;
+  }
 }
 </style>
