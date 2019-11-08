@@ -1,46 +1,60 @@
 <template>
   <ul class="website-list">
     <li class="website-item">
-      <div class="item-content">
-        <img src="@/assets/images/logo-leboncoin.png" alt="-logo" />
-        <p>LeBoncoin</p>
-      </div>
+      <a href="https://www.leboncoin.fr/locations/offres/">
+        <div class="item-content">
+          <img src="@/assets/images/logo-leboncoin.png" alt="-logo" />
+          <p>LeBoncoin</p>
+        </div>
+      </a>
     </li>
     <li class="website-item">
-      <div class="item-content">
-        <img src="@/assets/images/logo-seloger.png" alt="-logo" />
-        <p>SeLoger</p>
-      </div>
+      <a href="https://www.seloger.com/location.htm">
+        <div class="item-content">
+          <img src="@/assets/images/logo-seloger.png" alt="-logo" />
+          <p>SeLoger</p>
+        </div>
+      </a>
     </li>
     <li class="website-item">
-      <div class="item-content">
-        <img src="@/assets/images/logo-loueragile.png" alt="-logo" />
-        <p>Louer Agile</p>
-      </div>
+      <a href="https://www.loueragile.fr/">
+        <div class="item-content">
+          <img src="@/assets/images/logo-loueragile.png" alt="-logo" />
+          <p>Louer Agile</p>
+        </div>
+      </a>
     </li>
     <li class="website-item">
-      <div class="item-content">
-        <img src="@/assets/images/logo-pap.png" alt="-logo" />
-        <p>PAP</p>
-      </div>
+      <a href="https://www.pap.fr/annonce/locations">
+        <div class="item-content">
+          <img src="@/assets/images/logo-pap.png" alt="-logo" />
+          <p>PAP</p>
+        </div>
+      </a>
     </li>
     <li class="website-item">
-      <div class="item-content">
-        <img src="@/assets/images/logo-logicimmo.png" alt="-logo" />
-        <p>Logic Immo</p>
-      </div>
+      <a href="https://www.logic-immo.com/location-immobilier.php">
+        <div class="item-content">
+          <img src="@/assets/images/logo-logicimmo.png" alt="-logo" />
+          <p>Logic Immo</p>
+        </div>
+      </a>
     </li>
     <li class="website-item">
-      <div class="item-content">
-        <img src="@/assets/images/logo-figaroimmo.png" alt="-logo" />
-        <p>Le Figaro Immo</p>
-      </div>
+      <a href="https://immobilier.lefigaro.fr/annonces/location">
+        <div class="item-content">
+          <img src="@/assets/images/logo-figaroimmo.png" alt="-logo" />
+          <p>Le Figaro Immo</p>
+        </div>
+      </a>
     </li>
     <li class="website-item">
-      <div class="item-content">
-        <img src="@/assets/images/logo-orpi.png" alt="-logo" />
-        <p>Orpi</p>
-      </div>
+      <a href="https://www.orpi.com/louer/">
+        <div class="item-content">
+          <img src="@/assets/images/logo-orpi.png" alt="-logo" />
+          <p>Orpi</p>
+        </div>
+      </a>
     </li>
   </ul>
 </template>
@@ -58,10 +72,15 @@ export default {
   margin: 0;
 }
 
+.website-list a {
+  display: flex;
+  flex: 1;
+  text-decoration: none;
+}
+
 .website-list li {
   background-color: $deepgrey;
   height: 82px;
-  padding: 0 32px;
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
@@ -79,6 +98,7 @@ li .item-content {
   flex-direction: row;
   height: auto;
   align-items: center;
+  padding: 0 32px;
 }
 
 .item-content img {
@@ -89,5 +109,6 @@ li .item-content {
 
 .item-content p {
   margin: 0;
+  color: $lightgrey;
 }
 </style>
