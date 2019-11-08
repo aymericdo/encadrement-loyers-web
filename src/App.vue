@@ -17,7 +17,7 @@ export default {
   },
   mounted: function() {
     document.addEventListener("keydown", event => {
-      if (event.keyCode === 16) {
+      if (event.keyCode === 65) {
         this.hits.push(Date.now());
         if (this.hits.length > 5) {
           this.hits.shift();
