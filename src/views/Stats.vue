@@ -1,5 +1,6 @@
 <template>
   <div id="stats">
+    <RingLoader :loading="status === 'submitting'" :color="'#fdcd56'"></RingLoader>
     <VueRecaptcha
       v-if="status !== 'ok' && status !== 'submitting'"
       ref="recaptcha"
@@ -12,13 +13,15 @@
 </template>
 
 <script>
+import RingLoader from "vue-spinner/src/RingLoader.vue";
 import VueRecaptcha from "vue-recaptcha";
 import vegaEmbed from "vega-embed";
 
 export default {
   name: "Stats",
   components: {
-    VueRecaptcha
+    VueRecaptcha,
+    RingLoader
   },
   data() {
     return {
@@ -37,7 +40,17 @@ export default {
         .then(res => res.json())
         .then(spec => {
           this.status = "ok";
-          vegaEmbed("#map", spec);
+          vegaEmbed("#map", spec, {
+            tooltip: {
+              theme: "dark",
+              sanitize: value => {
+                return value &&
+                  (value === "undefined" || value === "NaN" || value === "null")
+                  ? "Non renseigné"
+                  : value;
+              }
+            }
+          });
         })
         .catch(err => {
           this.serverError = getErrorMessage(err);
