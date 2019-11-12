@@ -1,1 +1,1 @@
-Sitemap: http://encadrement-loyers.fr/sitemap.xml
+Sitemap: https://encadrement-loyers.fr/sitemap.xml
