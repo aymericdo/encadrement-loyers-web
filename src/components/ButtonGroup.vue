@@ -85,7 +85,7 @@ export default {
   background-color: $deepgrey;
   border: none;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 1rem;
   color: #fff;
   letter-spacing: -0.06px;
   line-height: 24px;

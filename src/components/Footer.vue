@@ -29,7 +29,7 @@ export default {
 }
 
 p {
-  font-size: 12px;
+  font-size: 0.75rem;
   text-align: center;
 }
 

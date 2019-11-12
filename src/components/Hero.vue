@@ -34,10 +34,9 @@ export default {
   width: 100%;
 }
 .hero-heading h1 {
-  font-family: Garnett;
   font-weight: 700;
   font-style: normal;
-  font-size: 62px;
+  font-size: 3.875rem;
   color: #fff;
   letter-spacing: -0.5px;
   line-height: 78px;
@@ -45,10 +44,9 @@ export default {
 }
 
 .hero-heading h2 {
-  font-family: Garnett;
   font-weight: 500;
   font-style: normal;
-  font-size: 22px;
+  font-size: 1.375rem;
   color: $lightgrey;
   letter-spacing: -0.02px;
   line-height: 32px;
@@ -56,12 +54,12 @@ export default {
 
 @media screen and (max-width: 856px) {
   .hero-heading h1 {
-    font-size: 40px;
+    font-size: 2.5rem;
     line-height: 48px;
   }
 
   .hero-heading h2 {
-    font-size: 18px;
+    font-size: 1.125rem;
     line-height: 28px;
   }
 }

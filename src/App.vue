@@ -46,7 +46,7 @@ export default {
   background-color: $deepblack;
   width: 100%;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1rem;
   letter-spacing: -0.23px;
   line-height: 34px;
 }
@@ -87,6 +87,7 @@ button:focus {
   margin-left: 56px;
   max-width: 552px;
   width: 100%;
+  font-size: 1.375rem;
 }
 
 @media screen and (max-width: 856px) {

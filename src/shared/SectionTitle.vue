@@ -19,7 +19,7 @@ export default {
 .section-title h3 {
   margin-top: 0;
   font-weight: 700;
-  font-size: 38px;
+  font-size: 2.375rem;
   color: #f7f7f5;
   letter-spacing: -0.31px;
   line-height: 52px;

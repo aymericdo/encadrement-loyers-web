@@ -3,7 +3,7 @@
     <li class="website-item">
       <a href="https://www.leboncoin.fr/locations/offres/">
         <div class="item-content">
-          <img src="@/assets/images/logo-leboncoin.png" alt="-logo" />
+          <img src="@/assets/images/logo-leboncoin.png" alt="logo-leboncoin" />
           <p>LeBoncoin</p>
         </div>
       </a>
@@ -11,7 +11,7 @@
     <li class="website-item">
       <a href="https://www.seloger.com/location.htm">
         <div class="item-content">
-          <img src="@/assets/images/logo-seloger.png" alt="-logo" />
+          <img src="@/assets/images/logo-seloger.png" alt="logo-seloger" />
           <p>SeLoger</p>
         </div>
       </a>
@@ -19,7 +19,7 @@
     <li class="website-item">
       <a href="https://www.loueragile.fr/">
         <div class="item-content">
-          <img src="@/assets/images/logo-loueragile.png" alt="-logo" />
+          <img src="@/assets/images/logo-loueragile.png" alt="logo-loueragile" />
           <p>Louer Agile</p>
         </div>
       </a>
@@ -27,7 +27,7 @@
     <li class="website-item">
       <a href="https://www.pap.fr/annonce/locations">
         <div class="item-content">
-          <img src="@/assets/images/logo-pap.png" alt="-logo" />
+          <img src="@/assets/images/logo-pap.png" alt="logo-pap" />
           <p>PAP</p>
         </div>
       </a>
@@ -35,7 +35,7 @@
     <li class="website-item">
       <a href="https://www.logic-immo.com/location-immobilier.php">
         <div class="item-content">
-          <img src="@/assets/images/logo-logicimmo.png" alt="-logo" />
+          <img src="@/assets/images/logo-logicimmo.png" alt="logo-logicimmo" />
           <p>Logic Immo</p>
         </div>
       </a>
@@ -43,7 +43,7 @@
     <li class="website-item">
       <a href="https://immobilier.lefigaro.fr/annonces/location">
         <div class="item-content">
-          <img src="@/assets/images/logo-figaroimmo.png" alt="-logo" />
+          <img src="@/assets/images/logo-figaroimmo.png" alt="logo-figaroimmo" />
           <p>Le Figaro Immo</p>
         </div>
       </a>
@@ -51,7 +51,7 @@
     <li class="website-item">
       <a href="https://www.orpi.com/louer/">
         <div class="item-content">
-          <img src="@/assets/images/logo-orpi.png" alt="-logo" />
+          <img src="@/assets/images/logo-orpi.png" alt="logo-orpi" />
           <p>Orpi</p>
         </div>
       </a>

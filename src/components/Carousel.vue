@@ -124,7 +124,7 @@ export default {
 }
 
 .button-group > .carousel-title {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 16px;
   color: $lightgrey;
 }
@@ -134,7 +134,7 @@ export default {
 }
 
 button.carousel-control {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: $yellow;
   letter-spacing: -0.12px;
