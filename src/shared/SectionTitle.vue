@@ -17,6 +17,7 @@ export default {
 }
 
 .section-title h3 {
+  margin-top: 0;
   font-weight: 700;
   font-size: 38px;
   color: #f7f7f5;
