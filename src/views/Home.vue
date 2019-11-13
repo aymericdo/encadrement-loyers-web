@@ -87,6 +87,8 @@ export default {
   z-index: 1;
 
   & > svg {
+    display: flex;
+    align-self: center;
     width: 26px;
     height: 26px;
   }
