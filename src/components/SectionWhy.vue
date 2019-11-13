@@ -1,17 +1,21 @@
 <template>
-  <div class="section section-why">
-    <SectionTitle class="left-part" :title="'Pourquoi?'" />
-    <div class="right-part">
+  <Section class="section-why">
+    <SectionTitle :title="'Pourquoi?'" />
+    <SectionRightPart>
       <p>Ceci a pour but d'informer, et d'avertir les potentiels futurs locataires que certains loyers parisiens ne respectent pas l'encadrement des loyers, en vigueur depuis le 01/07/2019.</p>
-    </div>
-  </div>
+    </SectionRightPart>
+  </Section>
 </template>
 
 <script>
+import Section from "@/shared/Section";
 import SectionTitle from "@/shared/SectionTitle";
+import SectionRightPart from "@/shared/SectionRightPart";
 export default {
   name: "SectionWhy",
   components: {
+    Section,
+    SectionRightPart,
     SectionTitle
   }
 };

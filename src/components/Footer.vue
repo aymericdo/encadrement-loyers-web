@@ -1,5 +1,5 @@
 <template>
-  <footer class="section">
+  <Section class="footer">
     <p>
       Brought to you by
       <span>
@@ -16,15 +16,20 @@
         <a href="https://buymeacoff.ee/DnzzL">☕️ Buy us a coffee</a>
       </span>
     </p>
-  </footer>
+  </Section>
 </template>
 <script>
+import Section from "@/shared/Section.vue";
+
 export default {
-  name: "Footer"
+  name: "Footer",
+  components: {
+    Section
+  }
 };
 </script>
 <style scoped>
-.section {
+.footer {
   flex-direction: column;
 }
 
@@ -33,7 +38,7 @@ p {
   text-align: center;
 }
 
-@media screen and (max-width: 856px) {
+@media screen and (max-width: $mobileSize) {
   .footer-br {
     display: none;
   }

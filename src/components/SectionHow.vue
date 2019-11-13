@@ -1,24 +1,28 @@
 <template>
-  <div class="section section-how">
-    <SectionTitle class="left-part" :title="'Comment?'" />
-    <div class="right-part">
+  <Section class="section-how">
+    <SectionTitle :title="'Comment?'" />
+    <SectionRightPart>
       <h4>L’extension vous donne automatiquement le prix le plus haut que vous devriez payer.</h4>
       <p>Selon les critères trouvés sur la page du logement.</p>
       <Carousel />
       <h4>Accédez à plus d'informations.</h4>
       <p>En cliquant sur la petite icône de l'extension, à droite de la barre d'URL.</p>
-    </div>
-  </div>
+    </SectionRightPart>
+  </Section>
 </template>
 
 <script>
+import Section from "@/shared/Section";
 import SectionTitle from "@/shared/SectionTitle";
+import SectionRightPart from "@/shared/SectionRightPart";
 import Carousel from "./Carousel";
 
 export default {
   name: "SectionHow",
   components: {
     Carousel,
+    Section,
+    SectionRightPart,
     SectionTitle
   }
 };
@@ -27,7 +31,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/variables.scss";
 
-.right-part h4 {
+h4 {
   margin: 0;
   margin-bottom: 8px;
   color: $yellow;

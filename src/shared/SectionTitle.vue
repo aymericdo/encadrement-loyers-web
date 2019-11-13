@@ -25,7 +25,7 @@ export default {
   line-height: 52px;
 }
 
-@media screen and (max-width: 856px) {
+@media screen and (max-width: $mobileSize) {
   .section-title h3 {
     margin: 0;
     margin-bottom: 8px;

@@ -30,7 +30,7 @@ export default {
 @import "@/assets/scss/variables.scss";
 
 .hero-heading {
-  max-width: 856px;
+  max-width: $mobileSize;
   width: 100%;
 }
 .hero-heading h1 {
@@ -52,7 +52,7 @@ export default {
   line-height: 32px;
 }
 
-@media screen and (max-width: 856px) {
+@media screen and (max-width: $mobileSize) {
   .hero-heading h1 {
     font-size: 2.5rem;
     line-height: 48px;

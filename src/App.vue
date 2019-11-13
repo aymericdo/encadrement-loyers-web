@@ -75,29 +75,4 @@ button:focus {
   box-shadow: none !important;
   border-color: transparent;
 }
-
-.section {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  margin: 160px 0 0 0;
-}
-
-.right-part {
-  margin-left: 56px;
-  max-width: 552px;
-  width: 100%;
-  font-size: 1.375rem;
-}
-
-@media screen and (max-width: 856px) {
-  .section {
-    flex-direction: column;
-    margin: 88px 0 0 0;
-  }
-
-  .right-part {
-    margin-left: 0;
-  }
-}
 </style>

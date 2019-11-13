@@ -155,7 +155,7 @@ button#suivant {
   padding-left: 8px;
 }
 
-@media screen and (max-width: 856px) {
+@media screen and (max-width: $mobileSize) {
   button#precedent,
   button#suivant {
     display: none;
