@@ -11,7 +11,7 @@
         </svg>
       </button>
     </router-link>
-    <RingLoader :loading="status === 'submitting'" :color="'#fdcd56'"></RingLoader>
+    <ClipLoader :loading="status === 'submitting'" :color="'#fdcd56'"></ClipLoader>
     <VueRecaptcha
       v-if="status !== 'ok' && status !== 'submitting'"
       ref="recaptcha"
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import RingLoader from "vue-spinner/src/RingLoader.vue";
+import ClipLoader from "vue-spinner/src/ClipLoader.vue";
 import VueRecaptcha from "vue-recaptcha";
 import vegaEmbed from "vega-embed";
 
@@ -32,7 +32,7 @@ export default {
   name: "Stats",
   components: {
     VueRecaptcha,
-    RingLoader
+    ClipLoader
   },
   data() {
     return {
@@ -53,13 +53,7 @@ export default {
           this.status = "ok";
           vegaEmbed("#map", spec, {
             tooltip: {
-              theme: "dark",
-              sanitize: value => {
-                return value &&
-                  (value === "undefined" || value === "NaN" || value === "null")
-                  ? "Non renseigné"
-                  : value;
-              }
+              theme: "dark"
             }
           });
         })
