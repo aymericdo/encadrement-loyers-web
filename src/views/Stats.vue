@@ -110,6 +110,8 @@ export default {
   z-index: 1;
 
   & > svg {
+    display: flex;
+    align-self: center;
     width: 16px;
     height: 16px;
   }
