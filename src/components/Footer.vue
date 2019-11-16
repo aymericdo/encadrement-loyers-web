@@ -1,5 +1,14 @@
 <template>
   <Section class="footer">
+    <p class="social">
+      Follow us on
+      <a class="facebook" href="https://www.facebook.com/encadrementloyers">
+        <FacebookIcon :width="'25px'" :height="'25px'" />
+      </a>
+      <a class="twitter" href="https://twitter.com/_encadrement">
+        <TwitterIcon :width="'25px'" :height="'25px'" />
+      </a>
+    </p>
     <p>
       Brought to you by
       <span>
@@ -20,11 +29,15 @@
 </template>
 <script>
 import Section from "@/shared/Section.vue";
+import FacebookIcon from "@/icons/FacebookIcon.vue";
+import TwitterIcon from "@/icons/TwitterIcon.vue";
 
 export default {
   name: "Footer",
   components: {
-    Section
+    Section,
+    TwitterIcon,
+    FacebookIcon
   }
 };
 </script>
@@ -38,6 +51,17 @@ export default {
 p {
   font-size: 0.75rem;
   text-align: center;
+}
+
+p.social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.facebook,
+.twitter {
+  margin-left: 8px;
 }
 
 @media screen and (max-width: $mobileSize) {
