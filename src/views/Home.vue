@@ -51,7 +51,7 @@ export default {
   display: flex;
   justify-content: center;
   max-width: $mobileSize;
-  margin-top: 10%;
+  margin-top: 8%;
   margin-bottom: 48px;
   padding: 0;
 }

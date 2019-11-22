@@ -8,7 +8,12 @@
       @expired="onCaptchaExpired"
       sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
     />
-    <div id="map"></div>
+    <div class="center-wrapper" v-if="status === 'ok'">
+      <Section class="map-container" ref="mapContainer">
+        <SectionTitle>La carte</SectionTitle>
+        <div id="map"></div>
+      </Section>
+    </div>
     <router-link to="/">
       <FixedButton>
         <StrokeIcon :width="'20px'" :height="'20px'" />
@@ -23,12 +28,14 @@ import VueRecaptcha from "vue-recaptcha";
 import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
 
 export default {
   name: "Stats",
   components: {
     VueRecaptcha,
     ClipLoader,
+    SectionTitle,
     StrokeIcon,
     FixedButton
   },
@@ -52,7 +59,12 @@ export default {
           vegaEmbed("#map", spec, {
             tooltip: {
               theme: "dark"
-            }
+            },
+            actions: false
+          }).then(result => {
+            const view = result.view;
+            const w = this.$refs.mapContainer.clientWidth;
+            view.width(w).run();
           });
         })
         .catch(err => {
@@ -88,11 +100,24 @@ export default {
   display: flex;
   justify-content: center;
   max-width: $mobileSize;
-  margin-top: 10%;
+  margin-top: 8%;
   padding: 0;
+}
+
+.center-wrapper {
+  display: flex;
+  justify-content: center;
+  width: calc(100% - 48px);
+  padding: 0 24px;
 }
 
 #map {
   max-width: 100%;
+}
+
+.map-container {
+  max-width: 100%;
+  width: 700px;
+  height: 500px;
 }
 </style>

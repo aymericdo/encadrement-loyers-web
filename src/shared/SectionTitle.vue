@@ -1,12 +1,13 @@
 <template>
   <div class="section-title">
-    <h3>{{title}}</h3>
+    <h3>
+      <slot />
+    </h3>
   </div>
 </template>
 <script>
 export default {
-  name: "SectionTitle",
-  props: ["title"]
+  name: "SectionTitle"
 };
 </script>
 

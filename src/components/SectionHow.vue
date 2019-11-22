@@ -1,6 +1,6 @@
 <template>
   <Section class="section-how">
-    <SectionTitle :title="'Comment?'" />
+    <SectionTitle>Comment?</SectionTitle>
     <SectionRightPart>
       <h4>L’extension vous donne automatiquement le prix le plus haut que vous devriez payer.</h4>
       <p>Selon les critères trouvés sur la page du logement.</p>
