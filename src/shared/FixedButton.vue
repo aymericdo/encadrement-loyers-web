@@ -28,6 +28,10 @@ button {
   cursor: pointer;
   z-index: 1;
 
+  &:hover {
+    background-color: $darkeryellow;
+  }
+
   & > svg {
     display: flex;
     align-self: center;

@@ -63,7 +63,11 @@ ul li {
 
 a,
 a:visited {
-  color: $yellow !important;
+  color: $yellow;
+
+  &:hover {
+    color: $darkeryellow;
+  }
 }
 
 p {

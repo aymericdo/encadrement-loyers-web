@@ -81,6 +81,10 @@ export default {
   line-height: 24px;
   cursor: pointer;
 
+  &:hover {
+    background-color: $darkerdeepgrey;
+  }
+
   & > svg {
     margin-right: 16px;
   }
@@ -96,5 +100,9 @@ export default {
 .button-group.-firefox a:last-child button {
   background-color: $yellow;
   color: $deepblack;
+
+  &:hover {
+    background-color: $darkeryellow;
+  }
 }
 </style>

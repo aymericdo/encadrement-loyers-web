@@ -87,6 +87,10 @@ export default {
   justify-content: center;
   border-radius: 10px;
   font-weight: 500;
+
+  &:hover {
+    background-color: $darkerdeepgrey;
+  }
 }
 
 .website-list li:last-child {

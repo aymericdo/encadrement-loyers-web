@@ -143,6 +143,10 @@ button.carousel-control {
   padding: 0;
   border: none;
   cursor: pointer;
+
+  &:hover {
+    color: $darkeryellow;
+  }
 }
 
 button#precedent {
