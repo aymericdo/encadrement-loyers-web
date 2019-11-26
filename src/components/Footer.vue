@@ -2,27 +2,34 @@
   <Section class="footer">
     <p class="social">
       Follow us on
-      <a class="facebook" href="https://www.facebook.com/encadrementloyers">
+      <a
+        class="facebook"
+        href="https://www.facebook.com/encadrementloyers"
+        target="blank"
+      >
         <FacebookIcon :width="'25px'" :height="'25px'" />
       </a>
-      <a class="twitter" href="https://twitter.com/_encadrement">
+      <a class="twitter" href="https://twitter.com/_encadrement" target="blank">
         <TwitterIcon :width="'25px'" :height="'25px'" />
       </a>
     </p>
     <p>
       Brought to you by
       <span>
-        <a href="https://www.linkedin.com/in/aymeric-dominique-b11349a6/">Aymeric Dominique</a>
+        <a
+          href="https://www.linkedin.com/in/aymeric-dominique-b11349a6/"
+          target="blank"
+        >Aymeric Dominique</a>
       </span>,
       <span>
-        <a href="https://www.linkedin.com/in/thomas-d-legrand/">Thomas Legrand</a>
+        <a href="https://www.linkedin.com/in/thomas-d-legrand/" target="blank">Thomas Legrand</a>
       </span> and
       <span>
-        <a href="https://www.linkedin.com/in/lucienlandanger/">Lucien Landanger</a>
+        <a href="https://www.linkedin.com/in/lucienlandanger/" target="blank">Lucien Landanger</a>
       </span>
       <br class="footer-br" />
       <span class="buy-us-coffee">
-        <a href="https://buymeacoff.ee/DnzzL">☕️ Buy us a coffee</a>
+        <a href="https://buymeacoff.ee/DnzzL" target="blank">☕️ Buy us a coffee</a>
       </span>
     </p>
   </Section>

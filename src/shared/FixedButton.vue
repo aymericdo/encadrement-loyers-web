@@ -27,6 +27,7 @@ button {
   border-color: transparent;
   cursor: pointer;
   z-index: 1;
+  transition: background-color 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955);
 
   &:hover {
     background-color: $darkeryellow;
