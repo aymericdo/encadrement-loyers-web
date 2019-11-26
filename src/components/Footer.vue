@@ -5,11 +5,11 @@
       <a
         class="facebook"
         href="https://www.facebook.com/encadrementloyers"
-        target="blank"
+        target="_blank"
       >
         <FacebookIcon :width="'25px'" :height="'25px'" />
       </a>
-      <a class="twitter" href="https://twitter.com/_encadrement" target="blank">
+      <a class="twitter" href="https://twitter.com/_encadrement" target="_blank">
         <TwitterIcon :width="'25px'" :height="'25px'" />
       </a>
     </p>
@@ -18,18 +18,18 @@
       <span>
         <a
           href="https://www.linkedin.com/in/aymeric-dominique-b11349a6/"
-          target="blank"
+          target="_blank"
         >Aymeric Dominique</a>
       </span>,
       <span>
-        <a href="https://www.linkedin.com/in/thomas-d-legrand/" target="blank">Thomas Legrand</a>
+        <a href="https://www.linkedin.com/in/thomas-d-legrand/" target="_blank">Thomas Legrand</a>
       </span> and
       <span>
-        <a href="https://www.linkedin.com/in/lucienlandanger/" target="blank">Lucien Landanger</a>
+        <a href="https://www.linkedin.com/in/lucienlandanger/" target="_blank">Lucien Landanger</a>
       </span>
       <br class="footer-br" />
       <span class="buy-us-coffee">
-        <a href="https://buymeacoff.ee/DnzzL" target="blank">☕️ Buy us a coffee</a>
+        <a href="https://buymeacoff.ee/DnzzL" target="_blank">☕️ Buy us a coffee</a>
       </span>
     </p>
   </Section>

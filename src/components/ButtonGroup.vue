@@ -2,13 +2,13 @@
   <div class="button-group" v-bind:class="{ '-firefox': isFirefox }">
     <a
       href="https://chrome.google.com/webstore/detail/encadrement/nkmghhgmpbngkbjnhpomddeglkpkkfeo?hl=fr"
-      target="blank"
+      target="_blank"
     >
       <button id="chrome">
         <ChromeIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#fff' : '#050505'" />Installer sur Chrome
       </button>
     </a>
-    <a href="https://addons.mozilla.org/fr/firefox/addon/encadrement/" target="blank">
+    <a href="https://addons.mozilla.org/fr/firefox/addon/encadrement/" target="_blank">
       <button id="firefox">
         <FirefoxIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#050505' : '#fff'" />Installer sur Firefox
       </button>
