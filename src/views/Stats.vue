@@ -9,6 +9,16 @@
       sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
     />
     <div class="center-wrapper" v-if="status === 'ok'">
+      <div class="welcome">
+        Sur les
+        <span>{{welcomeData.numberRents}}</span>
+        annonces étudiées, seulement
+        <span>{{welcomeData.isLegalPercentage}}</span>
+        % sont légales. Le
+        <span>{{welcomeData.worstPostalCode}}</span>
+        e est l'arrondissement où l'encadrement est le plus respecté contrairement au
+        <span>{{welcomeData.bestPostalCode}}</span>e qui à le plus d'annonces illégales.
+      </div>
       <Section class="map-container" ref="mapContainer">
         <SectionTitle>Carte</SectionTitle>
         <div id="map"></div>
@@ -45,10 +55,35 @@ export default {
     return {
       status: "",
       sucessfulServerResponse: "",
-      serverError: ""
+      serverError: "",
+      welcomeData: null
     };
   },
   methods: {
+    onFetchWelcome: function(recaptchaToken) {
+      fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`)
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          this.welcomeData = res;
+        })
+        .catch(err => {
+          this.serverError = getErrorMessage(err);
+          this.status = "error";
+
+          // helper to get a displayable message to the user
+          function getErrorMessage(err) {
+            let responseBody;
+            responseBody = err.response;
+            if (!responseBody) {
+              responseBody = err;
+            } else {
+              responseBody = err.response.data || responseBody;
+            }
+            return responseBody.message || JSON.stringify(responseBody);
+          }
+        });
+    },
     onFetchMap: function(recaptchaToken) {
       fetch(`${this.$domain}stats/map?recaptchaToken=${recaptchaToken}`)
         .then(res => res.json())
@@ -120,6 +155,7 @@ export default {
     onCaptchaVerified: function(recaptchaToken) {
       this.status = "submitting";
       this.$refs.recaptcha.reset();
+      this.onFetchWelcome(recaptchaToken);
       this.onFetchMap(recaptchaToken);
       this.onFetchPriceDifference(recaptchaToken);
     },
@@ -158,5 +194,9 @@ export default {
   max-width: 100%;
   width: 700px;
   height: 500px;
+}
+
+.welcome > span {
+  color: $yellow;
 }
 </style>
