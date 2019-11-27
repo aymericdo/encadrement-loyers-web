@@ -10,20 +10,33 @@
     />
     <div class="center-wrapper" v-if="status === 'ok'">
       <div class="welcome">
-        Sur les
-        <span>{{welcomeData.numberRents}}</span>
-        annonces étudiées, seulement
-        <span>{{welcomeData.isLegalPercentage}}</span>
-        % sont légales. Le
-        <span>{{welcomeData.worstPostalCode}}</span>
-        e est l'arrondissement où l'encadrement est le plus respecté contrairement au
-        <span>{{welcomeData.bestPostalCode}}</span>e qui à le plus d'annonces illégales.
+        <span>Sur les</span>
+        <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
+        <span>cas étudiés, seulement</span>
+        <span class="yellow">&nbsp;{{welcomeData.isLegalPercentage}}</span>
+        <span>% sont légaux. Le</span>
+        <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}</span>
+        <span>ème est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
+        <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}</span>
+        <span>ème qui à le plus d'annonces illégales.</span>
       </div>
-      <Section class="map-container" ref="mapContainer">
-        <SectionTitle>Carte</SectionTitle>
-        <div id="map"></div>
-        <SectionTitle>Différence de prix</SectionTitle>
-        <div id="price-diff"></div>
+      <Section>
+        <SectionTitle class="title">Carte</SectionTitle>
+        <div class="container" ref="mapContainer">
+          <div id="map"></div>
+        </div>
+      </Section>
+      <Section>
+        <SectionTitle class="title">Différence de prix</SectionTitle>
+        <div class="container" ref="diffContainer">
+          <div id="price-diff"></div>
+        </div>
+      </Section>
+      <Section>
+        <SectionTitle class="title">Est légal par surface</SectionTitle>
+        <div class="container" ref="legalContainer">
+          <div id="is-legal-per-surface"></div>
+        </div>
       </Section>
     </div>
     <router-link to="/">
@@ -60,6 +73,17 @@ export default {
     };
   },
   methods: {
+    // helper to get a displayable message to the user
+    getErrorMessage(err) {
+      let responseBody;
+      responseBody = err.response;
+      if (!responseBody) {
+        responseBody = err;
+      } else {
+        responseBody = err.response.data || responseBody;
+      }
+      return responseBody.message || JSON.stringify(responseBody);
+    },
     onFetchWelcome: function(recaptchaToken) {
       fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`)
         .then(res => res.json())
@@ -67,20 +91,8 @@ export default {
           this.welcomeData = res;
         })
         .catch(err => {
-          this.serverError = getErrorMessage(err);
+          this.serverError = this.getErrorMessage(err);
           this.status = "error";
-
-          // helper to get a displayable message to the user
-          function getErrorMessage(err) {
-            let responseBody;
-            responseBody = err.response;
-            if (!responseBody) {
-              responseBody = err;
-            } else {
-              responseBody = err.response.data || responseBody;
-            }
-            return responseBody.message || JSON.stringify(responseBody);
-          }
         });
     },
     onFetchMap: function(recaptchaToken) {
@@ -100,20 +112,8 @@ export default {
           });
         })
         .catch(err => {
-          this.serverError = getErrorMessage(err);
+          this.serverError = this.getErrorMessage(err);
           this.status = "error";
-
-          // helper to get a displayable message to the user
-          function getErrorMessage(err) {
-            let responseBody;
-            responseBody = err.response;
-            if (!responseBody) {
-              responseBody = err;
-            } else {
-              responseBody = err.response.data || responseBody;
-            }
-            return responseBody.message || JSON.stringify(responseBody);
-          }
         });
     },
     onFetchPriceDifference: function(recaptchaToken) {
@@ -130,25 +130,36 @@ export default {
             actions: false
           }).then(result => {
             const view = result.view;
-            const w = this.$refs.mapContainer.clientWidth;
+            const w = this.$refs.diffContainer.clientWidth;
             view.width(w).run();
           });
         })
         .catch(err => {
-          this.serverError = getErrorMessage(err);
+          this.serverError = this.getErrorMessage(err);
           this.status = "error";
-
-          // helper to get a displayable message to the user
-          function getErrorMessage(err) {
-            let responseBody;
-            responseBody = err.response;
-            if (!responseBody) {
-              responseBody = err;
-            } else {
-              responseBody = err.response.data || responseBody;
-            }
-            return responseBody.message || JSON.stringify(responseBody);
-          }
+        });
+    },
+    onFetchIsLegalPerSurface: function(recaptchaToken) {
+      fetch(
+        `${this.$domain}stats/is-legal-per-surface?recaptchaToken=${recaptchaToken}`
+      )
+        .then(res => res.json())
+        .then(spec => {
+          this.status = "ok";
+          vegaEmbed("#is-legal-per-surface", spec, {
+            tooltip: {
+              theme: "dark"
+            },
+            actions: false
+          }).then(result => {
+            const view = result.view;
+            const w = this.$refs.legalContainer.clientWidth;
+            view.width(w).run();
+          });
+        })
+        .catch(err => {
+          this.serverError = this.getErrorMessage(err);
+          this.status = "error";
         });
     },
     onCaptchaVerified: function(recaptchaToken) {
@@ -157,6 +168,7 @@ export default {
       this.onFetchWelcome(recaptchaToken);
       this.onFetchMap(recaptchaToken);
       this.onFetchPriceDifference(recaptchaToken);
+      this.onFetchIsLegalPerSurface(recaptchaToken);
     },
     onCaptchaExpired: function() {
       this.status = "";
@@ -180,22 +192,35 @@ export default {
 
 .center-wrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   width: calc(100% - 48px);
   padding: 0 24px;
 }
 
-#map {
+#map,
+#price-diff,
+#is-legal-per-surface {
   max-width: 100%;
 }
 
-.map-container {
+/deep/ .title > h3 {
+  margin-top: 42px;
+  margin-bottom: 8px;
+}
+
+.container {
   max-width: 100%;
   width: 700px;
   height: 500px;
 }
 
-.welcome > span {
-  color: $yellow;
+.welcome {
+  width: 700px;
+  margin-bottom: 88px;
+
+  & > span.yellow {
+    color: $yellow;
+  }
 }
 </style>
