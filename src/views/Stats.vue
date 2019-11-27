@@ -121,7 +121,7 @@ export default {
       this.status = "submitting";
       this.$refs.recaptcha.reset();
       this.onFetchMap(recaptchaToken);
-      // this.onFetchPriceDifference(recaptchaToken);
+      this.onFetchPriceDifference(recaptchaToken);
     },
     onCaptchaExpired: function() {
       this.status = "";
