@@ -7,7 +7,7 @@
     style="enable-background:new 0 0 112.196 112.196;"
   >
     <g>
-      <circle style="fill:#3B5998;" cx="56.098" cy="56.098" r="56.098" />
+      <circle style="fill:#222222;" cx="56.098" cy="56.098" r="56.098" />
       <path
         style="fill:#FFFFFF;"
         d="M70.201,58.294h-10.01v36.672H45.025V58.294h-7.213V45.406h7.213v-8.34
