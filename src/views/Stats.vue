@@ -64,7 +64,6 @@ export default {
       fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`)
         .then(res => res.json())
         .then(res => {
-          console.log(res);
           this.welcomeData = res;
         })
         .catch(err => {
