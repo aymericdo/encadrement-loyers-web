@@ -10,8 +10,10 @@
     />
     <div class="center-wrapper" v-if="status === 'ok'">
       <Section class="map-container" ref="mapContainer">
-        <SectionTitle>La carte</SectionTitle>
+        <SectionTitle>Carte</SectionTitle>
         <div id="map"></div>
+        <SectionTitle>Différence de prix</SectionTitle>
+        <div id="price-diff"></div>
       </Section>
     </div>
     <router-link to="/">
@@ -47,12 +49,8 @@ export default {
     };
   },
   methods: {
-    onCaptchaVerified: function(recaptchaToken) {
-      this.status = "submitting";
-      this.$refs.recaptcha.reset();
-      fetch(
-        `https://encadrement-loyers.herokuapp.com/stats/map?recaptchaToken=${recaptchaToken}`
-      )
+    onFetchMap: function(recaptchaToken) {
+      fetch(`${this.$domain}stats/map?recaptchaToken=${recaptchaToken}`)
         .then(res => res.json())
         .then(spec => {
           this.status = "ok";
@@ -71,7 +69,7 @@ export default {
           this.serverError = getErrorMessage(err);
           this.status = "error";
 
-          //helper to get a displayable message to the user
+          // helper to get a displayable message to the user
           function getErrorMessage(err) {
             let responseBody;
             responseBody = err.response;
@@ -84,9 +82,50 @@ export default {
           }
         });
     },
-    onCaptchaExpired: function() {
+    onFetchPriceDifference: function(recaptchaToken) {
+      fetch(
+        `${this.$domain}stats/price-difference?recaptchaToken=${recaptchaToken}`
+      )
+        .then(res => res.json())
+        .then(spec => {
+          this.status = "ok";
+          vegaEmbed("#price-diff", spec, {
+            tooltip: {
+              theme: "dark"
+            },
+            actions: false
+          }).then(result => {
+            const view = result.view;
+            const w = this.$refs.mapContainer.clientWidth;
+            view.width(w).run();
+          });
+        })
+        .catch(err => {
+          this.serverError = getErrorMessage(err);
+          this.status = "error";
+
+          // helper to get a displayable message to the user
+          function getErrorMessage(err) {
+            let responseBody;
+            responseBody = err.response;
+            if (!responseBody) {
+              responseBody = err;
+            } else {
+              responseBody = err.response.data || responseBody;
+            }
+            return responseBody.message || JSON.stringify(responseBody);
+          }
+        });
+    },
+    onCaptchaVerified: function(recaptchaToken) {
+      this.status = "submitting";
       this.$refs.recaptcha.reset();
+      this.onFetchMap(recaptchaToken);
+      this.onFetchPriceDifference(recaptchaToken);
+    },
+    onCaptchaExpired: function() {
       this.status = "";
+      this.$refs.recaptcha.reset();
     }
   }
 };
