@@ -80,7 +80,7 @@ export default {
   letter-spacing: -0.06px;
   line-height: 24px;
   cursor: pointer;
-  transition: background-color 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  transition: background-color ease 0.3s;
 
   &:hover {
     background-color: $darkerdeepgrey;

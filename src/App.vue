@@ -64,7 +64,7 @@ ul li {
 a,
 a:visited {
   color: $yellow;
-  transition: color 0.7s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  transition: color ease 0.3s;
 
   &:hover {
     color: $darkeryellow;
