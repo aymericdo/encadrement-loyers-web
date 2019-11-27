@@ -69,7 +69,7 @@ export default {
       status: "",
       sucessfulServerResponse: "",
       serverError: "",
-      welcomeData: null
+      welcomeData: {}
     };
   },
   methods: {
