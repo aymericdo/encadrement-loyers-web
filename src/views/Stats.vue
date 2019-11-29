@@ -9,30 +9,32 @@
       sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
     />
     <div class="center-wrapper" v-if="status === 'ok'">
-      <div class="welcome">
-        <span>Sur les</span>
-        <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
-        <span>cas étudiés, seulement</span>
-        <span class="yellow">&nbsp;{{welcomeData.isLegalPercentage}}</span>
-        <span>% sont légaux. Le</span>
-        <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}</span>
-        <span>ème est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
-        <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}</span>
-        <span>ème qui à le plus d'annonces illégales.</span>
-      </div>
       <Section>
+        <div class="welcome">
+          <span>Sur les</span>
+          <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
+          <span>cas étudiés, seulement</span>
+          <span class="yellow">&nbsp;{{welcomeData.isLegalPercentage}}</span>
+          <span>% sont légaux. Le</span>
+          <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}</span>
+          <span>ème est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
+          <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}</span>
+          <span>ème qui à le plus d'annonces illégales.</span>
+        </div>
+      </Section>
+      <Section class="stats-section">
         <SectionTitle class="title">Carte</SectionTitle>
         <div class="container" ref="mapContainer">
           <div id="map"></div>
         </div>
       </Section>
-      <Section>
+      <Section class="stats-section">
         <SectionTitle class="title">Différence de prix</SectionTitle>
         <div class="container" ref="diffContainer">
           <div id="price-diff"></div>
         </div>
       </Section>
-      <Section>
+      <Section class="stats-section">
         <SectionTitle class="title">Est légal par surface</SectionTitle>
         <div class="container" ref="legalContainer">
           <div id="is-legal-per-surface"></div>
@@ -54,6 +56,7 @@ import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
+import Section from "@/shared/Section.vue";
 
 export default {
   name: "Stats",
@@ -62,7 +65,8 @@ export default {
     ClipLoader,
     SectionTitle,
     StrokeIcon,
-    FixedButton
+    FixedButton,
+    Section
   },
   data() {
     return {
@@ -216,11 +220,14 @@ export default {
 }
 
 .welcome {
-  width: 700px;
-  margin-bottom: 88px;
+  max-width: 700px;
 
   & > span.yellow {
     color: $yellow;
   }
+}
+
+.stats-section {
+  flex-direction: column;
 }
 </style>

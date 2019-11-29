@@ -12,7 +12,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/variables.scss";
 .section {
-  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: row;
   margin: 160px 0 0 0;
