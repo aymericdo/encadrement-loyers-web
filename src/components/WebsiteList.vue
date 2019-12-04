@@ -2,6 +2,17 @@
   <ul class="website-list">
     <li class="website-item">
       <a
+        href="https://www.facebook.com/marketplace/paris/propertyrentals/?sort=BEST_MATCH"
+        target="_blank"
+      >
+        <div class="item-content">
+          <FacebookIcon :width="'24px'" :height="'24px'" />
+          <p>Facebook Marketplace</p>
+        </div>
+      </a>
+    </li>
+    <li class="website-item">
+      <a
         href="https://www.leboncoin.fr/recherche/?category=10&locations=Paris__48.85790400439863_2.358842071208555_10000&real_estate_type=2"
         target="_blank"
       >
@@ -78,8 +89,13 @@
 </template>
 
 <script>
+import FacebookIcon from "@/icons/FacebookIcon.vue";
+
 export default {
-  name: "WebsiteList"
+  name: "WebsiteList",
+  components: {
+    FacebookIcon
+  }
 };
 </script>
 
@@ -124,7 +140,8 @@ li .item-content {
   padding: 0 32px;
 }
 
-.item-content img {
+.item-content img,
+.item-content svg {
   width: 24px;
   height: 24px;
   margin-right: 16px;

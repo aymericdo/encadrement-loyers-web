@@ -7,7 +7,7 @@
         href="https://www.facebook.com/encadrementloyers"
         target="_blank"
       >
-        <FacebookIcon :width="'25px'" :height="'25px'" />
+        <FacebookIcon :width="'25px'" :height="'25px'" :color="'#222222'" />
       </a>
       <a class="twitter" href="https://twitter.com/_encadrement" target="_blank">
         <TwitterIcon :width="'25px'" :height="'25px'" />
