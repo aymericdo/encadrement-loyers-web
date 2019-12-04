@@ -7,7 +7,7 @@
       >
         <div class="item-content">
           <FacebookIcon :width="'24px'" :height="'24px'" />
-          <p>Facebook Marketplace</p>
+          <p>Marketplace</p>
         </div>
       </a>
     </li>
