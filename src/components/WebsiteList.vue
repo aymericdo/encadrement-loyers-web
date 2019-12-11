@@ -6,7 +6,7 @@
         target="_blank"
       >
         <div class="item-content">
-          <FacebookIcon :width="'24px'" :height="'24px'" />
+          <img src="@/assets/images/logo-facebook.png" alt="logo-facebook" />
           <p>Marketplace</p>
         </div>
       </a>
@@ -89,13 +89,8 @@
 </template>
 
 <script>
-import FacebookIcon from "@/icons/FacebookIcon.vue";
-
 export default {
-  name: "WebsiteList",
-  components: {
-    FacebookIcon
-  }
+  name: "WebsiteList"
 };
 </script>
 
