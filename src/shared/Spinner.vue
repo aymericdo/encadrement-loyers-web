@@ -30,11 +30,11 @@ export default {
   props: {
     width: {
       type: [Number, String],
-      default: 50
+      default: 100
     },
     height: {
       type: [Number, String],
-      default: 50
+      default: 100
     }
   }
 };

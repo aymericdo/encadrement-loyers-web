@@ -109,10 +109,6 @@ export default {
               theme: "dark"
             },
             actions: false
-          }).then(result => {
-            const view = result.view;
-            const w = this.$refs.mapContainer.clientWidth;
-            view.width(w).run();
           });
         })
         .catch(err => {
@@ -132,10 +128,6 @@ export default {
               theme: "dark"
             },
             actions: false
-          }).then(result => {
-            const view = result.view;
-            const w = this.$refs.diffContainer.clientWidth;
-            view.width(w).run();
           });
         })
         .catch(err => {
@@ -155,10 +147,6 @@ export default {
               theme: "dark"
             },
             actions: false
-          }).then(result => {
-            const view = result.view;
-            const w = this.$refs.legalContainer.clientWidth;
-            view.width(w).run();
           });
         })
         .catch(err => {
@@ -206,6 +194,9 @@ export default {
 #price-diff,
 #is-legal-per-surface {
   max-width: 100%;
+  max-height: 100%;
+  overflow-y: hidden;
+  overflow-x: auto;
 }
 
 /deep/ .title > h3 {
