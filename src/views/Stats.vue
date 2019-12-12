@@ -1,6 +1,6 @@
 <template>
   <div id="stats">
-    <ClipLoader :loading="status === 'submitting'" :color="'#fdcd56'"></ClipLoader>
+    <Spinner v-if="status === 'submitting'" />
     <VueRecaptcha
       v-if="status !== 'ok' && status !== 'submitting'"
       ref="recaptcha"
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import ClipLoader from "vue-spinner/src/ClipLoader.vue";
+import Spinner from "@/shared/Spinner.vue";
 import VueRecaptcha from "vue-recaptcha";
 import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
@@ -62,7 +62,7 @@ export default {
   name: "Stats",
   components: {
     VueRecaptcha,
-    ClipLoader,
+    Spinner,
     SectionTitle,
     StrokeIcon,
     FixedButton,
