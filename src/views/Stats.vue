@@ -1,6 +1,6 @@
 <template>
   <div id="stats">
-    <Spinner v-if="status === 'submitting'" />
+    <Spinner class="spinner" v-if="status === 'submitting'" />
     <VueRecaptcha
       v-if="status !== 'ok' && status !== 'submitting'"
       ref="recaptcha"
@@ -208,6 +208,12 @@ export default {
   max-width: 100%;
   width: 700px;
   height: 500px;
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .welcome {
