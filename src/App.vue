@@ -1,8 +1,11 @@
 <template>
   <div id="app">
     <router-view />
-    <audio ref="player">
+    <audio ref="asymetrie">
       <source src="@/assets/sounds/asymetrie.mp3" type="audio/mp3" />
+    </audio>
+    <audio ref="hommepresse">
+      <source src="@/assets/sounds/hommepresse.mp3" type="audio/mp3" />
     </audio>
   </div>
 </template>
@@ -18,14 +21,33 @@ export default {
   mounted: function() {
     document.addEventListener("keydown", event => {
       if (event.keyCode === 65) {
-        this.hits.push(Date.now());
-        if (this.hits.length > 5) {
-          this.hits.shift();
-        }
+        this.hits.push({
+          event: 65,
+          date: Date.now()
+        });
 
-        if (this.hits[4] - this.hits[0] < 600) {
-          this.$refs.player.play();
+        if (
+          this.hits.every(hit => hit.event === 65) &&
+          this.hits[4].date - this.hits[0].date < 600
+        ) {
+          this.$refs.asymetrie.play();
         }
+      } else if (event.keyCode === 90) {
+        this.hits.push({
+          event: 90,
+          date: Date.now()
+        });
+
+        if (
+          this.hits.every(hit => hit.event === 90) &&
+          this.hits[4].date - this.hits[0].date < 600
+        ) {
+          this.$refs.hommepresse.play();
+        }
+      }
+
+      if (this.hits.length > 5) {
+        this.hits.shift();
       }
     });
   }
