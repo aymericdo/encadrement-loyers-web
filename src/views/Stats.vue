@@ -19,7 +19,7 @@
           <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}</span>
           <span>ème est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
           <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}</span>
-          <span>ème qui à le plus d'annonces illégales.</span>
+          <span>ème qui a le plus d'annonces illégales.</span>
         </div>
       </Section>
       <Section class="stats-section">
