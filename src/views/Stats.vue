@@ -29,15 +29,15 @@
         </div>
       </Section>
       <Section class="stats-section">
-        <SectionTitle class="title">Différence de prix</SectionTitle>
-        <div class="container" ref="diffContainer">
-          <div id="price-diff"></div>
-        </div>
-      </Section>
-      <Section class="stats-section">
         <SectionTitle class="title">Est légal par surface</SectionTitle>
         <div class="container" ref="legalContainer">
           <div id="is-legal-per-surface"></div>
+        </div>
+      </Section>
+      <Section class="stats-section">
+        <SectionTitle class="title">Différence de prix</SectionTitle>
+        <div class="container" ref="diffContainer">
+          <div id="price-diff"></div>
         </div>
       </Section>
     </div>
@@ -199,9 +199,13 @@ export default {
   overflow-x: auto;
 }
 
-/deep/ .title > h3 {
-  margin-top: 42px;
-  margin-bottom: 8px;
+/deep/ .title {
+  max-width: inherit;
+
+  & > h3 {
+    margin-top: 42px;
+    margin-bottom: 8px;
+  }
 }
 
 .container {
