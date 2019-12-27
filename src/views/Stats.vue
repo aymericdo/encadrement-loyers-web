@@ -22,19 +22,19 @@
           <span>ème qui a le plus d'annonces illégales.</span>
         </div>
       </Section>
-      <Section class="stats-section">
+      <Section class="stats-section" v-if="isMapLoaded">
         <SectionTitle class="title">Carte</SectionTitle>
         <div class="container" ref="mapContainer">
           <div id="map"></div>
         </div>
       </Section>
-      <Section class="stats-section">
+      <Section class="stats-section" v-if="isLegalPerSurfaceLoaded">
         <SectionTitle class="title">Est légal par surface</SectionTitle>
         <div class="container" ref="legalContainer">
           <div id="is-legal-per-surface"></div>
         </div>
       </Section>
-      <Section class="stats-section">
+      <Section class="stats-section" v-if="isPriceDifferenceLoaded">
         <SectionTitle class="title">Différence de prix</SectionTitle>
         <div class="container" ref="diffContainer">
           <div id="price-diff"></div>
@@ -70,6 +70,9 @@ export default {
   },
   data() {
     return {
+      isMapLoaded: false,
+      isLegalPerSurfaceLoaded: false,
+      isPriceDifferenceLoaded: false,
       status: "",
       sucessfulServerResponse: "",
       serverError: "",
@@ -104,6 +107,7 @@ export default {
         .then(res => res.json())
         .then(spec => {
           this.status = "ok";
+          this.isMapLoaded = true;
           vegaEmbed("#map", spec, {
             tooltip: {
               theme: "dark"
@@ -123,6 +127,7 @@ export default {
         .then(res => res.json())
         .then(spec => {
           this.status = "ok";
+          this.isPriceDifferenceLoaded = true;
           vegaEmbed("#price-diff", spec, {
             tooltip: {
               theme: "dark"
@@ -142,6 +147,7 @@ export default {
         .then(res => res.json())
         .then(spec => {
           this.status = "ok";
+          this.isLegalPerSurfaceLoaded = true;
           vegaEmbed("#is-legal-per-surface", spec, {
             tooltip: {
               theme: "dark"
