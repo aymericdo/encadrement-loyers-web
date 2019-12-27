@@ -9,7 +9,7 @@
       sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
     />
     <div class="center-wrapper" v-if="status === 'ok'">
-      <Section>
+      <Section v-if="welcomeData">
         <div class="welcome">
           <span>Sur les</span>
           <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
@@ -73,7 +73,7 @@ export default {
       status: "",
       sucessfulServerResponse: "",
       serverError: "",
-      welcomeData: {}
+      welcomeData: null
     };
   },
   methods: {
