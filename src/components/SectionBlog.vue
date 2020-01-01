@@ -83,6 +83,7 @@ export default {
 
   .fb_iframe_widget span,
   .fb_iframe_widget iframe {
+    width: 350px;
     max-width: 100%;
   }
 }
