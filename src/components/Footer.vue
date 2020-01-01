@@ -68,6 +68,7 @@ p.social {
 
 .facebook,
 .twitter {
+  display: flex;
   margin-left: 8px;
 }
 
