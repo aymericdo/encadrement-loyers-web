@@ -73,11 +73,10 @@ export default {
 
 .article-list {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 
   & > * {
-    margin-right: 50px !important;
     margin-bottom: 50px !important;
     max-width: 100%;
   }
