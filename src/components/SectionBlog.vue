@@ -78,6 +78,12 @@ export default {
 
   & > * {
     margin-bottom: 50px;
+    max-width: 100%;
+  }
+
+  .fb_iframe_widget span,
+  .fb_iframe_widget iframe {
+    max-width: 100%;
   }
 }
 </style>
