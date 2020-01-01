@@ -15,23 +15,18 @@
             href="https://twitter.com/Le_Figaro/status/1208975839070752768?ref_src=twsrc%5Etfw"
           >December 23, 2019</a>
         </blockquote>
-        <div
-          class="fb-post"
-          data-href="https://www.facebook.com/loueragile/posts/2429261067286129"
-          data-width="350"
-          data-show-text="true"
-        >
-          <blockquote
-            cite="https://developers.facebook.com/loueragile/posts/2429261067286129"
-            class="fb-xfbml-parse-ignore"
-          >
-            <p>Les bailleurs doivent respecter l&#039;encadrement des loyers renouvellé par la Mairie de Paris le 1er juillet 2019. Vous...</p>Publiée par
-            <a href="https://www.facebook.com/loueragile/">LouerAgile</a> sur&nbsp;
-            <a
-              href="https://developers.facebook.com/loueragile/posts/2429261067286129"
-            >Mercredi 20 novembre 2019</a>
-          </blockquote>
-        </div>
+
+        <iframe
+          class="facebook"
+          src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Floueragile%2Fposts%2F2429261067286129&width=350&show_text=true&height=585&appId"
+          width="350"
+          height="585"
+          style="border:none;overflow:hidden"
+          scrolling="no"
+          frameborder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+        ></iframe>
       </div>
     </div>
   </Section>
@@ -45,6 +40,16 @@ export default {
   components: {
     Section,
     SectionTitle
+  },
+  mounted: function() {
+    const twitterScript = document.createElement("script");
+    twitterScript.setAttribute("async", true);
+
+    twitterScript.setAttribute(
+      "src",
+      "https://platform.twitter.com/widgets.js"
+    );
+    document.head.appendChild(twitterScript);
   }
 };
 </script>
@@ -52,6 +57,7 @@ export default {
 @import "@/assets/scss/variables.scss";
 
 .col {
+  max-width: $mobileSize;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -66,7 +72,7 @@ export default {
 </style>
 
 <style lang="scss">
-#twitter-widget-0 {
+.twitter-tweet {
   width: 350px !important;
   margin-top: 0 !important;
 }
@@ -81,8 +87,7 @@ export default {
     max-width: 100%;
   }
 
-  .fb_iframe_widget span,
-  .fb_iframe_widget iframe {
+  iframe.facebook {
     max-width: 100%;
   }
 }
