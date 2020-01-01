@@ -73,17 +73,17 @@ export default {
 
 .article-list {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   flex-wrap: wrap;
 
   & > * {
-    margin-bottom: 50px;
+    margin-right: 50px !important;
+    margin-bottom: 50px !important;
     max-width: 100%;
   }
 
   .fb_iframe_widget span,
   .fb_iframe_widget iframe {
-    width: 350px;
     max-width: 100%;
   }
 }
