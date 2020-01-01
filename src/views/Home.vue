@@ -7,6 +7,7 @@
         <SectionWhere />
         <SectionHow />
         <SectionDisclaimer />
+        <SectionBlog />
         <Footer />
       </div>
     </div>
@@ -24,6 +25,7 @@ import SectionWhy from "@/components/SectionWhy.vue";
 import SectionWhere from "@/components/SectionWhere.vue";
 import SectionHow from "@/components/SectionHow.vue";
 import SectionDisclaimer from "@/components/SectionDisclaimer.vue";
+import SectionBlog from "@/components/SectionBlog.vue";
 import Footer from "@/components/Footer.vue";
 import GraphIcon from "@/icons/GraphIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
@@ -36,6 +38,7 @@ export default {
     GraphIcon,
     Hero,
     SectionDisclaimer,
+    SectionBlog,
     SectionHow,
     SectionWhere,
     SectionWhy
