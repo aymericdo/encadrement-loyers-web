@@ -184,8 +184,8 @@ export default {
   display: flex;
   justify-content: center;
   max-width: $mobileSize;
-  margin-top: 8%;
-  padding: 0;
+  padding-top: 8%;
+  overflow-y: auto;
 }
 
 .center-wrapper {
@@ -236,5 +236,9 @@ export default {
 
 .stats-section {
   flex-direction: column;
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 </style>

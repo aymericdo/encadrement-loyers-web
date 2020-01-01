@@ -1,6 +1,7 @@
 <template>
   <div id="home">
-    <div class="center-wrapper">
+    <router-view />
+    <div class="center-wrapper" v-bind:class="{ inactive: $route.name !== 'home' }">
       <div>
         <Hero />
         <SectionWhy />
@@ -12,7 +13,7 @@
       </div>
     </div>
     <router-link to="/stats">
-      <FixedButton>
+      <FixedButton v-bind:class="{ inactive: $route.name !== 'home' }">
         <GraphIcon :width="'26px'" :height="'26px'" />
       </FixedButton>
     </router-link>
@@ -42,6 +43,17 @@ export default {
     SectionHow,
     SectionWhere,
     SectionWhy
+  },
+  data: function() {
+    return {
+      isFirstVisitDone: false
+    };
+  },
+  mounted() {
+    if (!localStorage.isFirstVisitDone) {
+      this.$router.push({ path: "video" });
+      localStorage.isFirstVisitDone = true;
+    }
   }
 };
 </script>
@@ -54,9 +66,8 @@ export default {
   display: flex;
   justify-content: center;
   max-width: $mobileSize;
-  margin-top: 8%;
-  margin-bottom: 48px;
-  padding: 0;
+  padding-top: 8%;
+  overflow-y: auto;
 }
 
 .center-wrapper {
@@ -68,5 +79,10 @@ export default {
 
 .center-wrapper > div {
   max-width: 100%;
+}
+
+.inactive {
+  filter: blur(4px);
+  pointer-events: none;
 }
 </style>

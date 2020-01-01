@@ -67,6 +67,7 @@ export default {
   flex-direction: row;
   background-color: $deepblack;
   width: 100%;
+  height: 100%;
   justify-content: center;
   font-size: 1rem;
   letter-spacing: -0.23px;
@@ -77,6 +78,8 @@ html,
 body {
   background-color: $deepblack;
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 ul li {
