@@ -16,10 +16,7 @@
     <p>
       Brought to you by
       <span>
-        <a
-          href="https://www.linkedin.com/in/aymeric-dominique-b11349a6/"
-          target="_blank"
-        >Aymeric Dominique</a>
+        <a href="https://www.linkedin.com/in/aymeric-dominique/" target="_blank">Aymeric Dominique</a>
       </span>,
       <span>
         <a href="https://www.linkedin.com/in/thomas-d-legrand/" target="_blank">Thomas Legrand</a>
