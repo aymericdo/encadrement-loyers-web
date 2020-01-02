@@ -25,7 +25,7 @@ export default {
     const sounds = {
       65: this.$refs.asymetrie,
       90: this.$refs.hommepresse,
-      83: this.$refs.gstaad
+      71: this.$refs.gstaad
     };
 
     document.addEventListener("keydown", event => {
