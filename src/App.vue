@@ -7,6 +7,9 @@
     <audio ref="hommepresse">
       <source src="@/assets/sounds/hommepresse.mp3" type="audio/mp3" />
     </audio>
+    <audio ref="gstaad">
+      <source src="@/assets/sounds/gstaad.mp3" type="audio/mp3" />
+    </audio>
   </div>
 </template>
 
@@ -19,30 +22,30 @@ export default {
     };
   },
   mounted: function() {
+    const sounds = {
+      65: this.$refs.asymetrie,
+      90: this.$refs.hommepresse,
+      83: this.$refs.gstaad
+    };
+
     document.addEventListener("keydown", event => {
-      if (event.keyCode === 65) {
-        this.hits.push({
-          event: 65,
-          date: Date.now()
-        });
+      const eventCode = event.keyCode;
+      this.hits.push({
+        event: eventCode,
+        date: Date.now()
+      });
 
-        if (
-          this.hits.every(hit => hit.event === 65) &&
-          this.hits[4].date - this.hits[0].date < 600
-        ) {
-          this.$refs.asymetrie.play();
-        }
-      } else if (event.keyCode === 90) {
-        this.hits.push({
-          event: 90,
-          date: Date.now()
-        });
-
-        if (
-          this.hits.every(hit => hit.event === 90) &&
-          this.hits[4].date - this.hits[0].date < 600
-        ) {
-          this.$refs.hommepresse.play();
+      if (
+        this.hits.length > 4 &&
+        this.hits.every(hit => hit.event === eventCode) &&
+        this.hits[4].date - this.hits[0].date < 600
+      ) {
+        if (eventCode === 83) {
+          this.$route.name === "stats" &&
+            sounds[eventCode] &&
+            sounds[eventCode].play();
+        } else {
+          sounds[eventCode] && sounds[eventCode].play();
         }
       }
 

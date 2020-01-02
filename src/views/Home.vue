@@ -66,7 +66,6 @@ export default {
   display: flex;
   justify-content: center;
   max-width: $mobileSize;
-  padding-top: 8%;
   overflow-y: auto;
 }
 
@@ -74,7 +73,7 @@ export default {
   display: flex;
   justify-content: center;
   width: calc(100% - 48px);
-  padding: 0 24px;
+  padding: 8% 24px 0;
 }
 
 .center-wrapper > div {

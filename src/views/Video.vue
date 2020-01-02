@@ -1,23 +1,25 @@
 <template>
   <div id="video">
     <div class="content">
-      <router-link to="/">
-        <div class="close-button">
-          <StrokeIcon :width="'20px'" :height="'20px'" />
-        </div>
-      </router-link>
       <video autoplay muted controls>
         <source src="@/assets/video/prez.mp4" type="video/mp4" />
       </video>
     </div>
+    <router-link to="/">
+      <FixedButton>
+        <StrokeIcon :width="'20px'" :height="'20px'" />
+      </FixedButton>
+    </router-link>
   </div>
 </template>
 
 <script>
 import StrokeIcon from "@/icons/StrokeIcon.vue";
+import FixedButton from "@/shared/FixedButton.vue";
 export default {
   name: "Video",
   components: {
+    FixedButton,
     StrokeIcon
   }
 };
