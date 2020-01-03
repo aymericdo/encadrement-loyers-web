@@ -2,7 +2,9 @@
   <div itemscope itemtype="http://schema.org/Thing" class="hero-header">
     <div class="hero-heading">
       <h1 itemprop="title">
-        <span class="yellow-text">Encadrement</span> est une extension pour vous aider dans votre recherche de location à
+        <div>
+          <router-link to="video" class="yellow-text">Encadrement</router-link>
+        </div>est une extension pour vous aider dans votre recherche de location à
         <div class="paris-word">
           <span class="blue-text">Pa</span>ri
           <span class="red-text">s.</span>
@@ -72,6 +74,25 @@ export default {
 .yellow-text {
   color: $yellow;
   display: inline-block;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: relative;
+    background-color: $yellow;
+    width: 100%;
+    height: 4px;
+    left: 0;
+    display: flow-root;
+  }
+
+  &:hover {
+    color: $darkeryellow;
+
+    &::after {
+      background-color: $darkeryellow;
+    }
+  }
 }
 
 .blue-text {
@@ -82,15 +103,5 @@ export default {
 .red-text {
   color: #ffaca6;
   display: inline-block;
-}
-
-.yellow-text::after {
-  content: "";
-  position: relative;
-  background-color: $yellow;
-  width: 100%;
-  height: 4px;
-  left: 0;
-  display: flow-root;
 }
 </style>

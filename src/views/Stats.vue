@@ -1,6 +1,5 @@
 <template>
   <div id="stats">
-    <Spinner class="spinner" v-if="status === 'submitting'" />
     <VueRecaptcha
       v-if="status !== 'ok' && status !== 'submitting'"
       ref="recaptcha"
@@ -8,7 +7,8 @@
       @expired="onCaptchaExpired"
       sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
     />
-    <div class="center-wrapper" v-if="status === 'ok'">
+    <div class="center-wrapper" v-if="status === 'ok' || status === 'submitting'">
+      <Spinner class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
       <Section v-if="welcomeData">
         <div class="welcome">
           <span>Sur les</span>
@@ -22,22 +22,25 @@
           <span>ème qui a le plus d'annonces illégales.</span>
         </div>
       </Section>
-      <Section class="stats-section" v-if="isMapLoaded">
-        <SectionTitle class="title">Carte</SectionTitle>
-        <div class="container" ref="mapContainer">
-          <div id="map"></div>
+      <Section class="stats-section">
+        <SectionTitle v-if="isMapLoaded" class="title">Carte</SectionTitle>
+        <div v-if="status === 'ok'" class="container" ref="mapContainer">
+          <Spinner v-if="!isMapLoaded" class="spinner" />
+          <div v-if="isMapLoaded" id="map"></div>
         </div>
       </Section>
-      <Section class="stats-section" v-if="isLegalPerSurfaceLoaded">
-        <SectionTitle class="title">Est légal par surface</SectionTitle>
-        <div class="container" ref="legalContainer">
-          <div id="is-legal-per-surface"></div>
+      <Section class="stats-section">
+        <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title">Est légal par surface</SectionTitle>
+        <div v-if="status === 'ok'" class="container" ref="legalContainer">
+          <Spinner v-if="!isLegalPerSurfaceLoaded" class="spinner" />
+          <div v-if="isLegalPerSurfaceLoaded" id="is-legal-per-surface"></div>
         </div>
       </Section>
-      <Section class="stats-section" v-if="isPriceDifferenceLoaded">
-        <SectionTitle class="title">Différence de prix</SectionTitle>
-        <div class="container" ref="diffContainer">
-          <div id="price-diff"></div>
+      <Section class="stats-section">
+        <SectionTitle v-if="isPriceDifferenceLoaded" class="title">Différence de prix</SectionTitle>
+        <div v-if="status === 'ok'" class="container" ref="diffContainer">
+          <Spinner v-if=" !isPriceDifferenceLoaded" class="spinner" />
+          <div v-if="isPriceDifferenceLoaded" id="price-diff"></div>
         </div>
       </Section>
     </div>
@@ -95,7 +98,11 @@ export default {
       fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`)
         .then(res => res.json())
         .then(res => {
+          this.status = "ok";
           this.welcomeData = res;
+          this.onFetchMap(recaptchaToken);
+          this.onFetchPriceDifference(recaptchaToken);
+          this.onFetchIsLegalPerSurface(recaptchaToken);
         })
         .catch(err => {
           this.serverError = this.getErrorMessage(err);
@@ -164,9 +171,6 @@ export default {
       this.status = "submitting";
       this.$refs.recaptcha.reset();
       this.onFetchWelcome(recaptchaToken);
-      this.onFetchMap(recaptchaToken);
-      this.onFetchPriceDifference(recaptchaToken);
-      this.onFetchIsLegalPerSurface(recaptchaToken);
     },
     onCaptchaExpired: function() {
       this.status = "";
@@ -180,20 +184,28 @@ export default {
 @import "@/assets/scss/variables.scss";
 
 #stats {
-  min-width: 100%;
   display: flex;
   justify-content: center;
-  max-width: $mobileSize;
-  margin-top: 8%;
-  padding: 0;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
 }
 
 .center-wrapper {
+  align-items: center;
+  background: rgba($deepgrey, 0.9);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: calc(100% - 48px);
+  height: 80%;
+  width: 80%;
+  max-width: 90%;
+  overflow-y: auto;
   padding: 0 24px;
+  position: relative;
 }
 
 #map,
@@ -215,6 +227,9 @@ export default {
 }
 
 .container {
+  position: relative;
+  display: flex;
+  justify-content: center;
   max-width: 100%;
   width: 700px;
   height: 500px;
@@ -236,5 +251,9 @@ export default {
 
 .stats-section {
   flex-direction: column;
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 </style>
