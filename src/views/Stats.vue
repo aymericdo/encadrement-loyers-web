@@ -15,7 +15,7 @@
           <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
           <span>cas étudiés,</span>
           <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}%&nbsp;</span>
-          <span>sont illégaux. Pour les annonces d'une surface inférieur à</span>
+          <span>sont illégaux. Pour les annonces d'une surface inférieure à</span>
           <span class="yellow">&nbsp;{{welcomeData.pivotSurface}}m²</span>
           <span>, il y a</span>
           <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
