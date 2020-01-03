@@ -13,9 +13,9 @@
         <div class="welcome">
           <span>Sur les</span>
           <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
-          <span>cas étudiés, seulement</span>
-          <span class="yellow">&nbsp;{{welcomeData.isLegalPercentage}}</span>
-          <span>% sont légaux. Le</span>
+          <span>cas étudiés,</span>
+          <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}</span>
+          <span>% sont illégaux. Le</span>
           <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}</span>
           <span>ème est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
           <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}</span>
