@@ -14,12 +14,16 @@
           <span>Sur les</span>
           <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
           <span>cas étudiés,</span>
-          <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}</span>
-          <span>% sont illégaux. Le</span>
-          <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}</span>
-          <span>ème est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
-          <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}</span>
-          <span>ème qui a le plus d'annonces illégales.</span>
+          <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}%&nbsp;</span>
+          <span>sont illégaux. Pour les annonces d'une surface inférieur à</span>
+          <span class="yellow">&nbsp;{{welcomeData.pivotSurface}}m²</span>
+          <span>, il y a</span>
+          <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
+          <span>d'annonces illégales. Le</span>
+          <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}ème&nbsp;</span>
+          <span>est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
+          <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}ème&nbsp;</span>
+          <span>qui a le plus d'annonces illégales.</span>
         </div>
       </Section>
       <Section class="stats-section">
