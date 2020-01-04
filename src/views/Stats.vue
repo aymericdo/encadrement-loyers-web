@@ -1,58 +1,61 @@
 <template>
   <div id="stats">
-    <VueRecaptcha
-      v-if="status !== 'ok' && status !== 'submitting'"
-      ref="recaptcha"
-      @verify="onCaptchaVerified"
-      @expired="onCaptchaExpired"
-      sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
-    />
-    <div class="center-wrapper" v-if="status === 'ok' || status === 'submitting'">
-      <Spinner class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
-      <Section v-if="welcomeData">
-        <div class="welcome">
-          <span>Sur les</span>
-          <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
-          <span>cas étudiés,</span>
-          <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}%&nbsp;</span>
-          <span>sont illégaux. Pour les annonces d'une surface inférieure à</span>
-          <span class="yellow">&nbsp;{{welcomeData.pivotSurface}}m²</span>
-          <span>, il y a</span>
-          <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
-          <span>d'annonces illégales. Le</span>
-          <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}ème&nbsp;</span>
-          <span>est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
-          <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}ème&nbsp;</span>
-          <span>qui a le plus d'annonces illégales.</span>
-        </div>
-      </Section>
-      <Section class="stats-section">
-        <SectionTitle v-if="isMapLoaded" class="title">Carte</SectionTitle>
-        <div v-if="status === 'ok'" class="container" ref="mapContainer">
-          <Spinner v-if="!isMapLoaded" class="spinner" />
-          <div v-if="isMapLoaded" id="map"></div>
-        </div>
-      </Section>
-      <Section class="stats-section">
-        <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title">Est légal par surface</SectionTitle>
-        <div v-if="status === 'ok'" class="container" ref="legalContainer">
-          <Spinner v-if="!isLegalPerSurfaceLoaded" class="spinner" />
-          <div v-if="isLegalPerSurfaceLoaded" id="is-legal-per-surface"></div>
-        </div>
-      </Section>
-      <Section class="stats-section">
-        <SectionTitle v-if="isPriceDifferenceLoaded" class="title">Différence de prix</SectionTitle>
-        <div v-if="status === 'ok'" class="container" ref="diffContainer">
-          <Spinner v-if=" !isPriceDifferenceLoaded" class="spinner" />
-          <div v-if="isPriceDifferenceLoaded" id="price-diff"></div>
-        </div>
-      </Section>
-    </div>
-    <router-link to="/">
+    <transition name="slide-fade" v-on:leave="leave">
+      <div v-if="isMounted" class="center-wrapper">
+        <VueRecaptcha
+          class="recaptcha"
+          v-if="status !== 'ok' && status !== 'submitting'"
+          ref="recaptcha"
+          @verify="onCaptchaVerified"
+          @expired="onCaptchaExpired"
+          sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
+        />
+        <Spinner class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
+        <Section v-if="welcomeData">
+          <div class="welcome">
+            <span>Sur les</span>
+            <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
+            <span>cas étudiés,</span>
+            <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}%&nbsp;</span>
+            <span>sont illégaux. Pour les annonces d'une surface inférieure à</span>
+            <span class="yellow">&nbsp;{{welcomeData.pivotSurface}}m²</span>
+            <span>, il y a</span>
+            <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
+            <span>d'annonces illégales. Le</span>
+            <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}ème&nbsp;</span>
+            <span>est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
+            <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}ème&nbsp;</span>
+            <span>qui a le plus d'annonces illégales.</span>
+          </div>
+        </Section>
+        <Section class="stats-section">
+          <SectionTitle v-if="isMapLoaded" class="title">Carte</SectionTitle>
+          <div v-if="status === 'ok'" class="container" ref="mapContainer">
+            <Spinner v-if="!isMapLoaded" class="spinner" />
+            <div v-if="isMapLoaded" id="map"></div>
+          </div>
+        </Section>
+        <Section class="stats-section">
+          <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title">Est légal par surface</SectionTitle>
+          <div v-if="status === 'ok'" class="container" ref="legalContainer">
+            <Spinner v-if="!isLegalPerSurfaceLoaded" class="spinner" />
+            <div v-if="isLegalPerSurfaceLoaded" id="is-legal-per-surface"></div>
+          </div>
+        </Section>
+        <Section class="stats-section">
+          <SectionTitle v-if="isPriceDifferenceLoaded" class="title">Différence de prix</SectionTitle>
+          <div v-if="status === 'ok'" class="container" ref="diffContainer">
+            <Spinner v-if=" !isPriceDifferenceLoaded" class="spinner" />
+            <div v-if="isPriceDifferenceLoaded" id="price-diff"></div>
+          </div>
+        </Section>
+      </div>
+    </transition>
+    <div @click="unmount">
       <FixedButton>
         <StrokeIcon :width="'20px'" :height="'20px'" />
       </FixedButton>
-    </router-link>
+    </div>
   </div>
 </template>
 
@@ -75,9 +78,13 @@ export default {
     FixedButton,
     Section
   },
+  mounted: function() {
+    this.isMounted = true;
+  },
   data() {
     return {
       isMapLoaded: false,
+      isMounted: false,
       isLegalPerSurfaceLoaded: false,
       isPriceDifferenceLoaded: false,
       status: "",
@@ -179,6 +186,14 @@ export default {
     onCaptchaExpired: function() {
       this.status = "";
       this.$refs.recaptcha.reset();
+    },
+    leave: function() {
+      setTimeout(() => {
+        this.$router.push({ path: "/" });
+      }, 400);
+    },
+    unmount: function() {
+      this.isMounted = false;
     }
   }
 };
@@ -210,6 +225,23 @@ export default {
   overflow-y: auto;
   padding: 0 24px;
   position: relative;
+
+  & > .recaptcha {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all ease 400ms;
 }
 
 #map,

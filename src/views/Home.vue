@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <router-view />
-    <div class="center-wrapper" v-bind:class="{ inactive: $route.name !== 'home' }">
+    <div class="center-wrapper inactivable" v-bind:class="{ inactive: $route.name !== 'home' }">
       <div>
         <Hero />
         <SectionWhy />
@@ -13,7 +13,7 @@
       </div>
     </div>
     <router-link to="/stats">
-      <FixedButton v-bind:class="{ inactive: $route.name !== 'home' }">
+      <FixedButton class="inactivable" v-bind:class="{ inactive: $route.name !== 'home' }">
         <GraphIcon :width="'26px'" :height="'26px'" />
       </FixedButton>
     </router-link>
@@ -80,8 +80,12 @@ export default {
   max-width: 100%;
 }
 
-.inactive {
-  filter: blur(4px);
-  pointer-events: none;
+.inactivable {
+  transition: filter ease 400ms;
+
+  &.inactive {
+    filter: blur(4px);
+    pointer-events: none;
+  }
 }
 </style>
