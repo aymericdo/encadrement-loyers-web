@@ -59,12 +59,15 @@ export default {
   .content {
     position: relative;
     width: 500px;
+    height: 500px;
     max-width: 90%;
     min-width: 300px;
+    min-height: 300px;
   }
 
   video {
     width: 100%;
+    height: 100%;
     outline: none;
   }
 }
