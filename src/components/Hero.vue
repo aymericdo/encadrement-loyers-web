@@ -1,7 +1,7 @@
 <template>
-  <div itemscope itemtype="http://schema.org/Thing" class="hero-header">
+  <div class="hero-header">
     <div class="hero-heading">
-      <h1 itemprop="title">
+      <h1>
         <div>
           <router-link to="video" class="yellow-text">Encadrement</router-link>
         </div>est une extension pour vous aider dans votre recherche de location à
@@ -10,9 +10,7 @@
           <span class="red-text">s.</span>
         </div>
       </h1>
-      <h2
-        itemprop="description"
-      >Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous saurez.</h2>
+      <h2>Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous saurez.</h2>
     </div>
     <ButtonGroup />
   </div>
