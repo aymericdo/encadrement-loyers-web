@@ -22,9 +22,13 @@
             <span>, il y a</span>
             <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
             <span>d'annonces illégales. Le</span>
-            <span class="yellow">&nbsp;{{welcomeData.bestPostalCode}}ème&nbsp;</span>
+            <span
+              class="yellow"
+            >&nbsp;{{welcomeData.bestPostalCode}}{{welcomeData.bestPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
             <span>est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
-            <span class="yellow">&nbsp;{{welcomeData.worstPostalCode}}ème&nbsp;</span>
+            <span
+              class="yellow"
+            >&nbsp;{{welcomeData.worstPostalCode}}{{welcomeData.worstPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
             <span>qui a le plus d'annonces illégales.</span>
           </div>
         </Section>
