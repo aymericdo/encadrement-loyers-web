@@ -5,6 +5,19 @@
       <div class="article-list">
         <blockquote class="twitter-tweet">
           <p lang="fr" dir="ltr">
+            Savoir directement si l&#39;annonce d&#39;un logement est illégale : c&#39;est possible avec l’application «l’Encadrement». Elle permet d’afficher directement sur les sites de location, à côté du montant du loyer, le prix auquel il devrait légalement être loué &gt;
+            <a
+              href="https://t.co/WQCOajpV2J"
+            >https://t.co/WQCOajpV2J</a>
+            <a href="https://t.co/MrdQrg7sEp">pic.twitter.com/MrdQrg7sEp</a>
+          </p>&mdash; Le Parisien (@le_Parisien)
+          <a
+            href="https://twitter.com/le_Parisien/status/1224630136764538880?ref_src=twsrc%5Etfw"
+          >February 4, 2020</a>
+        </blockquote>
+
+        <blockquote class="twitter-tweet">
+          <p lang="fr" dir="ltr">
             Cette application vérifie si votre loyer respecte bien l’encadrement
             <a
               href="https://twitter.com/hashtag/Eco?src=hash&amp;ref_src=twsrc%5Etfw"
