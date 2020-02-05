@@ -48,12 +48,6 @@ export default {
     return {
       isFirstVisitDone: false
     };
-  },
-  mounted() {
-    if (!localStorage.isFirstVisitDone) {
-      this.$router.push({ path: "video" });
-      localStorage.isFirstVisitDone = true;
-    }
   }
 };
 </script>

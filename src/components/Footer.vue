@@ -28,6 +28,7 @@
       <span class="buy-us-coffee">
         <a href="https://buymeacoff.ee/DnzzL" target="_blank">☕️ Buy us a coffee</a>
       </span>
+      * Marques déposées appartenant au groupe SeLoger
     </p>
   </Section>
 </template>
