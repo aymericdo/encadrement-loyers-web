@@ -27,7 +27,12 @@
       <br class="footer-br" />
       <span class="buy-us-coffee">
         <a href="https://buymeacoff.ee/DnzzL" target="_blank">☕️ Buy us a coffee</a>
-      </span>
+      </span>&nbsp;
+    </p>
+    <p>Aucune donnée n'est collectée par l'extension, hormis celle nécessaire au calcul et à la réalisation de quelques statistiques.</p>
+    <p>
+      Aucune donnée utilisateur n'est collectée.&nbsp;
+      <router-link to="legal">Mentions légales</router-link>
     </p>
   </Section>
 </template>

@@ -37,11 +37,9 @@ export default {
       items: [
         { website: "immobilier.lefigaro.fr" },
         { website: "leboncoin.fr" },
-        { website: "seloger.com" },
         { website: "pap.fr" },
         { website: "orpi.com" },
-        { website: "loueragile.fr" },
-        { website: "logic-immo.com" }
+        { website: "loueragile.fr" }
       ]
     };
   },
@@ -98,20 +96,13 @@ export default {
   background-image: url("../assets/images/leboncoin.png");
 }
 .hooper li:nth-child(3) {
-  background-image: url("../assets/images/seloger.png");
-}
-.hooper li:nth-child(4) {
   background-image: url("../assets/images/pap.png");
 }
-.hooper li:nth-child(5) {
+.hooper li:nth-child(4) {
   background-image: url("../assets/images/orpi.png");
 }
-.hooper li:nth-child(6) {
+.hooper li:nth-child(5) {
   background-image: url("../assets/images/loueragile.png");
-}
-.hooper li:nth-child(7) {
-  background-position: center;
-  background-image: url("../assets/images/logicimmo.png");
 }
 .button-group {
   display: flex;

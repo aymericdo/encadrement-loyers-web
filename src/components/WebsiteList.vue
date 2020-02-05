@@ -24,17 +24,6 @@
     </li>
     <li class="website-item">
       <a
-        href="https://www.seloger.com/list.htm?projects=1,3&types=1&places=[{cp:75}]&enterprise=0&qsVersion=1.0"
-        target="_blank"
-      >
-        <div class="item-content">
-          <img src="@/assets/images/logo-seloger.png" alt="logo-seloger" />
-          <p>SeLoger</p>
-        </div>
-      </a>
-    </li>
-    <li class="website-item">
-      <a
         href="https://www.loueragile.fr/alert?token=9c61de8a9f85f36f7f54338bf2ef52c1"
         target="_blank"
       >
@@ -49,17 +38,6 @@
         <div class="item-content">
           <img src="@/assets/images/logo-pap.png" alt="logo-pap" />
           <p>PAP</p>
-        </div>
-      </a>
-    </li>
-    <li class="website-item">
-      <a
-        href="https://www.logic-immo.com/location-immobilier-paris-75,100_1/options/groupprptypesids=1,2,6,7,12"
-        target="_blank"
-      >
-        <div class="item-content">
-          <img src="@/assets/images/logo-logicimmo.png" alt="logo-logicimmo" />
-          <p>Logic Immo</p>
         </div>
       </a>
     </li>
@@ -85,6 +63,29 @@
         </div>
       </a>
     </li>
+    <li class="website-item">
+      <a
+        href="https://www.seloger.com/list.htm?projects=1,3&types=1&places=[{cp:75}]&enterprise=0&qsVersion=1.0"
+        target="_blank"
+      >
+        <div class="item-content">
+          <p>SeLoger*</p>
+        </div>
+      </a>
+    </li>
+    <li class="website-item">
+      <a
+        href="https://www.logic-immo.com/location-immobilier-paris-75,100_1/options/groupprptypesids=1,2,6,7,12"
+        target="_blank"
+      >
+        <div class="item-content">
+          <p>LogicImmo*</p>
+        </div>
+      </a>
+    </li>
+    <p>
+      <span class="asterisque">* Marques déposées appartenant au groupe SeLoger</span>
+    </p>
   </ul>
 </template>
 
@@ -125,6 +126,10 @@ export default {
 
 .website-list li:last-child {
   margin-bottom: 0;
+}
+
+.website-list .asterisque {
+  font-size: 12px;
 }
 
 li .item-content {
