@@ -12,6 +12,13 @@ const routes = [
     component: Home,
     children: [
       {
+        name: 'legal',
+        path: 'legal',
+        // route level code-splitting	
+        // this generates a separate chunk (stats.[hash].js) for this route	
+        // which is lazy-loaded when the route is visited.	
+        component: () => import(/* webpackChunkName: "video" */ '../views/Legal.vue')
+      }, {
         path: 'stats',
         name: 'stats',
         component: () => import(/* webpackChunkName: "stats" */ '../views/Stats.vue')
