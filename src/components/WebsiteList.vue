@@ -83,6 +83,9 @@
         </div>
       </a>
     </li>
+    <p>
+      <span class="asterisque">* Marques déposées appartenant au groupe SeLoger</span>
+    </p>
   </ul>
 </template>
 
@@ -123,6 +126,10 @@ export default {
 
 .website-list li:last-child {
   margin-bottom: 0;
+}
+
+.website-list .asterisque {
+  font-size: 12px;
 }
 
 li .item-content {
