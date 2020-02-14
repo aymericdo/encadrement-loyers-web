@@ -179,6 +179,7 @@ export default {
 
 .stats-section {
   flex-direction: column;
+  margin-top: 0;
 
   &:last-child {
     margin-bottom: 20px;
