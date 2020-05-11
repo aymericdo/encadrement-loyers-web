@@ -13,22 +13,6 @@
         <TwitterIcon :width="'25px'" :height="'25px'" />
       </a>
     </p>
-    <p>
-      Brought to you by
-      <span>
-        <a href="https://www.linkedin.com/in/aymeric-dominique/" target="_blank">Aymeric Dominique</a>
-      </span>,
-      <span>
-        <a href="https://www.linkedin.com/in/thomas-d-legrand/" target="_blank">Thomas Legrand</a>
-      </span> and
-      <span>
-        <a href="https://www.linkedin.com/in/lucienlandanger/" target="_blank">Lucien Landanger</a>
-      </span>
-      <br class="footer-br" />
-      <span class="buy-us-coffee">
-        <a href="https://buymeacoff.ee/DnzzL" target="_blank">☕️ Buy us a coffee</a>
-      </span>&nbsp;
-    </p>
     <p>Aucune donnée n'est collectée par l'extension, hormis celle nécessaire au calcul et à la réalisation de quelques statistiques.</p>
     <p>
       Aucune donnée utilisateur n'est collectée.&nbsp;
@@ -73,15 +57,5 @@ p.social {
 .twitter {
   display: flex;
   margin-left: 8px;
-}
-
-@media screen and (max-width: $mobileSize) {
-  .footer-br {
-    display: none;
-  }
-
-  .buy-us-coffee {
-    margin-left: 8px;
-  }
 }
 </style>
