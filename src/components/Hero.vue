@@ -3,7 +3,7 @@
     <div class="hero-heading">
       <h1>
         <div>
-          <div class="yellow-text">Encadrement</div>
+          <router-link to="video" class="yellow-text">Encadrement</router-link>
         </div>est une extension pour vous aider dans votre recherche de location à
         <div class="paris-word">
           <span class="blue-text">Pa</span>ri
