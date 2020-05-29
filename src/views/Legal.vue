@@ -16,7 +16,7 @@
           >https://encadrement-loyers.fr/</a> l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi :
         </p>
         <p>
-          <strong>Propriétaire</strong> : Aymeric Dominique – – 133 rue du faubourg du temple, 75010, Paris, France
+          <strong>Propriétaire</strong> : Aymeric Dominique – – 166 bd Voltaire, 75011, Paris, France
           <br />
           <strong>Créateur</strong> :
           <a href="https://encadrement-loyers.fr/">Aymeric Dominique</a>
