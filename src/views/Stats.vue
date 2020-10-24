@@ -17,11 +17,11 @@
             <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
             <span>cas étudiés,</span>
             <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}%&nbsp;</span>
-            <span>sont "à vérifier". Pour les annonces d'une surface inférieure à</span>
+            <span>sont potentiellement illégales. Pour les annonces d'une surface inférieure à</span>
             <span class="yellow">&nbsp;{{welcomeData.pivotSurface}}m²</span>
             <span>, il y a</span>
             <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
-            <span>d'annonces "à vérifier". Le</span>
+            <span>d'annonces potentiellement illégales. Le</span>
             <span
               class="yellow"
             >&nbsp;{{welcomeData.bestPostalCode}}{{welcomeData.bestPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
@@ -29,7 +29,7 @@
             <span
               class="yellow"
             >&nbsp;{{welcomeData.worstPostalCode}}{{welcomeData.worstPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
-            <span>qui a le plus d'annonces "à vérifier".</span>
+            <span>qui a le plus d'annonces potentiellement illégales.</span>
           </div>
         </Section>
         <Section class="stats-section">
