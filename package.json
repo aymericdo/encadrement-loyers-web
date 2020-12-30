@@ -12,7 +12,7 @@
     "core-js": "^3.4.8",
     "hooper": "^0.3.4",
     "serialize-javascript": "^2.1.2",
-    "vega": "^5.9.0",
+    "vega": "^5.17.3",
     "vega-embed": "^6.2.1",
     "vega-lite": "^4.0.0",
     "vue": "^2.6.10",
