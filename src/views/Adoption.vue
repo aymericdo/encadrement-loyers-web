@@ -47,7 +47,8 @@ export default {
       isMounted: false,
       isLoading: true,
       sucessfulServerResponse: "",
-      serverError: ""
+      serverError: "",
+      status: "",
     };
   },
   methods: {
