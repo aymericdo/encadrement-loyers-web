@@ -39,7 +39,8 @@ export default {
         { website: "leboncoin.fr" },
         { website: "pap.fr" },
         { website: "orpi.com" },
-        { website: "loueragile.fr" }
+        { website: "loueragile.fr" },
+        { website: "seloger.com" },
       ]
     };
   },
@@ -103,6 +104,9 @@ export default {
 }
 .hooper li:nth-child(5) {
   background-image: url("../assets/images/loueragile.png");
+}
+.hooper li:nth-child(6) {
+  background-image: url("../assets/images/seloger.png");	
 }
 .button-group {
   display: flex;

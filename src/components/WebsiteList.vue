@@ -28,8 +28,19 @@
         target="_blank"
       >
         <div class="item-content">
-          <img src="@/assets/images/logo-loueragile.png" alt="logo-loueragile" />
-          <p>Louer Agile</p>
+          <img src="@/assets/images/logo-jinka.png" alt="logo-jinka" />
+          <p>Jinka</p>
+        </div>
+      </a>
+    </li>
+    <li class="website-item">
+      <a
+        href="https://www.seloger.com/list.htm?projects=1&types=1&places=[{%22subDivisions%22:[%2275%22]}]&price=NaN/1400&enterprise=0&qsVersion=1.0"
+        target="_blank"
+      >
+        <div class="item-content">
+          <img src="@/assets/images/logo-seloger.png" alt="logo-seloger" />
+          <p>SeLoger</p>
         </div>
       </a>
     </li>
@@ -65,27 +76,15 @@
     </li>
     <li class="website-item">
       <a
-        href="https://www.seloger.com/list.htm?projects=1,3&types=1&places=[{cp:75}]&enterprise=0&qsVersion=1.0"
-        target="_blank"
-      >
-        <div class="item-content">
-          <p>SeLoger*</p>
-        </div>
-      </a>
-    </li>
-    <li class="website-item">
-      <a
         href="https://www.logic-immo.com/location-immobilier-paris-75,100_1/options/groupprptypesids=1,2,6,7,12"
         target="_blank"
       >
         <div class="item-content">
-          <p>LogicImmo*</p>
+          <img src="@/assets/images/logo-logicimmo.png" alt="logo-logicimmo" />
+          <p>LogicImmo</p>
         </div>
       </a>
     </li>
-    <p>
-      <span class="asterisque">* Marques déposées appartenant au groupe SeLoger</span>
-    </p>
   </ul>
 </template>
 
