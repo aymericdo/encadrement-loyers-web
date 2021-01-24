@@ -21,10 +21,10 @@
           <strong>Créateur</strong> :
           <a href="https://encadrement-loyers.fr/">Aymeric Dominique</a>
           <br />
-          <strong>Responsable publication</strong> : Aymeric Dominique – aymeric.dominique@gmail.com
+          <strong>Responsable publication</strong> : Aymeric Dominique – aymeric@encadrement-loyers.fr
           <br />Le responsable publication est une personne physique ou une personne morale.
           <br />
-          <strong>Webmaster</strong> : Aymeric Dominique – aymeric.dominique@gmail.com
+          <strong>Webmaster</strong> : Aymeric Dominique – aymeric@encadrement-loyers.fr
           <br />
           <strong>Hébergeur</strong> : Netlify – San Francisco, US
           <br />Crédits : Thomas Legrand

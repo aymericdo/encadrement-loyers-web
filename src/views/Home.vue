@@ -10,6 +10,7 @@
         <SectionDisclaimer />
         <SectionBlog />
         <SectionUs />
+        <SectionThanks />
         <Footer />
       </div>
     </div>
@@ -27,6 +28,7 @@ import SectionWhy from "@/components/SectionWhy.vue";
 import SectionWhere from "@/components/SectionWhere.vue";
 import SectionHow from "@/components/SectionHow.vue";
 import SectionDisclaimer from "@/components/SectionDisclaimer.vue";
+import SectionThanks from "@/components/SectionThanks.vue";
 import SectionBlog from "@/components/SectionBlog.vue";
 import SectionUs from "@/components/SectionUs.vue";
 import Footer from "@/components/Footer.vue";
@@ -43,6 +45,7 @@ export default {
     SectionDisclaimer,
     SectionBlog,
     SectionHow,
+    SectionThanks,
     SectionWhere,
     SectionUs,
     SectionWhy
