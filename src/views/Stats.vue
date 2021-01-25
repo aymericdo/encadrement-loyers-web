@@ -53,13 +53,13 @@
             <div v-if="isPriceDifferenceLoaded" id="price-diff"></div>
           </div>
         </Section>
-        <Section class="stats-section">
+        <!-- <Section class="stats-section">
           <SectionTitle v-if="isPriceVariationLoaded" class="title">Variation des prix</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
             <Spinner v-if=" !isPriceVariationLoaded" class="spinner" />
             <div v-if="isPriceVariationLoaded" id="price-variation"></div>
           </div>
-        </Section>
+        </Section> -->
       </Page2Wrapper>
     </transition>
     <div @click="unmount">

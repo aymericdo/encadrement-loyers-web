@@ -10,7 +10,7 @@
         <StrokeIcon :width="'20px'" :height="'20px'" />	
       </FixedButton>	
     </router-link>	
-  </div>	
+  </div>
 </template>	
 
 <script>	

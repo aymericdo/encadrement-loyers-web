@@ -29,8 +29,11 @@ const routes = [
         path: 'stats',
         name: 'stats',
         component: () => import(/* webpackChunkName: "stats" */ '../views/Stats.vue')
-      },
-      {
+      }, {
+        path: 'learn-more',
+        name: 'learn-more',
+        component: () => import(/* webpackChunkName: "stats" */ '../views/LearnMore.vue')
+      }, {
         path: 'adoption',
         name: 'adoption',
         component: () => import(/* webpackChunkName: "stats" */ '../views/Adoption.vue')

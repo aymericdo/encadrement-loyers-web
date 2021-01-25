@@ -1,6 +1,6 @@
 <template>
   <Section class="section-why">
-    <SectionTitle>Pourquoi?</SectionTitle>
+    <SectionTitle>Pourquoi ?</SectionTitle>
     <SectionRightPart>
       <p>Ceci a pour but d'informer, et d'avertir les futurs locataires que certains loyers parisiens ne respectent pas l'encadrement des loyers, en vigueur depuis le 01/07/2019.</p>
     </SectionRightPart>

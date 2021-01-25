@@ -1,6 +1,6 @@
 <template>
   <Section class="section-wherey">
-    <SectionTitle>Où?</SectionTitle>
+    <SectionTitle>Où ?</SectionTitle>
     <SectionRightPart>
       <WebsiteList />
     </SectionRightPart>

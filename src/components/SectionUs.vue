@@ -1,6 +1,6 @@
 <template>
   <Section class="section-us">
-    <SectionTitle>Qui sommes nous ?</SectionTitle>
+    <SectionTitle>Qui sommes nous  ?</SectionTitle>
     <SectionRightPart>
       <div class="nosgrossesteutés">
         <div>
