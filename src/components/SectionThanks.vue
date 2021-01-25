@@ -1,7 +1,7 @@
 <template>
   <Section class="section-thanks">
-    <SectionTitle>Remerciements</SectionTitle>
-    <SectionRightPart>
+    <div class="col">
+      <SectionTitle class="title">Remerciements</SectionTitle>
       <div class="data-provider">
         <div>
             <a href="https://opendata.paris.fr/pages/home/" target="_blank">
@@ -16,20 +16,18 @@
             <span>Open Data Apur</span>
         </div>
       </div>
-    </SectionRightPart>
+    </div>
   </Section>
 </template>
 
 <script>
 import Section from "@/shared/Section";
 import SectionTitle from "@/shared/SectionTitle";
-import SectionRightPart from "@/shared/SectionRightPart";
 
 export default {
   name: "SectionThanks",
   components: {
     Section,
-    SectionRightPart,
     SectionTitle
   }
 };
@@ -37,6 +35,16 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/variables.scss";
+.title {
+  max-width: inherit;
+}
+
+.col {
+  max-width: $mobileSize;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
 .data-provider {
     display: flex;
@@ -52,6 +60,12 @@ export default {
 }
 
 .data-provider img {
-    width: 180px;
+    width: 250px;
+}
+
+.data-provider {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
-      <div v-if="isMounted" class="center-wrapper">
+      <Page2Wrapper v-if="isMounted">
         <VueRecaptcha
           class="recaptcha"
           v-if="status !== 'ok' && status !== 'submitting'"
@@ -53,7 +53,14 @@
             <div v-if="isPriceDifferenceLoaded" id="price-diff"></div>
           </div>
         </Section>
-      </div>
+        <Section class="stats-section">
+          <SectionTitle v-if="isPriceVariationLoaded" class="title">Variation des prix</SectionTitle>
+          <div v-if="status === 'ok'" class="container" ref="diffContainer">
+            <Spinner v-if=" !isPriceVariationLoaded" class="spinner" />
+            <div v-if="isPriceVariationLoaded" id="price-variation"></div>
+          </div>
+        </Section>
+      </Page2Wrapper>
     </transition>
     <div @click="unmount">
       <FixedButton>
@@ -70,6 +77,7 @@ import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
 
 export default {
@@ -78,6 +86,7 @@ export default {
     VueRecaptcha,
     Spinner,
     SectionTitle,
+    Page2Wrapper,
     StrokeIcon,
     FixedButton,
     Section
@@ -91,6 +100,7 @@ export default {
       isMounted: false,
       isLegalPerSurfaceLoaded: false,
       isPriceDifferenceLoaded: false,
+      isPriceVariationLoaded: false,
       status: "",
       sucessfulServerResponse: "",
       serverError: "",
@@ -118,6 +128,7 @@ export default {
           this.onFetchMap(recaptchaToken);
           this.onFetchPriceDifference(recaptchaToken);
           this.onFetchIsLegalPerSurface(recaptchaToken);
+          this.onFetchPriceVariation(recaptchaToken);
         })
         .catch(err => {
           this.serverError = this.getErrorMessage(err);
@@ -151,6 +162,26 @@ export default {
           this.status = "ok";
           this.isPriceDifferenceLoaded = true;
           vegaEmbed("#price-diff", spec, {
+            tooltip: {
+              theme: "dark"
+            },
+            actions: false
+          });
+        })
+        .catch(err => {
+          this.serverError = this.getErrorMessage(err);
+          this.status = "error";
+        });
+    },
+    onFetchPriceVariation: function(recaptchaToken) {
+      fetch(
+        `${this.$domain}stats/price-variation?recaptchaToken=${recaptchaToken}`
+      )
+        .then(res => res.json())
+        .then(spec => {
+          this.status = "ok";
+          this.isPriceVariationLoaded = true;
+          vegaEmbed("#price-variation", spec, {
             tooltip: {
               theme: "dark"
             },
@@ -217,24 +248,10 @@ export default {
   z-index: 2;
 }
 
-.center-wrapper {
-  align-items: center;
-  background: rgba($deepgrey, 0.9);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  height: 80%;
-  width: 80%;
-  max-width: 90%;
-  overflow-y: auto;
-  padding: 0 24px;
-  position: relative;
-
-  & > .recaptcha {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-  }
+.recaptcha {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .slide-fade-enter,
@@ -250,6 +267,7 @@ export default {
 
 #map,
 #price-diff,
+#price-variation,
 #is-legal-per-surface {
   max-width: 100%;
   max-height: 100%;

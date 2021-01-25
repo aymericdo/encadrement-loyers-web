@@ -1,12 +1,18 @@
 <template>
-  <button>
+  <button class="-blink" v-bind:class="{ '-bounce': bounce }">
     <slot />
   </button>
 </template>
 
 <script>
 export default {
-  name: "FixedButton"
+  name: "FixedButton",
+  props: {
+    bounce: {
+      type: [Boolean],
+      default: false,
+    },
+  },
 };
 </script>
 
@@ -37,6 +43,31 @@ button {
     display: flex;
     align-self: center;
   }
+}
+
+button.-blink {
+  animation: blink 1s linear infinite;
+}
+
+button.-bounce {
+  animation: blink 1s linear infinite, bounce-5 20s ease infinite;
+  animation-delay: 0s, 2s;
+}
+
+@keyframes bounce-5 {
+  0%   { transform: scale(1,1)    translateY(0); }
+  1%  { transform: scale(1.1,.9) translateY(0); }
+  3%  { transform: scale(.9,1.1) translateY(-100px); }
+  5%  { transform: scale(1,1)    translateY(0); }
+  5.7%  { transform: scale(1,1)    translateY(-7px); }
+  6.4%  { transform: scale(1,1)    translateY(0); }
+  10% { transform: scale(1,1)    translateY(0); }
+}
+
+@keyframes blink {  
+  0% { background-color: $yellow; }
+  50% { background-color: $darkeryellow; }
+  100% { background-color: $yellow; }
 }
 
 #map {

@@ -1,7 +1,7 @@
 <template>
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
-      <div v-if="isMounted" class="center-wrapper">
+      <Page2Wrapper v-if="isMounted">
         <Spinner class="spinner" v-if="isLoading" />
         <Section class="stats-section">
           <SectionTitle v-if="isAdoptionLoaded" class="title">Adoption</SectionTitle>
@@ -10,7 +10,7 @@
             <div v-if="isAdoptionLoaded" id="adoption"></div>
           </div>
         </Section>
-      </div>
+      </Page2Wrapper>
     </transition>
     <div @click="unmount">
       <FixedButton>
@@ -26,6 +26,7 @@ import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
 
 export default {
@@ -35,6 +36,7 @@ export default {
     SectionTitle,
     StrokeIcon,
     FixedButton,
+    Page2Wrapper,
     Section
   },
   mounted: function() {
@@ -108,24 +110,10 @@ export default {
   z-index: 2;
 }
 
-.center-wrapper {
-  align-items: center;
-  background: rgba($deepgrey, 0.9);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  height: 80%;
-  width: 80%;
-  max-width: 90%;
-  overflow-y: auto;
-  padding: 0 24px;
-  position: relative;
-
-  & > .recaptcha {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-  }
+.recaptcha {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .slide-fade-enter,

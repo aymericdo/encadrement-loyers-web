@@ -1,7 +1,7 @@
 <template>
   <Section class="section-blog">
     <div class="col">
-      <SectionTitle class="title">On parle de nous!</SectionTitle>
+      <SectionTitle class="title">On parle de nous</SectionTitle>
       <div class="article-list">
         <blockquote class="twitter-tweet">
           <p lang="fr" dir="ltr">

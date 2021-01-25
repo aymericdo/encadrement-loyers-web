@@ -1,7 +1,7 @@
 <template>
   <div id="legal">
     <transition name="slide-fade" v-on:leave="leave">
-      <div v-if="isMounted" class="center-wrapper">
+      <Page2Wrapper v-if="isMounted">
         <h1>
           Aucune donnée n'est collectée par l'extension, hormis celle nécessaire au calcul et à la réalisation de quelques
           <router-link to="/stats">statistiques</router-link>.
@@ -152,7 +152,7 @@
         <h3>11. Lexique.</h3>
         <p>Utilisateur : Internaute se connectant, utilisant le site susnommé.</p>
         <p>Informations personnelles : « les informations qui permettent, sous quelque forme que ce soit, directement ou non, l'identification des personnes physiques auxquelles elles s'appliquent » (article 4 de la loi n° 78-17 du 6 janvier 1978).</p>
-      </div>
+      </Page2Wrapper>
     </transition>
     <div @click="unmount">
       <FixedButton>
@@ -165,11 +165,13 @@
 <script>
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 export default {
   name: "Legal",
   components: {
     FixedButton,
-    StrokeIcon
+    StrokeIcon,
+    Page2Wrapper,
   },
   mounted: function() {
     this.isMounted = true;
@@ -203,20 +205,6 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 2;
-
-  .center-wrapper {
-    align-items: center;
-    background: rgba($deepgrey, 0.9);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    height: 80%;
-    width: 80%;
-    max-width: 90%;
-    overflow-y: auto;
-    padding: 0 24px;
-    position: relative;
-  }
 
   .slide-fade-enter,
   .slide-fade-leave-to {
