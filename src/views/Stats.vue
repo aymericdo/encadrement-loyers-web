@@ -17,11 +17,11 @@
             <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
             <span>cas étudiés,</span>
             <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}%&nbsp;</span>
-            <span>sont potentiellement illégales. Pour les annonces d'une surface inférieure à</span>
+            <span>sont illégales. Pour les annonces d'une surface inférieure à</span>
             <span class="yellow">&nbsp;{{welcomeData.pivotSurface}}m²</span>
             <span>, il y a</span>
             <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
-            <span>d'annonces potentiellement illégales. Le</span>
+            <span>d'annonces illégales. Le</span>
             <span
               class="yellow"
             >&nbsp;{{welcomeData.bestPostalCode}}{{welcomeData.bestPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
@@ -29,7 +29,7 @@
             <span
               class="yellow"
             >&nbsp;{{welcomeData.worstPostalCode}}{{welcomeData.worstPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
-            <span>qui a le plus d'annonces potentiellement illégales.</span>
+            <span>qui a le plus d'annonces illégales.</span>
           </div>
         </Section>
         <Section class="stats-section">
@@ -53,13 +53,13 @@
             <div v-if="isPriceDifferenceLoaded" id="price-diff"></div>
           </div>
         </Section>
-        <!-- <Section class="stats-section">
+        <Section class="stats-section">
           <SectionTitle v-if="isPriceVariationLoaded" class="title">Variation des prix</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
             <Spinner v-if=" !isPriceVariationLoaded" class="spinner" />
             <div v-if="isPriceVariationLoaded" id="price-variation"></div>
           </div>
-        </Section> -->
+        </Section>
       </Page2Wrapper>
     </transition>
     <div @click="unmount">
@@ -125,18 +125,18 @@ export default {
         .then(res => {
           this.status = "ok";
           this.welcomeData = res;
-          this.onFetchMap(recaptchaToken);
-          this.onFetchPriceDifference(recaptchaToken);
-          this.onFetchIsLegalPerSurface(recaptchaToken);
-          this.onFetchPriceVariation(recaptchaToken);
+          this.onFetchMap();
+          this.onFetchPriceDifference();
+          this.onFetchIsLegalPerSurface();
+          this.onFetchPriceVariation();
         })
         .catch(err => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
-    onFetchMap: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/map?recaptchaToken=${recaptchaToken}`)
+    onFetchMap: function() {
+      fetch(`${this.$domain}stats/map`)
         .then(res => res.json())
         .then(spec => {
           this.status = "ok";
@@ -153,9 +153,9 @@ export default {
           this.status = "error";
         });
     },
-    onFetchPriceDifference: function(recaptchaToken) {
+    onFetchPriceDifference: function() {
       fetch(
-        `${this.$domain}stats/price-difference?recaptchaToken=${recaptchaToken}`
+        `${this.$domain}stats/price-difference`
       )
         .then(res => res.json())
         .then(spec => {
@@ -173,9 +173,9 @@ export default {
           this.status = "error";
         });
     },
-    onFetchPriceVariation: function(recaptchaToken) {
+    onFetchPriceVariation: function() {
       fetch(
-        `${this.$domain}stats/price-variation?recaptchaToken=${recaptchaToken}`
+        `${this.$domain}stats/price-variation`
       )
         .then(res => res.json())
         .then(spec => {
@@ -193,9 +193,9 @@ export default {
           this.status = "error";
         });
     },
-    onFetchIsLegalPerSurface: function(recaptchaToken) {
+    onFetchIsLegalPerSurface: function() {
       fetch(
-        `${this.$domain}stats/is-legal-per-surface?recaptchaToken=${recaptchaToken}`
+        `${this.$domain}stats/is-legal-per-surface`
       )
         .then(res => res.json())
         .then(spec => {
@@ -309,6 +309,7 @@ export default {
 
 .stats-section {
   flex-direction: column;
+  align-items: center;
 
   &:last-child {
     margin-bottom: 20px;

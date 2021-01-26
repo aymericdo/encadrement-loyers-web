@@ -37,6 +37,10 @@ const routes = [
         path: 'adoption',
         name: 'adoption',
         component: () => import(/* webpackChunkName: "stats" */ '../views/Adoption.vue')
+      }, {
+        path: 'stats-abbe-pierre',
+        name: 'tats-abbe-pierre',
+        component: () => import(/* webpackChunkName: "stats" */ '../views/StatsAbbePierre.vue')
       },
     ]
   },

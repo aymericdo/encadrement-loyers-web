@@ -12,10 +12,17 @@
         />
         <Spinner class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
         <Section class="stats-section">
-          <SectionTitle v-if="isAdoptionLoaded" class="title">Adoption</SectionTitle>
-          <div v-if="status === 'ok'" class="container" ref="adoptionContainer">
-            <Spinner v-if="!isAdoptionLoaded" class="spinner" />
-            <div v-if="isAdoptionLoaded" id="adoption"></div>
+          <SectionTitle v-if="isLegalVariationLoaded" class="title">Pourcentage d'annonces illégales</SectionTitle>
+          <div v-if="status === 'ok'" class="container" ref="mapContainer">
+            <Spinner v-if="!isLegalVariationLoaded" class="spinner" />
+            <div v-if="isLegalVariationLoaded" id="isLegalVariation"></div>
+          </div>
+        </Section>
+        <Section class="stats-section">
+          <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
+          <div v-if="status === 'ok'" class="container" ref="diffContainer">
+            <Spinner v-if=" !isPriceVariationLoaded" class="spinner" />
+            <div v-if="isPriceVariationLoaded" id="price-variation"></div>
           </div>
         </Section>
       </Page2Wrapper>
@@ -39,13 +46,13 @@ import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
 
 export default {
-  name: "Adoption",
+  name: "StatsAbbePierre",
   components: {
     Spinner,
-    VueRecaptcha,
     SectionTitle,
     StrokeIcon,
     FixedButton,
+    VueRecaptcha,
     Page2Wrapper,
     Section
   },
@@ -54,7 +61,8 @@ export default {
   },
   data() {
     return {
-      isAdoptionLoaded: false,
+      isLegalVariationLoaded: false,
+      isPriceVariationLoaded: false,
       isMounted: false,
       sucessfulServerResponse: "",
       serverError: "",
@@ -73,13 +81,34 @@ export default {
       }
       return responseBody.message || JSON.stringify(responseBody);
     },
-    onFetchAdoption: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/adoption?recaptchaToken=${recaptchaToken}`)
+    onFetchIsLegalVariation: function(recaptchaToken) {
+      fetch(`${this.$domain}stats/is-legal-variation?recaptchaToken=${recaptchaToken}`)
         .then(res => res.json())
         .then(spec => {
           this.status = "ok";
-          this.isAdoptionLoaded = true;
-          vegaEmbed("#adoption", spec, {
+          this.isLegalVariationLoaded = true;
+          this.onFetchPriceVariation()
+          vegaEmbed("#isLegalVariation", spec, {
+            tooltip: {
+              theme: "dark"
+            },
+            actions: false
+          });
+        })
+        .catch(err => {
+          this.serverError = this.getErrorMessage(err);
+          this.status = "error";
+        });
+    },
+    onFetchPriceVariation: function(recaptchaToken) {
+      fetch(
+        `${this.$domain}stats/price-variation?recaptchaToken=${recaptchaToken}`
+      )
+        .then(res => res.json())
+        .then(spec => {
+          this.status = "ok";
+          this.isPriceVariationLoaded = true;
+          vegaEmbed("#price-variation", spec, {
             tooltip: {
               theme: "dark"
             },
@@ -94,7 +123,7 @@ export default {
     onCaptchaVerified: function(recaptchaToken) {
       this.status = "submitting";
       this.$refs.recaptcha.reset();
-      this.onFetchAdoption(recaptchaToken);
+      this.onFetchIsLegalVariation(recaptchaToken);
     },
     onCaptchaExpired: function() {
       this.status = "";
@@ -143,7 +172,7 @@ export default {
   transition: all ease 400ms;
 }
 
-#adoption {
+#isLegalVariation {
   max-width: 100%;
   max-height: 100%;
   overflow-y: hidden;
