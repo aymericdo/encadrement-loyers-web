@@ -36,28 +36,28 @@
           <SectionTitle v-if="isMapLoaded" class="title">Carte</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="mapContainer">
             <Spinner v-if="!isMapLoaded" class="spinner" />
-            <div v-if="isMapLoaded" id="map"></div>
+            <div v-if="isMapLoaded" id="map" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title">Est légal par surface</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="legalContainer">
             <Spinner v-if="!isLegalPerSurfaceLoaded" class="spinner" />
-            <div v-if="isLegalPerSurfaceLoaded" id="is-legal-per-surface"></div>
+            <div v-if="isLegalPerSurfaceLoaded" id="is-legal-per-surface" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isPriceDifferenceLoaded" class="title">Différence de prix</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
             <Spinner v-if=" !isPriceDifferenceLoaded" class="spinner" />
-            <div v-if="isPriceDifferenceLoaded" id="price-diff"></div>
+            <div v-if="isPriceDifferenceLoaded" id="price-diff" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isPriceVariationLoaded" class="title">Variation des prix</SectionTitle>
+          <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
             <Spinner v-if=" !isPriceVariationLoaded" class="spinner" />
-            <div v-if="isPriceVariationLoaded" id="price-variation"></div>
+            <div v-if="isPriceVariationLoaded" id="price-variation" class="graph"></div>
           </div>
         </Section>
       </Page2Wrapper>
@@ -265,10 +265,7 @@ export default {
   transition: all ease 400ms;
 }
 
-#map,
-#price-diff,
-#price-variation,
-#is-legal-per-surface {
+.graph {
   max-width: 100%;
   max-height: 100%;
   overflow-y: hidden;

@@ -15,14 +15,14 @@
           <SectionTitle v-if="isLegalVariationLoaded" class="title">Pourcentage d'annonces illégales</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="mapContainer">
             <Spinner v-if="!isLegalVariationLoaded" class="spinner" />
-            <div v-if="isLegalVariationLoaded" id="isLegalVariation"></div>
+            <div v-if="isLegalVariationLoaded" id="isLegalVariation" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
             <Spinner v-if=" !isPriceVariationLoaded" class="spinner" />
-            <div v-if="isPriceVariationLoaded" id="price-variation"></div>
+            <div v-if="isPriceVariationLoaded" id="priceVariation" class="graph"></div>
           </div>
         </Section>
       </Page2Wrapper>
@@ -108,7 +108,7 @@ export default {
         .then(spec => {
           this.status = "ok";
           this.isPriceVariationLoaded = true;
-          vegaEmbed("#price-variation", spec, {
+          vegaEmbed("#priceVariation", spec, {
             tooltip: {
               theme: "dark"
             },
@@ -172,7 +172,7 @@ export default {
   transition: all ease 400ms;
 }
 
-#isLegalVariation {
+.graph {
   max-width: 100%;
   max-height: 100%;
   overflow-y: hidden;
