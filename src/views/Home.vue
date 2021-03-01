@@ -15,7 +15,7 @@
       </div>
     </div>
     <router-link to="/stats">
-      <FixedButton class="inactivable" :bounce="$route.name === 'home'" v-bind:class="{ inactive: $route.name !== 'home' }">
+      <FixedButton :bounce="$route.name === 'home'" v-bind:class="{ inactive: $route.name !== 'home' }">
         <GraphIcon :width="'26px'" :height="'26px'" />
       </FixedButton>
     </router-link>

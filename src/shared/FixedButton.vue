@@ -35,7 +35,17 @@ button {
   z-index: 1;
   transition: background-color ease 0.3s;
 
+  &.-blink {
+    animation: blink 1s linear infinite;
+  }
+
+  &.-bounce {
+    animation: blink 1s linear infinite, bounce-5 20s ease infinite;
+    animation-delay: 0s, 2s;
+  }
+
   &:hover {
+    animation: none;
     background-color: $darkeryellow;
   }
 
@@ -43,15 +53,6 @@ button {
     display: flex;
     align-self: center;
   }
-}
-
-button.-blink {
-  animation: blink 1s linear infinite;
-}
-
-button.-bounce {
-  animation: blink 1s linear infinite, bounce-5 20s ease infinite;
-  animation-delay: 0s, 2s;
 }
 
 @keyframes bounce-5 {

@@ -180,7 +180,8 @@ export default {
 }
 
 /deep/ .title {
-  max-width: inherit;
+  max-width: 100%;
+  width: 700px;
 
   & > h3 {
     margin-top: 42px;
