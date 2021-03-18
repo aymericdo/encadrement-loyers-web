@@ -1,7 +1,7 @@
 <template>
   <div class="hero-header">
     <div class="hero-heading">
-      <vue-typed-js :strings="['<span>Pa</span>ri<span>s.</span>', 'Lille.']" :loop="true" :contentType="'html'">
+      <vue-typed-js :stringsElement="'words'" :strings="['<span class='+ 'blue-text' +'>Pa</span>ri<span class='+ 'red-text' +'>s.</span>', '<span class='+'lille-color'+'>Lil</span>l<span class='+'lille-color'+'>e.</span>']" :loop="true" :contentType="'html'" :typeSpeed="100" :startDelay="1000" :backSpeed="50"	:backDelay="1000">
         <h1>
           <div>
             <router-link to="video" class="yellow-text"
@@ -69,6 +69,21 @@ export default {
     font-size: 1.125rem;
     line-height: 28px;
   }
+}
+
+/deep/ .blue-text {
+  color: #26a1ff;
+  display: inline-block;
+}
+
+/deep/ .red-text {
+  color: #ffaca6;
+  display: inline-block;
+}
+
+/deep/ .lille-color {
+  color: #e01e13;
+  display: inline-block;
 }
 
 .yellow-text {
