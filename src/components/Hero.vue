@@ -1,16 +1,23 @@
 <template>
   <div class="hero-header">
     <div class="hero-heading">
-      <h1>
-        <div>
-          <router-link to="video" class="yellow-text">Encadrement</router-link>
-        </div>est une extension pour vous aider dans votre recherche de location à
-        <div class="paris-word">
-          <span class="blue-text">Pa</span>ri
-          <span class="red-text">s.</span>
-        </div>
-      </h1>
-      <h2>Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous saurez.</h2>
+      <vue-typed-js :strings="['<span>Pa</span>ri<span>s.</span>', 'Lille.']" :loop="true" :contentType="'html'">
+        <h1>
+          <div>
+            <router-link to="video" class="yellow-text"
+              >Encadrement</router-link
+            >
+          </div>
+          est une extension pour vous aider dans votre recherche de location à
+          <div class="paris-word">
+            <span class="typing"></span>
+          </div>
+        </h1>
+      </vue-typed-js>
+      <h2>
+        Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous
+        saurez.
+      </h2>
     </div>
     <ButtonGroup />
   </div>
@@ -21,8 +28,8 @@ import ButtonGroup from "./ButtonGroup";
 export default {
   name: "Hero",
   components: {
-    ButtonGroup
-  }
+    ButtonGroup,
+  },
 };
 </script>
 
@@ -64,11 +71,6 @@ export default {
   }
 }
 
-.paris-word {
-  display: inline-flex;
-  flex-wrap: nowrap;
-}
-
 .yellow-text {
   color: $yellow;
   display: inline-block;
@@ -91,15 +93,5 @@ export default {
       background-color: $darkeryellow;
     }
   }
-}
-
-.blue-text {
-  color: #26a1ff;
-  display: inline-block;
-}
-
-.red-text {
-  color: #ffaca6;
-  display: inline-block;
 }
 </style>
