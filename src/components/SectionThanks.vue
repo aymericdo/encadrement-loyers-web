@@ -3,17 +3,23 @@
     <div class="col">
       <SectionTitle class="title">Remerciements</SectionTitle>
       <div class="data-provider">
-        <div>
+        <div class="image">
             <a href="https://opendata.paris.fr/pages/home/" target="_blank">
                 <img src="@/assets/images/data-paris.png" alt="Photo de logo data paris">
             </a>
             <span>Open Data Paris</span>
         </div>
-        <div>
+        <div class="image">
             <a href="https://opendata.apur.org/" target="_blank">
                 <img src="@/assets/images/data-apur.png" alt="Photo logo Apur">
             </a>
             <span>Open Data Apur</span>
+        </div>
+        <div class="image">
+            <a href="https://opendata.lillemetropole.fr/pages/home/" target="_blank">
+                <img src="@/assets/images/mel-lille.png" alt="Photo logo MEL">
+            </a>
+            <span>Open Data Lille</span>
         </div>
       </div>
     </div>
@@ -52,10 +58,11 @@ export default {
     justify-content: space-evenly;
 }
 
-.data-provider > div {
+.data-provider > .image {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     padding: 0 2em 2em;
 }
 
