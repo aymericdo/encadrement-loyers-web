@@ -40,6 +40,13 @@
           </div>
         </Section>
         <Section class="stats-section">
+          <SectionTitle v-if="isChloroplethMapLoaded" class="title">Carte des quartiers</SectionTitle>
+          <div v-if="status === 'ok'" class="container" ref="chloroplethMapContainer">
+            <Spinner v-if="!isChloroplethMapLoaded" class="spinner" />
+            <div v-if="isChloroplethMapLoaded" id="chloropleth-map" class="graph"></div>
+          </div>
+        </Section>
+        <Section class="stats-section">
           <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title">Est légal par surface</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="legalContainer">
             <Spinner v-if="!isLegalPerSurfaceLoaded" class="spinner" />
@@ -97,6 +104,7 @@ export default {
   data() {
     return {
       isMapLoaded: false,
+      isChloroplethMapLoaded: false,
       isMounted: false,
       isLegalPerSurfaceLoaded: false,
       isPriceDifferenceLoaded: false,
@@ -126,6 +134,7 @@ export default {
           this.status = "ok";
           this.welcomeData = res;
           this.onFetchMap();
+          this.onFetchChloroplethMap();
           this.onFetchPriceDifference();
           this.onFetchIsLegalPerSurface();
           this.onFetchPriceVariation();
@@ -144,6 +153,24 @@ export default {
           vegaEmbed("#map", spec, {
             tooltip: {
               theme: "dark"
+            },
+            actions: false
+          });
+        })
+        .catch(err => {
+          this.serverError = this.getErrorMessage(err);
+          this.status = "error";
+        });
+    },
+    onFetchChloroplethMap: function() {
+      fetch(`${this.$domain}stats/chloropleth-map`)
+        .then(res => res.json())
+        .then(spec => {
+          this.status = "ok";
+          this.isChloroplethMapLoaded = true;
+          vegaEmbed("#chloropleth-map", spec, {
+            tooltip: {
+              theme: "dark",
             },
             actions: false
           });
