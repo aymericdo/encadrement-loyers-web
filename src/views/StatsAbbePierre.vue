@@ -10,18 +10,18 @@
           @expired="onCaptchaExpired"
           sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
         />
-        <Spinner class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
+        <Spinner  speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
         <Section class="stats-section">
           <SectionTitle v-if="isLegalVariationLoaded" class="title">Pourcentage d'annonces illégales</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="mapContainer">
-            <Spinner v-if="!isLegalVariationLoaded" class="spinner" />
+            <Spinner  speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalVariationLoaded" class="spinner" />
             <div v-if="isLegalVariationLoaded" id="isLegalVariation" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner v-if=" !isPriceVariationLoaded" class="spinner" />
+            <Spinner  speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceVariationLoaded" class="spinner" />
             <div v-if="isPriceVariationLoaded" id="priceVariation" class="graph"></div>
           </div>
         </Section>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import Spinner from "@/shared/Spinner.vue";
+import Spinner from 'vue-simple-spinner'
 import vegaEmbed from "vega-embed";
 import VueRecaptcha from "vue-recaptcha";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
