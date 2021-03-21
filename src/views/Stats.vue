@@ -10,7 +10,7 @@
           @expired="onCaptchaExpired"
           sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
         />
-        <Spinner  speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
+        <Spinner  :speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
         <Section v-if="welcomeData">
           <div class="welcome">
             <span>Sur les</span>
@@ -35,35 +35,35 @@
         <Section class="stats-section">
           <SectionTitle v-if="isMapLoaded" class="title">Carte</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="mapContainer">
-            <Spinner  speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isMapLoaded" class="spinner" />
+            <Spinner  :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isMapLoaded" class="spinner" />
             <div v-if="isMapLoaded" id="map" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isChloroplethMapLoaded" class="title">Carte des quartiers</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="chloroplethMapContainer">
-            <Spinner  speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isChloroplethMapLoaded" class="spinner" />
+            <Spinner  :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isChloroplethMapLoaded" class="spinner" />
             <div v-if="isChloroplethMapLoaded" id="chloropleth-map" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title">Est légal par surface</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="legalContainer">
-            <Spinner  speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalPerSurfaceLoaded" class="spinner" />
+            <Spinner  :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalPerSurfaceLoaded" class="spinner" />
             <div v-if="isLegalPerSurfaceLoaded" id="is-legal-per-surface" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isPriceDifferenceLoaded" class="title">Différence de prix</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner  speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceDifferenceLoaded" class="spinner" />
+            <Spinner  :speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceDifferenceLoaded" class="spinner" />
             <div v-if="isPriceDifferenceLoaded" id="price-diff" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner  speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceVariationLoaded" class="spinner" />
+            <Spinner  :speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceVariationLoaded" class="spinner" />
             <div v-if="isPriceVariationLoaded" id="price-variation" class="graph"></div>
           </div>
         </Section>
