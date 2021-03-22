@@ -1,12 +1,12 @@
 <template>
   <div class="hero-header">
     <div class="hero-heading">
-      <vue-typed-js :stringsElement="'words'" :strings="['<span class='+ 'blue-text' +'>Pa</span>ri<span class='+ 'red-text' +'>s.</span>', '<span class='+'lille-color'+'>Lil</span>l<span class='+'lille-color'+'>e.</span>']" :loop="true" :contentType="'html'" :typeSpeed="100" :startDelay="1000" :backSpeed="50"	:backDelay="1000">
+      <vue-typed-js :stringsElement="'words'" :strings="['<span class='+ 'blue-text' +'>Pa</span>ri<span class='+ 'red-text' +'>s.</span>', 'L<span class='+'lille-color'+'>i</span>l<span class='+'lille-color'+'>le.</span>']" :loop="true" :contentType="'html'" :typeSpeed="100" :startDelay="1000" :backSpeed="50"	:backDelay="1000">
         <h1>
           <div>
-            <router-link to="video" class="yellow-text"
-              >Encadrement</router-link
-            >
+            <router-link to="video" class="yellow-text">
+              Encadrement
+            </router-link>
           </div>
           est une extension pour vous aider dans votre recherche de location à
           <div class="paris-word">
