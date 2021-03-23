@@ -1,24 +1,26 @@
 <template>
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
-      <Page2Wrapper v-if="isMounted">
-        <VueRecaptcha
-          class="recaptcha"
-          v-if="status !== 'ok' && status !== 'submitting'"
-          ref="recaptcha"
-          @verify="onCaptchaVerified"
-          @expired="onCaptchaExpired"
-          sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
-        />
-        <Spinner
-          :speed="0.5"
-          line-fg-color="#fdcd56"
-          size="huge"
-          class="spinner"
-          v-if="status !== 'ok' && status === 'submitting'"
-        />
+      <Page2Wrapper class="page2-wrapper" v-if="isMounted">
+        <div class="entire-page-centered">
+          <VueRecaptcha
+            class="recaptcha"
+            v-if="status !== 'ok' && status !== 'submitting'"
+            ref="recaptcha"
+            @verify="onCaptchaVerified"
+            @expired="onCaptchaExpired"
+            sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
+          />
+          <Spinner
+            :speed="0.5"
+            line-fg-color="#fdcd56"
+            size="huge"
+            class="spinner"
+            v-if="status !== 'ok' && status === 'submitting'"
+          />
+        </div>
 
-        <Section v-if="welcomeData">
+        <div v-if="welcomeData">
           <div class="welcome">
             <span>Sur les</span>
             <span class="yellow"
@@ -39,119 +41,121 @@
                 welcomeData.isSmallSurfaceIllegalPercentage
               }}%&nbsp;</span
             >
-            <span>d'annonces illégales. Le</span>
-            <span class="yellow"
-              >&nbsp;{{ welcomeData.bestPostalCode
-              }}{{
-                welcomeData.bestPostalCode !== "1" ? "ème" : "er"
-              }}&nbsp;</span
-            >
-            <span
-              >est l'arrondissement où l'encadrement est le plus respecté
-              contrairement au</span
-            >
-            <span class="yellow"
-              >&nbsp;{{ welcomeData.worstPostalCode
-              }}{{
-                welcomeData.worstPostalCode !== "1" ? "ème" : "er"
-              }}&nbsp;</span
-            >
-            <span>qui a le plus d'annonces illégales.</span>
+            <span>d'annonces illégales.</span>
           </div>
-        </Section>
-        <Section class="stats-section">
-          <SectionTitle v-if="isMapLoaded" class="title">Carte</SectionTitle>
-          <div v-if="status === 'ok'" class="container" ref="mapContainer">
-            <Spinner
-              :speed="0.5"
-              line-fg-color="#fdcd56"
-              size="large"
-              v-if="!isMapLoaded"
-              class="spinner"
-            />
-            <div v-if="isMapLoaded" id="map" class="graph"></div>
+        </div>
+
+        <div class="graph-list">
+          <div class="stats-section -large">
+            <div v-if="status === 'ok'" class="container" ref="diffContainer">
+              <Spinner
+                :speed="0.5"
+                line-fg-color="#fdcd56"
+                size="large"
+                v-if="!isLegalVariationLoaded"
+                class="spinner"
+              />
+              <div
+                v-if="isLegalVariationLoaded"
+                id="is-legal-variation"
+                class="graph"
+              ></div>
+            </div>
           </div>
-        </Section>
-        <Section class="stats-section">
-          <SectionTitle v-if="isChloroplethMapLoaded" class="title"
-            >Carte des quartiers</SectionTitle
-          >
-          <div
-            v-if="status === 'ok'"
-            class="container"
-            ref="chloroplethMapContainer"
-          >
-            <Spinner
-              :speed="0.5"
-              line-fg-color="#fdcd56"
-              size="large"
-              v-if="!isChloroplethMapLoaded"
-              class="spinner"
-            />
-            <div
-              v-if="isChloroplethMapLoaded"
-              id="chloropleth-map"
-              class="graph"
-            ></div>
+
+          <div class="stats-section-row">
+            <div class="stats-section">
+              <div
+                v-if="status === 'ok'"
+                class="container"
+                ref="legalContainer"
+              >
+                <Spinner
+                  :speed="0.5"
+                  line-fg-color="#fdcd56"
+                  size="large"
+                  v-if="!isLegalPerSurfaceLoaded"
+                  class="spinner"
+                />
+                <div
+                  v-if="isLegalPerSurfaceLoaded"
+                  id="is-legal-per-surface"
+                  class="graph"
+                ></div>
+              </div>
+            </div>
+
+            <div class="stats-section">
+              <div
+                v-if="status === 'ok'"
+                class="container"
+                ref="chloroplethMapContainer"
+              >
+                <Spinner
+                  :speed="0.5"
+                  line-fg-color="#fdcd56"
+                  size="large"
+                  v-if="!isChloroplethMapLoaded"
+                  class="spinner"
+                />
+                <div
+                  v-if="isChloroplethMapLoaded"
+                  id="chloropleth-map"
+                  class="graph"
+                ></div>
+              </div>
+            </div>
           </div>
-        </Section>
-        <Section class="stats-section">
-          <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title"
-            >Est légal par surface</SectionTitle
-          >
-          <div v-if="status === 'ok'" class="container" ref="legalContainer">
-            <Spinner
-              :speed="0.5"
-              line-fg-color="#fdcd56"
-              size="large"
-              v-if="!isLegalPerSurfaceLoaded"
-              class="spinner"
-            />
-            <div
-              v-if="isLegalPerSurfaceLoaded"
-              id="is-legal-per-surface"
-              class="graph"
-            ></div>
+
+          <div class="stats-section-row">
+            <div class="stats-section">
+              <div v-if="status === 'ok'" class="container" ref="mapContainer">
+                <Spinner
+                  :speed="0.5"
+                  line-fg-color="#fdcd56"
+                  size="large"
+                  v-if="!isMapLoaded"
+                  class="spinner"
+                />
+                <div v-if="isMapLoaded" id="map" class="graph"></div>
+              </div>
+            </div>
+
+            <div class="stats-section">
+              <div v-if="status === 'ok'" class="container" ref="diffContainer">
+                <Spinner
+                  :speed="0.5"
+                  line-fg-color="#fdcd56"
+                  size="large"
+                  v-if="!isPriceDifferenceLoaded"
+                  class="spinner"
+                />
+                <div
+                  v-if="isPriceDifferenceLoaded"
+                  id="price-diff"
+                  class="graph"
+                ></div>
+              </div>
+            </div>
           </div>
-        </Section>
-        <Section class="stats-section">
-          <SectionTitle v-if="isPriceDifferenceLoaded" class="title"
-            >Différence de prix</SectionTitle
-          >
-          <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner
-              :speed="0.5"
-              line-fg-color="#fdcd56"
-              size="large"
-              v-if="!isPriceDifferenceLoaded"
-              class="spinner"
-            />
-            <div
-              v-if="isPriceDifferenceLoaded"
-              id="price-diff"
-              class="graph"
-            ></div>
+
+          <div class="stats-section">
+            <div v-if="status === 'ok'" class="container" ref="diffContainer">
+              <Spinner
+                :speed="0.5"
+                line-fg-color="#fdcd56"
+                size="large"
+                v-if="!isPriceVariationLoaded"
+                class="spinner"
+              />
+              <div
+                v-if="isPriceVariationLoaded"
+                id="price-variation"
+                class="graph"
+              ></div>
+            </div>
           </div>
-        </Section>
-        <Section class="stats-section">
-          <SectionTitle v-if="isPriceVariationLoaded" class="title"
-            >Écart des annonces illégales avec le prix théorique</SectionTitle
-          >
-          <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner
-              :speed="0.5"
-              line-fg-color="#fdcd56"
-              size="large"
-              v-if="!isPriceVariationLoaded"
-              class="spinner"
-            />
-            <div
-              v-if="isPriceVariationLoaded"
-              id="price-variation"
-              class="graph"
-            ></div>
-          </div>
-        </Section>
+        </div>
       </Page2Wrapper>
     </transition>
     <div @click="unmount">
@@ -163,25 +167,31 @@
 </template>
 
 <script>
-import Spinner from 'vue-simple-spinner'
+import Spinner from "vue-simple-spinner";
 import VueRecaptcha from "vue-recaptcha";
 import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import Section from "@/shared/Section.vue";
+
+const VEGA_COMMON = {
+  tooltip: {
+    theme: "dark",
+  },
+  actions: false,
+  // not working héhé
+  // width: 'container',
+  height: 500,
+};
 
 export default {
   name: "Stats",
   components: {
     VueRecaptcha,
     Spinner,
-    SectionTitle,
     Page2Wrapper,
     StrokeIcon,
     FixedButton,
-    Section
   },
   mounted: function() {
     this.isMounted = true;
@@ -199,11 +209,12 @@ export default {
       isLegalPerSurfaceLoaded: false,
       isPriceDifferenceLoaded: false,
       isPriceVariationLoaded: false,
+      isLegalVariationLoaded: false,
       city: "paris",
       status: "",
       sucessfulServerResponse: "",
       serverError: "",
-      welcomeData: null
+      welcomeData: null,
     };
   },
   methods: {
@@ -219,26 +230,30 @@ export default {
       return responseBody.message || JSON.stringify(responseBody);
     },
     needCaptcha: function() {
-      this.status = 'submitting'
-      fetch(`${this.$domain}stats/need-captcha`, { signal: this.controller.signal })
-        .then(res => res.json())
+      this.status = "submitting";
+      fetch(`${this.$domain}stats/need-captcha`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
         .then((res) => {
           if (res) {
-            this.status = ''
+            this.status = "";
           } else {
-            this.status = 'ok'
             this.onFetchWelcome(null);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchWelcome: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`, { signal: this.controller.signal })
-        .then(res => res.json())
-        .then(res => {
+      fetch(
+        `${this.$domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
+        { signal: this.controller.signal }
+      )
+        .then((res) => res.json())
+        .then((res) => {
           this.status = "ok";
           this.welcomeData = res;
           this.onFetchMap();
@@ -246,114 +261,151 @@ export default {
           this.onFetchPriceDifference();
           this.onFetchIsLegalPerSurface();
           this.onFetchPriceVariation();
+          this.onFetchIsLegalVariation();
         })
-        .catch(err => {
+        .catch((err) => {
+          this.serverError = this.getErrorMessage(err);
+          this.status = "error";
+        });
+    },
+    onFetchIsLegalVariation: function() {
+      fetch(`${this.$domain}stats/is-legal-variation/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
+          if (this.controller.signal.aborted) return;
+
+          this.status = "ok";
+          this.isLegalVariationLoaded = true;
+          setTimeout(() => {
+            const width = document.getElementById("is-legal-variation")
+              .clientWidth;
+            vegaEmbed("#is-legal-variation", spec, {
+              ...VEGA_COMMON,
+              width,
+            });
+          });
+        })
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchMap: function() {
-      fetch(`${this.$domain}stats/map/${this.city}`, { signal: this.controller.signal })
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/map/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isMapLoaded = true;
-          vegaEmbed("#map", spec, {
-            tooltip: {
-              theme: "dark"
-            },
-            actions: false
+          setTimeout(() => {
+            const width = document.getElementById("map").clientWidth;
+            vegaEmbed("#map", spec, {
+              ...VEGA_COMMON,
+              width,
+            });
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchChloroplethMap: function() {
-      fetch(`${this.$domain}stats/chloropleth-map/${this.city}`, { signal: this.controller.signal })
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/chloropleth-map/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isChloroplethMapLoaded = true;
-          vegaEmbed("#chloropleth-map", spec, {
-            tooltip: {
-              theme: "dark",
-            },
-            actions: false
+          setTimeout(() => {
+            const width = document.getElementById("chloropleth-map")
+              .clientWidth;
+            vegaEmbed("#chloropleth-map", spec, {
+              ...VEGA_COMMON,
+              width,
+            });
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchPriceDifference: function() {
-      fetch(
-        `${this.$domain}stats/price-difference/${this.city}`, { signal: this.controller.signal }
-      )
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/price-difference/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isPriceDifferenceLoaded = true;
-          vegaEmbed("#price-diff", spec, {
-            tooltip: {
-              theme: "dark"
-            },
-            actions: false
+          setTimeout(() => {
+            const width = document.getElementById("price-diff").clientWidth;
+            vegaEmbed("#price-diff", spec, {
+              ...VEGA_COMMON,
+              width,
+            });
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchPriceVariation: function() {
-      fetch(
-        `${this.$domain}stats/price-variation/${this.city}`, { signal: this.controller.signal }
-      )
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/price-variation/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isPriceVariationLoaded = true;
-          vegaEmbed("#price-variation", spec, {
-            tooltip: {
-              theme: "dark"
-            },
-            actions: false
+          setTimeout(() => {
+            const width = document.getElementById("price-variation")
+              .clientWidth;
+            vegaEmbed("#price-variation", spec, {
+              ...VEGA_COMMON,
+              width,
+            });
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchIsLegalPerSurface: function() {
-      fetch(
-        `${this.$domain}stats/is-legal-per-surface/${this.city}`, { signal: this.controller.signal }
-      )
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/is-legal-per-surface/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isLegalPerSurfaceLoaded = true;
-          vegaEmbed("#is-legal-per-surface", spec, {
-            tooltip: {
-              theme: "dark"
-            },
-            actions: false
+          setTimeout(() => {
+            const width = document.getElementById("is-legal-per-surface")
+              .clientWidth;
+            vegaEmbed("#is-legal-per-surface", spec, {
+              ...VEGA_COMMON,
+              width,
+            });
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
@@ -374,8 +426,8 @@ export default {
     },
     unmount: function() {
       this.isMounted = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -399,6 +451,18 @@ export default {
   transform: translateY(-50%);
 }
 
+.page2-wrapper {
+  padding: 20px 100px 0 24px;
+  align-items: baseline;
+}
+
+.entire-page-centered {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
 .slide-fade-enter,
 .slide-fade-leave-to {
   opacity: 0;
@@ -411,20 +475,10 @@ export default {
 }
 
 .graph {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   overflow-y: hidden;
   overflow-x: auto;
-}
-
-/deep/ .title {
-  max-width: 100%;
-  width: 700px;
-
-  & > h3 {
-    margin-top: 42px;
-    margin-bottom: 8px;
-  }
 }
 
 .container {
@@ -432,8 +486,12 @@ export default {
   display: flex;
   justify-content: center;
   max-width: 100%;
-  width: 700px;
+  width: 100%;
   height: 500px;
+}
+
+.graph-list {
+  width: 100%;
 }
 
 .spinner {
@@ -453,9 +511,18 @@ export default {
 .stats-section {
   flex-direction: column;
   align-items: center;
+  box-shadow: 0px 0px 15px white;
+  border-radius: 8px;
+  margin: 20px 0;
+  width: 49%;
+}
 
-  &:last-child {
-    margin-bottom: 20px;
-  }
+.stats-section-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stats-section.-large {
+  width: 100%;
 }
 </style>
