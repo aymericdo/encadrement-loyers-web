@@ -45,8 +45,7 @@ button {
   }
 
   &:hover {
-    animation: none;
-    background-color: $darkeryellow;
+    border: solid white 2px;
   }
 
   & > svg {

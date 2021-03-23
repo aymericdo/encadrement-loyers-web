@@ -10,62 +10,146 @@
           @expired="onCaptchaExpired"
           sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
         />
-        <Spinner :speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
+        <Spinner
+          :speed="0.5"
+          line-fg-color="#fdcd56"
+          size="huge"
+          class="spinner"
+          v-if="status !== 'ok' && status === 'submitting'"
+        />
 
         <Section v-if="welcomeData">
           <div class="welcome">
             <span>Sur les</span>
-            <span class="yellow">&nbsp;{{welcomeData.numberRents}}&nbsp;</span>
+            <span class="yellow"
+              >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
+            >
             <span>cas étudiés,</span>
-            <span class="yellow">&nbsp;{{welcomeData.isIllegalPercentage}}%&nbsp;</span>
-            <span>sont illégales. Pour les annonces d'une surface inférieure à</span>
-            <span class="yellow">&nbsp;{{welcomeData.pivotSurface}}m²</span>
+            <span class="yellow"
+              >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
+            >
+            <span
+              >sont illégales. Pour les annonces d'une surface inférieure
+              à</span
+            >
+            <span class="yellow">&nbsp;{{ welcomeData.pivotSurface }}m²</span>
             <span>, il y a</span>
-            <span class="yellow">&nbsp;{{welcomeData.isSmallSurfaceIllegalPercentage}}%&nbsp;</span>
+            <span class="yellow"
+              >&nbsp;{{
+                welcomeData.isSmallSurfaceIllegalPercentage
+              }}%&nbsp;</span
+            >
             <span>d'annonces illégales. Le</span>
+            <span class="yellow"
+              >&nbsp;{{ welcomeData.bestPostalCode
+              }}{{
+                welcomeData.bestPostalCode !== "1" ? "ème" : "er"
+              }}&nbsp;</span
+            >
             <span
-              class="yellow"
-            >&nbsp;{{welcomeData.bestPostalCode}}{{welcomeData.bestPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
-            <span>est l'arrondissement où l'encadrement est le plus respecté contrairement au</span>
-            <span
-              class="yellow"
-            >&nbsp;{{welcomeData.worstPostalCode}}{{welcomeData.worstPostalCode !== '1' ? 'ème' : 'er' }}&nbsp;</span>
+              >est l'arrondissement où l'encadrement est le plus respecté
+              contrairement au</span
+            >
+            <span class="yellow"
+              >&nbsp;{{ welcomeData.worstPostalCode
+              }}{{
+                welcomeData.worstPostalCode !== "1" ? "ème" : "er"
+              }}&nbsp;</span
+            >
             <span>qui a le plus d'annonces illégales.</span>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isMapLoaded" class="title">Carte</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="mapContainer">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isMapLoaded" class="spinner" />
+            <Spinner
+              :speed="0.5"
+              line-fg-color="#fdcd56"
+              size="large"
+              v-if="!isMapLoaded"
+              class="spinner"
+            />
             <div v-if="isMapLoaded" id="map" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isChloroplethMapLoaded" class="title">Carte des quartiers</SectionTitle>
-          <div v-if="status === 'ok'" class="container" ref="chloroplethMapContainer">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isChloroplethMapLoaded" class="spinner" />
-            <div v-if="isChloroplethMapLoaded" id="chloropleth-map" class="graph"></div>
+          <SectionTitle v-if="isChloroplethMapLoaded" class="title"
+            >Carte des quartiers</SectionTitle
+          >
+          <div
+            v-if="status === 'ok'"
+            class="container"
+            ref="chloroplethMapContainer"
+          >
+            <Spinner
+              :speed="0.5"
+              line-fg-color="#fdcd56"
+              size="large"
+              v-if="!isChloroplethMapLoaded"
+              class="spinner"
+            />
+            <div
+              v-if="isChloroplethMapLoaded"
+              id="chloropleth-map"
+              class="graph"
+            ></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title">Est légal par surface</SectionTitle>
+          <SectionTitle v-if="isLegalPerSurfaceLoaded" class="title"
+            >Est légal par surface</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container" ref="legalContainer">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalPerSurfaceLoaded" class="spinner" />
-            <div v-if="isLegalPerSurfaceLoaded" id="is-legal-per-surface" class="graph"></div>
+            <Spinner
+              :speed="0.5"
+              line-fg-color="#fdcd56"
+              size="large"
+              v-if="!isLegalPerSurfaceLoaded"
+              class="spinner"
+            />
+            <div
+              v-if="isLegalPerSurfaceLoaded"
+              id="is-legal-per-surface"
+              class="graph"
+            ></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isPriceDifferenceLoaded" class="title">Différence de prix</SectionTitle>
+          <SectionTitle v-if="isPriceDifferenceLoaded" class="title"
+            >Différence de prix</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceDifferenceLoaded" class="spinner" />
-            <div v-if="isPriceDifferenceLoaded" id="price-diff" class="graph"></div>
+            <Spinner
+              :speed="0.5"
+              line-fg-color="#fdcd56"
+              size="large"
+              v-if="!isPriceDifferenceLoaded"
+              class="spinner"
+            />
+            <div
+              v-if="isPriceDifferenceLoaded"
+              id="price-diff"
+              class="graph"
+            ></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
+          <SectionTitle v-if="isPriceVariationLoaded" class="title"
+            >Écart des annonces illégales avec le prix théorique</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceVariationLoaded" class="spinner" />
-            <div v-if="isPriceVariationLoaded" id="price-variation" class="graph"></div>
+            <Spinner
+              :speed="0.5"
+              line-fg-color="#fdcd56"
+              size="large"
+              v-if="!isPriceVariationLoaded"
+              class="spinner"
+            />
+            <div
+              v-if="isPriceVariationLoaded"
+              id="price-variation"
+              class="graph"
+            ></div>
           </div>
         </Section>
       </Page2Wrapper>
@@ -103,8 +187,12 @@ export default {
     this.isMounted = true;
     this.needCaptcha();
   },
+  beforeDestroy: function() {
+    this.controller.abort();
+  },
   data() {
     return {
+      controller: new AbortController(),
       isMapLoaded: false,
       isChloroplethMapLoaded: false,
       isMounted: false,
@@ -132,7 +220,7 @@ export default {
     },
     needCaptcha: function() {
       this.status = 'submitting'
-      fetch(`${this.$domain}stats/need-captcha`)
+      fetch(`${this.$domain}stats/need-captcha`, { signal: this.controller.signal })
         .then(res => res.json())
         .then((res) => {
           if (res) {
@@ -148,7 +236,7 @@ export default {
         });
     },
     onFetchWelcome: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`)
+      fetch(`${this.$domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`, { signal: this.controller.signal })
         .then(res => res.json())
         .then(res => {
           this.status = "ok";
@@ -165,9 +253,11 @@ export default {
         });
     },
     onFetchMap: function() {
-      fetch(`${this.$domain}stats/map/${this.city}`)
+      fetch(`${this.$domain}stats/map/${this.city}`, { signal: this.controller.signal })
         .then(res => res.json())
         .then(spec => {
+          if (this.controller.signal.aborted) return;
+
           this.status = "ok";
           this.isMapLoaded = true;
           vegaEmbed("#map", spec, {
@@ -183,9 +273,11 @@ export default {
         });
     },
     onFetchChloroplethMap: function() {
-      fetch(`${this.$domain}stats/chloropleth-map/${this.city}`)
+      fetch(`${this.$domain}stats/chloropleth-map/${this.city}`, { signal: this.controller.signal })
         .then(res => res.json())
         .then(spec => {
+          if (this.controller.signal.aborted) return;
+
           this.status = "ok";
           this.isChloroplethMapLoaded = true;
           vegaEmbed("#chloropleth-map", spec, {
@@ -202,10 +294,12 @@ export default {
     },
     onFetchPriceDifference: function() {
       fetch(
-        `${this.$domain}stats/price-difference/${this.city}`
+        `${this.$domain}stats/price-difference/${this.city}`, { signal: this.controller.signal }
       )
         .then(res => res.json())
         .then(spec => {
+          if (this.controller.signal.aborted) return;
+
           this.status = "ok";
           this.isPriceDifferenceLoaded = true;
           vegaEmbed("#price-diff", spec, {
@@ -222,10 +316,12 @@ export default {
     },
     onFetchPriceVariation: function() {
       fetch(
-        `${this.$domain}stats/price-variation/${this.city}`
+        `${this.$domain}stats/price-variation/${this.city}`, { signal: this.controller.signal }
       )
         .then(res => res.json())
         .then(spec => {
+          if (this.controller.signal.aborted) return;
+
           this.status = "ok";
           this.isPriceVariationLoaded = true;
           vegaEmbed("#price-variation", spec, {
@@ -242,10 +338,12 @@ export default {
     },
     onFetchIsLegalPerSurface: function() {
       fetch(
-        `${this.$domain}stats/is-legal-per-surface/${this.city}`
+        `${this.$domain}stats/is-legal-per-surface/${this.city}`, { signal: this.controller.signal }
       )
         .then(res => res.json())
         .then(spec => {
+          if (this.controller.signal.aborted) return;
+
           this.status = "ok";
           this.isLegalPerSurfaceLoaded = true;
           vegaEmbed("#is-legal-per-surface", spec, {
