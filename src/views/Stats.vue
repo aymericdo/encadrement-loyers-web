@@ -45,9 +45,9 @@
           </div>
         </div>
 
-        <div class="graph-list">
+        <div class="graph-list" v-if="status === 'ok'">
           <div class="stats-section -large">
-            <div v-if="status === 'ok'" class="container" ref="diffContainer">
+            <div class="container">
               <Spinner
                 :speed="0.5"
                 line-fg-color="#fdcd56"
@@ -64,12 +64,8 @@
           </div>
 
           <div class="stats-section-row">
-            <div class="stats-section">
-              <div
-                v-if="status === 'ok'"
-                class="container"
-                ref="legalContainer"
-              >
+            <div class="stats-section -high">
+              <div class="container">
                 <Spinner
                   :speed="0.5"
                   line-fg-color="#fdcd56"
@@ -85,44 +81,42 @@
               </div>
             </div>
 
-            <div class="stats-section">
-              <div
-                v-if="status === 'ok'"
-                class="container"
-                ref="chloroplethMapContainer"
-              >
-                <Spinner
-                  :speed="0.5"
-                  line-fg-color="#fdcd56"
-                  size="large"
-                  v-if="!isChloroplethMapLoaded"
-                  class="spinner"
-                />
-                <div
-                  v-if="isChloroplethMapLoaded"
-                  id="chloropleth-map"
-                  class="graph"
-                ></div>
+            <div class="sub-column">
+              <div class="stats-section">
+                <div class="container">
+                  <Spinner
+                    :speed="0.5"
+                    line-fg-color="#fdcd56"
+                    size="large"
+                    v-if="!isChloroplethMapLoaded"
+                    class="spinner"
+                  />
+                  <div
+                    v-if="isChloroplethMapLoaded"
+                    id="chloropleth-map"
+                    class="graph"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="stats-section">
+                <div class="container">
+                  <Spinner
+                    :speed="0.5"
+                    line-fg-color="#fdcd56"
+                    size="large"
+                    v-if="!isMapLoaded"
+                    class="spinner"
+                  />
+                  <div v-if="isMapLoaded" id="map" class="graph"></div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="stats-section-row">
             <div class="stats-section">
-              <div v-if="status === 'ok'" class="container" ref="mapContainer">
-                <Spinner
-                  :speed="0.5"
-                  line-fg-color="#fdcd56"
-                  size="large"
-                  v-if="!isMapLoaded"
-                  class="spinner"
-                />
-                <div v-if="isMapLoaded" id="map" class="graph"></div>
-              </div>
-            </div>
-
-            <div class="stats-section">
-              <div v-if="status === 'ok'" class="container" ref="diffContainer">
+              <div class="container">
                 <Spinner
                   :speed="0.5"
                   line-fg-color="#fdcd56"
@@ -137,22 +131,22 @@
                 ></div>
               </div>
             </div>
-          </div>
 
-          <div class="stats-section">
-            <div v-if="status === 'ok'" class="container" ref="diffContainer">
-              <Spinner
-                :speed="0.5"
-                line-fg-color="#fdcd56"
-                size="large"
-                v-if="!isPriceVariationLoaded"
-                class="spinner"
-              />
-              <div
-                v-if="isPriceVariationLoaded"
-                id="price-variation"
-                class="graph"
-              ></div>
+            <div class="stats-section">
+              <div class="container">
+                <Spinner
+                  :speed="0.5"
+                  line-fg-color="#fdcd56"
+                  size="large"
+                  v-if="!isPriceVariationLoaded"
+                  class="spinner"
+                />
+                <div
+                  v-if="isPriceVariationLoaded"
+                  id="price-variation"
+                  class="graph"
+                ></div>
+              </div>
             </div>
           </div>
         </div>
@@ -181,7 +175,6 @@ const VEGA_COMMON = {
   actions: false,
   // not working héhé
   // width: 'container',
-  height: 500,
 };
 
 export default {
@@ -281,9 +274,12 @@ export default {
           setTimeout(() => {
             const width = document.getElementById("is-legal-variation")
               .clientWidth;
+            const height = document.getElementById("is-legal-variation")
+              .clientHeight;
             vegaEmbed("#is-legal-variation", spec, {
               ...VEGA_COMMON,
-              width,
+              width: width < 500 ? 500 : width,
+              height,
             });
           });
         })
@@ -304,9 +300,11 @@ export default {
           this.isMapLoaded = true;
           setTimeout(() => {
             const width = document.getElementById("map").clientWidth;
+            const height = document.getElementById("map").clientHeight;
             vegaEmbed("#map", spec, {
               ...VEGA_COMMON,
-              width,
+              width: width < 500 ? 500 : width,
+              height,
             });
           });
         })
@@ -328,9 +326,12 @@ export default {
           setTimeout(() => {
             const width = document.getElementById("chloropleth-map")
               .clientWidth;
+            const height = document.getElementById("chloropleth-map")
+              .clientHeight;
             vegaEmbed("#chloropleth-map", spec, {
               ...VEGA_COMMON,
-              width,
+              width: width < 500 ? 500 : width,
+              height,
             });
           });
         })
@@ -351,9 +352,11 @@ export default {
           this.isPriceDifferenceLoaded = true;
           setTimeout(() => {
             const width = document.getElementById("price-diff").clientWidth;
+            const height = document.getElementById("price-diff").clientHeight;
             vegaEmbed("#price-diff", spec, {
               ...VEGA_COMMON,
-              width,
+              width: width < 500 ? 500 : width,
+              height,
             });
           });
         })
@@ -375,9 +378,12 @@ export default {
           setTimeout(() => {
             const width = document.getElementById("price-variation")
               .clientWidth;
+            const height = document.getElementById("price-variation")
+              .clientHeight;
             vegaEmbed("#price-variation", spec, {
               ...VEGA_COMMON,
-              width,
+              width: width < 500 ? 500 : width,
+              height,
             });
           });
         })
@@ -399,9 +405,12 @@ export default {
           setTimeout(() => {
             const width = document.getElementById("is-legal-per-surface")
               .clientWidth;
+            const height = document.getElementById("is-legal-per-surface")
+              .clientHeight;
             vegaEmbed("#is-legal-per-surface", spec, {
               ...VEGA_COMMON,
-              width,
+              width: width < 500 ? 500 : width,
+              height,
             });
           });
         })
@@ -452,11 +461,13 @@ export default {
 }
 
 .page2-wrapper {
-  padding: 20px 100px 0 24px;
+  padding: 24px;
+  box-sizing: border-box;
   align-items: baseline;
 }
 
 .entire-page-centered {
+  height: 100vh;
   display: flex;
   justify-content: center;
   flex: 1;
@@ -485,9 +496,11 @@ export default {
   position: relative;
   display: flex;
   justify-content: center;
+  border: 1px white solid;
+  border-radius: 4px;
   max-width: 100%;
   width: 100%;
-  height: 500px;
+  height: 100%;
 }
 
 .graph-list {
@@ -501,6 +514,7 @@ export default {
 }
 
 .welcome {
+  padding: 24px;
   max-width: 700px;
 
   & > span.yellow {
@@ -511,18 +525,54 @@ export default {
 .stats-section {
   flex-direction: column;
   align-items: center;
-  box-shadow: 0px 0px 15px white;
-  border-radius: 8px;
-  margin: 20px 0;
-  width: 49%;
+  width: calc(50% - 10px);
+  height: 500px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  &:last-of-type {
+    margin: 0;
+  }
+}
+
+.stats-section.-high {
+  height: 1020px;
+  width: calc(50% - 10px);
+}
+
+.sub-column {
+  display: flex;
+  flex-direction: column;
+  width: calc(50% - 10px);
+}
+
+.sub-column > .stats-section {
+  width: 100%;
 }
 
 .stats-section-row {
   display: flex;
-  justify-content: space-between;
 }
 
 .stats-section.-large {
   width: 100%;
+}
+
+@media screen and (max-width: $mobileSize) {
+  .stats-section,
+  .stats-section.-large,
+  .stats-section.-high {
+    height: 500px;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .sub-column {
+    width: 100%;
+  }
+
+  .stats-section-row {
+    flex-wrap: wrap;
+  }
 }
 </style>

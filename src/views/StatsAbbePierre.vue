@@ -13,16 +13,23 @@
         <Spinner :speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
         <Section class="stats-section">
           <SectionTitle v-if="isLegalVariationLoaded" class="title">Pourcentage d'annonces illégales</SectionTitle>
-          <div v-if="status === 'ok'" class="container" ref="mapContainer">
+          <div v-if="status === 'ok'" class="container">
             <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalVariationLoaded" class="spinner" />
             <div v-if="isLegalVariationLoaded" id="isLegalVariation" class="graph"></div>
           </div>
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
-          <div v-if="status === 'ok'" class="container" ref="diffContainer">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if=" !isPriceVariationLoaded" class="spinner" />
+          <div v-if="status === 'ok'" class="container">
+            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isPriceVariationLoaded" class="spinner" />
             <div v-if="isPriceVariationLoaded" id="priceVariation" class="graph"></div>
+          </div>
+        </Section>
+        <Section class="stats-section">
+          <SectionTitle v-if="isLegalPerRenterLoaded" class="title">Par agence</SectionTitle>
+          <div v-if="status === 'ok'" class="container">
+            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalPerRenterLoaded" class="spinner" />
+            <div v-if="isLegalPerRenterLoaded" id="legalPerRenter" class="graph"></div>
           </div>
         </Section>
       </Page2Wrapper>
@@ -59,11 +66,17 @@ export default {
   mounted: function() {
     this.isMounted = true;
   },
+  beforeDestroy: function() {
+    this.controller.abort();
+  },
   data() {
     return {
+      controller: new AbortController(),
       isLegalVariationLoaded: false,
       isPriceVariationLoaded: false,
+      isLegalPerRenterLoaded: false,
       isMounted: false,
+      city: "paris",
       sucessfulServerResponse: "",
       serverError: "",
       status: "",
@@ -82,12 +95,17 @@ export default {
       return responseBody.message || JSON.stringify(responseBody);
     },
     onFetchIsLegalVariation: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/is-legal-variation?recaptchaToken=${recaptchaToken}`)
+      fetch(`${this.$domain}stats/is-legal-variation/${this.city}?recaptchaToken=${recaptchaToken}`, {
+        signal: this.controller.signal,
+      })
         .then(res => res.json())
         .then(spec => {
+          if (this.controller.signal.aborted) return;
+
           this.status = "ok";
           this.isLegalVariationLoaded = true;
           this.onFetchPriceVariation()
+          this.onFetchLegalPerRenter()
           vegaEmbed("#isLegalVariation", spec, {
             tooltip: {
               theme: "dark"
@@ -100,15 +118,43 @@ export default {
           this.status = "error";
         });
     },
-    onFetchPriceVariation: function(recaptchaToken) {
+    onFetchPriceVariation: function() {
       fetch(
-        `${this.$domain}stats/price-variation?recaptchaToken=${recaptchaToken}`
+        `${this.$domain}stats/price-variation/${this.city}`, {
+          signal: this.controller.signal,
+        }
       )
         .then(res => res.json())
         .then(spec => {
+          if (this.controller.signal.aborted) return;
+
           this.status = "ok";
           this.isPriceVariationLoaded = true;
           vegaEmbed("#priceVariation", spec, {
+            tooltip: {
+              theme: "dark"
+            },
+            actions: false
+          });
+        })
+        .catch(err => {
+          this.serverError = this.getErrorMessage(err);
+          this.status = "error";
+        });
+    },
+    onFetchLegalPerRenter: function() {
+      fetch(
+        `${this.$domain}stats/is-legal-per-renter/${this.city}`, {
+          signal: this.controller.signal,
+        }
+      )
+        .then(res => res.json())
+        .then(spec => {
+          if (this.controller.signal.aborted) return;
+
+          this.status = "ok";
+          this.isLegalPerRenterLoaded = true;
+          vegaEmbed("#legalPerRenter", spec, {
             tooltip: {
               theme: "dark"
             },

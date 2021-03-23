@@ -21,7 +21,7 @@
       <transition name="opacity">
         <FixedButton v-if="$route.name === 'home'" class="fixed-button">
           <GraphIcon :width="'26px'" :height="'26px'" />
-          <span>Stats</span>
+          <span class="label-stats">Stats</span>
         </FixedButton>
       </transition>
     </router-link>
@@ -94,10 +94,26 @@ export default {
 
 .fixed-button {
   align-items: center;
-  width: 100px;
+  width: fit-content;
   border-radius: 25px;
   font-size: 20px;
   justify-content: space-evenly;
+}
+
+.label-stats {
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+@media screen and (max-width: $mobileSize) {
+  .fixed-button {
+    border-radius: 50%;
+    width: 60px;
+  }
+
+  .label-stats {
+    display: none;
+  }
 }
 
 .opacity-enter,
