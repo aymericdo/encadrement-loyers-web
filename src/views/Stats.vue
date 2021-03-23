@@ -11,6 +11,7 @@
           sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
         />
         <Spinner :speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
+
         <Section v-if="welcomeData">
           <div class="welcome">
             <span>Sur les</span>

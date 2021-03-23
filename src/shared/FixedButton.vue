@@ -25,7 +25,7 @@ button {
   justify-content: center;
   background-color: $yellow;
   font-weight: 600;
-  bottom: 20px;
+  top: 20px;
   right: 20px;
   width: 60px;
   height: 60px;
