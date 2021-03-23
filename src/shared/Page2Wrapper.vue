@@ -15,7 +15,7 @@ export default {
 
 .center-wrapper {
     align-items: center;
-    background: rgba($deepgrey, 0.9);
+    background: #050505;
     display: flex;
     flex-direction: column;
     height: 100%;
