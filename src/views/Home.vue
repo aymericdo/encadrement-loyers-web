@@ -1,7 +1,10 @@
 <template>
   <div id="home">
     <router-view />
-    <div class="center-wrapper inactivable" v-bind:class="{ inactive: $route.name !== 'home' }">
+    <div
+      class="center-wrapper inactivable"
+      v-bind:class="{ inactive: $route.name !== 'home' }"
+    >
       <div>
         <Hero />
         <SectionWhy />
@@ -15,9 +18,12 @@
       </div>
     </div>
     <router-link to="/stats">
-      <FixedButton :bounce="$route.name === 'home'" v-bind:class="{ inactive: $route.name !== 'home' }">
-        <GraphIcon :width="'26px'" :height="'26px'" />
-      </FixedButton>
+      <transition name="opacity">
+        <FixedButton v-if="$route.name === 'home'" class="fixed-button">
+          <GraphIcon :width="'26px'" :height="'26px'" />
+          <span class="label-stats">Stats</span>
+        </FixedButton>
+      </transition>
     </router-link>
   </div>
 </template>
@@ -48,19 +54,19 @@ export default {
     SectionThanks,
     SectionWhere,
     SectionUs,
-    SectionWhy
+    SectionWhy,
   },
   data: function() {
     return {
-      isFirstVisitDone: false
+      isFirstVisitDone: false,
     };
   },
-  mounted() {	
-    if (!localStorage.isFirstVisitDone) {	
-      this.$router.push({ path: "video" });	
-      localStorage.isFirstVisitDone = true;	
+  mounted() {
+    if (!localStorage.isFirstVisitDone) {
+      this.$router.push({ path: "video" });
+      localStorage.isFirstVisitDone = true;
     }
-  }
+  },
 };
 </script>
 
@@ -84,6 +90,40 @@ export default {
 
 .center-wrapper > div {
   max-width: 100%;
+}
+
+.fixed-button {
+  align-items: center;
+  width: fit-content;
+  border-radius: 25px;
+  font-size: 20px;
+  justify-content: space-evenly;
+}
+
+.label-stats {
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+@media screen and (max-width: $mobileSize) {
+  .fixed-button {
+    border-radius: 50%;
+    width: 60px;
+  }
+
+  .label-stats {
+    display: none;
+  }
+}
+
+.opacity-enter,
+.opacity-leave-to {
+  opacity: 0;
+}
+
+.opacity-enter-active,
+.opacity-leave-active {
+  transition: opacity ease 400ms;
 }
 
 .inactivable {

@@ -16,6 +16,7 @@
     "vega-embed": "^6.2.1",
     "vega-lite": "^4.17.0",
     "vue": "^2.6.12",
+    "vue-dynamic-dropdown": "^1.0.12",
     "vue-eslint-parser": "^7.3.0",
     "vue-recaptcha": "^1.3.0",
     "vue-router": "^3.1.3",
