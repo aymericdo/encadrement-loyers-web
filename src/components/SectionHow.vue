@@ -7,21 +7,21 @@
         devriez payer.
       </h4>
       <p>Selon les critères trouvés sur la page du logement.</p>
-      <router-link to="/learn-more">
-        <span class="learn-more">Plus d'info</span>
-      </router-link>
       <Carousel />
-      <div class="infographic">
-        <img
-          src="@/assets/images/infographie_encadrement.png"
-          alt="Infographie sur le fonctionnement de l'extension"
-        />
-      </div>
       <h4>Accédez aux détails du calcul.</h4>
       <p>
         En cliquant sur la petite icône de l'extension, à droite de la barre
         d'URL.
       </p>
+      <div class="infographic">
+        <img
+          src="@/assets/images/infographie_encadrement.png"
+          alt="Infographie sur le fonctionnement de l'extension"
+        />
+        <router-link to="/learn-more">
+          <span class="learn-more">Plus d'info</span>
+        </router-link>
+      </div>
     </SectionRightPart>
   </Section>
 </template>
@@ -58,6 +58,7 @@ h4 {
 span.learn-more {
   font-size: 16px;
   font-weight: 500;
+  float: right;
 }
 
 .infographic {
