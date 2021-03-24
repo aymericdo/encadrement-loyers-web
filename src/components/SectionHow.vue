@@ -11,17 +11,17 @@
         <span class="learn-more">Plus d'info</span>
       </router-link>
       <Carousel />
-      <h4>Accédez aux détails du calcul.</h4>
-      <p>
-        En cliquant sur la petite icône de l'extension, à droite de la barre
-        d'URL.
-      </p>
       <div class="infographic">
         <img
           src="@/assets/images/infographie_encadrement.png"
           alt="Infographie sur le fonctionnement de l'extension"
         />
       </div>
+      <h4>Accédez aux détails du calcul.</h4>
+      <p>
+        En cliquant sur la petite icône de l'extension, à droite de la barre
+        d'URL.
+      </p>
     </SectionRightPart>
   </Section>
 </template>
