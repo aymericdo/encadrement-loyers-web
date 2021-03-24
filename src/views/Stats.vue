@@ -42,8 +42,11 @@
               }}%&nbsp;</span
             >
             <span>d'annonces illégales.</span>
+            
+            <VueDropdown v-if="false" :config="dropdownConfig" @setSelectedOption="setNewSelectedOption($event)"></VueDropdown>
           </div>
         </div>
+
 
         <div class="graph-list" v-if="status === 'ok'">
           <div class="stats-section -large">
@@ -167,6 +170,7 @@ import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+import VueDropdown from 'vue-dynamic-dropdown'
 
 const VEGA_COMMON = {
   tooltip: {
@@ -177,6 +181,13 @@ const VEGA_COMMON = {
   // width: 'container',
 };
 
+const DEFAULT_CITY = 'paris'
+const DEFAULT_OPTIONS = [{
+  value: 'Paris',
+}, {
+  value: 'Lille',
+}]
+
 export default {
   name: "Stats",
   components: {
@@ -185,6 +196,7 @@ export default {
     Page2Wrapper,
     StrokeIcon,
     FixedButton,
+    VueDropdown,
   },
   mounted: function() {
     this.isMounted = true;
@@ -196,18 +208,26 @@ export default {
   data() {
     return {
       controller: new AbortController(),
+      isMounted: false,
       isMapLoaded: false,
       isChloroplethMapLoaded: false,
-      isMounted: false,
       isLegalPerSurfaceLoaded: false,
       isPriceDifferenceLoaded: false,
       isPriceVariationLoaded: false,
       isLegalVariationLoaded: false,
-      city: "paris",
+      city: DEFAULT_CITY,
       status: "",
       sucessfulServerResponse: "",
       serverError: "",
       welcomeData: null,
+      dropdownConfig: {
+        options: DEFAULT_OPTIONS,
+        placeholder: DEFAULT_OPTIONS[0].value,
+        backgroundColor: "#fdcd56",
+        textColor: '#050505',
+        borderRadius: "8px",
+        width: 180,
+      }
     };
   },
   methods: {
@@ -242,7 +262,7 @@ export default {
     },
     onFetchWelcome: function(recaptchaToken) {
       fetch(
-        `${this.$domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
+        `${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`,
         { signal: this.controller.signal }
       )
         .then((res) => res.json())
@@ -427,6 +447,24 @@ export default {
     onCaptchaExpired: function() {
       this.status = "";
       this.$refs.recaptcha.reset();
+    },
+    setNewSelectedOption(selectedOption) {
+      if (this.city === selectedOption.value.toLowerCase()) { return; }
+
+      this.city = selectedOption.value.toLowerCase();
+      this.dropdownConfig.placeholder = selectedOption.value;
+      this.isMapLoaded = false;
+      this.isChloroplethMapLoaded = false;
+      this.isLegalPerSurfaceLoaded = false;
+      this.isPriceDifferenceLoaded = false;
+      this.isPriceVariationLoaded = false;
+      this.isLegalVariationLoaded = false;
+      this.onFetchMap();
+      this.onFetchChloroplethMap();
+      this.onFetchPriceDifference();
+      this.onFetchIsLegalPerSurface();
+      this.onFetchPriceVariation();
+      this.onFetchIsLegalVariation();
     },
     leave: function() {
       setTimeout(() => {
