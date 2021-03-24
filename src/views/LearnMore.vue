@@ -89,9 +89,13 @@ export default {
 
 /deep/ .center-wrapper {
   align-items: flex-start;
-  justify-content: center;
   text-align: justify;
-  padding: 0 48px;
+  box-sizing: border-box;
+  padding: 124px;
+
+  @media screen and (max-width: $mobileSize) {
+    padding: 124px 16px;
+  }
 
   ul li {
     list-style: inherit;
