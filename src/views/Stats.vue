@@ -20,7 +20,7 @@
           />
         </div>
 
-        <div v-if="welcomeData">
+        <div class="welcome-section" v-if="welcomeData">
           <div class="welcome">
             <span>Sur les</span>
             <span class="yellow"
@@ -42,114 +42,68 @@
               }}%&nbsp;</span
             >
             <span>d'annonces illégales.</span>
-            
-            <VueDropdown v-if="false" :config="dropdownConfig" @setSelectedOption="setNewSelectedOption($event)"></VueDropdown>
+          </div>
+
+          <div class="dropdown-city">
+            <VueDropdown
+              :config="cityDropdownConfig"
+              @setSelectedOption="setNewSelectedOption($event)"
+            ></VueDropdown>
           </div>
         </div>
 
-
         <div class="graph-list" v-if="status === 'ok'">
           <div class="stats-section -large">
-            <div class="container">
-              <Spinner
-                :speed="0.5"
-                line-fg-color="#fdcd56"
-                size="large"
-                v-if="!isLegalVariationLoaded"
-                class="spinner"
-              />
-              <div
-                v-if="isLegalVariationLoaded"
-                id="is-legal-variation"
-                class="graph"
-              ></div>
-            </div>
+            <Graph
+              :id="'is-legal-variation'"
+              :city="this.city"
+              @errorOutput="getErrorMessage($event)"
+            ></Graph>
           </div>
 
           <div class="stats-section-row">
             <div class="stats-section -high">
-              <div class="container">
-                <Spinner
-                  :speed="0.5"
-                  line-fg-color="#fdcd56"
-                  size="large"
-                  v-if="!isLegalPerSurfaceLoaded"
-                  class="spinner"
-                />
-                <div
-                  v-if="isLegalPerSurfaceLoaded"
-                  id="is-legal-per-surface"
-                  class="graph"
-                ></div>
-              </div>
+              <Graph
+                :id="'is-legal-per-surface'"
+                :city="this.city"
+                @errorOutput="getErrorMessage($event)"
+              ></Graph>
             </div>
 
             <div class="sub-column">
               <div class="stats-section">
-                <div class="container">
-                  <Spinner
-                    :speed="0.5"
-                    line-fg-color="#fdcd56"
-                    size="large"
-                    v-if="!isChloroplethMapLoaded"
-                    class="spinner"
-                  />
-                  <div
-                    v-if="isChloroplethMapLoaded"
-                    id="chloropleth-map"
-                    class="graph"
-                  ></div>
-                </div>
+                <Graph
+                  :id="'chloropleth-map'"
+                  :city="this.city"
+                  @errorOutput="getErrorMessage($event)"
+                ></Graph>
               </div>
 
               <div class="stats-section">
-                <div class="container">
-                  <Spinner
-                    :speed="0.5"
-                    line-fg-color="#fdcd56"
-                    size="large"
-                    v-if="!isMapLoaded"
-                    class="spinner"
-                  />
-                  <div v-if="isMapLoaded" id="map" class="graph"></div>
-                </div>
+                <Graph
+                  :id="'map'"
+                  :city="this.city"
+                  @errorOutput="getErrorMessage($event)"
+                ></Graph>
               </div>
             </div>
           </div>
 
           <div class="stats-section-row">
             <div class="stats-section">
-              <div class="container">
-                <Spinner
-                  :speed="0.5"
-                  line-fg-color="#fdcd56"
-                  size="large"
-                  v-if="!isPriceDifferenceLoaded"
-                  class="spinner"
-                />
-                <div
-                  v-if="isPriceDifferenceLoaded"
-                  id="price-diff"
-                  class="graph"
-                ></div>
-              </div>
+              <Graph
+                :id="'price-difference'"
+                :city="this.city"
+                @errorOutput="getErrorMessage($event)"
+              ></Graph>
             </div>
 
             <div class="stats-section">
-              <div class="container">
-                <Spinner
-                  :speed="0.5"
-                  line-fg-color="#fdcd56"
-                  size="large"
-                  v-if="!isPriceVariationLoaded"
-                  class="spinner"
-                />
-                <div
-                  v-if="isPriceVariationLoaded"
-                  id="price-variation"
-                  class="graph"
-                ></div>
-              </div>
+              <Graph
+                :id="'price-variation'"
+                :city="this.city"
+                @errorOutput="getErrorMessage($event)"
+              ></Graph>
             </div>
           </div>
         </div>
@@ -166,27 +120,23 @@
 <script>
 import Spinner from "vue-simple-spinner";
 import VueRecaptcha from "vue-recaptcha";
-import vegaEmbed from "vega-embed";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import VueDropdown from 'vue-dynamic-dropdown'
+import VueDropdown from "vue-dynamic-dropdown";
+import Graph from "@/shared/Graph.vue";
 
-const VEGA_COMMON = {
-  tooltip: {
-    theme: "dark",
+const DEFAULT_CITY = "paris";
+const DEFAULT_OPTIONS = [
+  {
+    realValue: 'paris',
+    value: "Paris",
   },
-  actions: false,
-  // not working héhé
-  // width: 'container',
-};
-
-const DEFAULT_CITY = 'paris'
-const DEFAULT_OPTIONS = [{
-  value: 'Paris',
-}, {
-  value: 'Lille',
-}]
+  {
+    realValue: 'lille',
+    value: "Lille",
+  },
+];
 
 export default {
   name: "Stats",
@@ -197,6 +147,7 @@ export default {
     StrokeIcon,
     FixedButton,
     VueDropdown,
+    Graph,
   },
   mounted: function() {
     this.isMounted = true;
@@ -209,25 +160,20 @@ export default {
     return {
       controller: new AbortController(),
       isMounted: false,
-      isMapLoaded: false,
-      isChloroplethMapLoaded: false,
-      isLegalPerSurfaceLoaded: false,
-      isPriceDifferenceLoaded: false,
-      isPriceVariationLoaded: false,
-      isLegalVariationLoaded: false,
       city: DEFAULT_CITY,
       status: "",
       sucessfulServerResponse: "",
       serverError: "",
       welcomeData: null,
-      dropdownConfig: {
+      cityDropdownConfig: {
         options: DEFAULT_OPTIONS,
         placeholder: DEFAULT_OPTIONS[0].value,
+        disabled: false,
         backgroundColor: "#fdcd56",
-        textColor: '#050505',
+        textColor: "#050505",
         borderRadius: "8px",
         width: 180,
-      }
+      },
     };
   },
   methods: {
@@ -261,178 +207,13 @@ export default {
         });
     },
     onFetchWelcome: function(recaptchaToken) {
-      fetch(
-        `${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`,
-        { signal: this.controller.signal }
-      )
+      fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
+        signal: this.controller.signal,
+      })
         .then((res) => res.json())
         .then((res) => {
           this.status = "ok";
           this.welcomeData = res;
-          this.onFetchMap();
-          this.onFetchChloroplethMap();
-          this.onFetchPriceDifference();
-          this.onFetchIsLegalPerSurface();
-          this.onFetchPriceVariation();
-          this.onFetchIsLegalVariation();
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchIsLegalVariation: function() {
-      fetch(`${this.$domain}stats/is-legal-variation/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isLegalVariationLoaded = true;
-          setTimeout(() => {
-            const width = document.getElementById("is-legal-variation")
-              .clientWidth;
-            const height = document.getElementById("is-legal-variation")
-              .clientHeight;
-            vegaEmbed("#is-legal-variation", spec, {
-              ...VEGA_COMMON,
-              width: width < 500 ? 500 : width,
-              height,
-            });
-          });
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchMap: function() {
-      fetch(`${this.$domain}stats/map/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isMapLoaded = true;
-          setTimeout(() => {
-            const width = document.getElementById("map").clientWidth;
-            const height = document.getElementById("map").clientHeight;
-            vegaEmbed("#map", spec, {
-              ...VEGA_COMMON,
-              width: width < 500 ? 500 : width,
-              height,
-            });
-          });
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchChloroplethMap: function() {
-      fetch(`${this.$domain}stats/chloropleth-map/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isChloroplethMapLoaded = true;
-          setTimeout(() => {
-            const width = document.getElementById("chloropleth-map")
-              .clientWidth;
-            const height = document.getElementById("chloropleth-map")
-              .clientHeight;
-            vegaEmbed("#chloropleth-map", spec, {
-              ...VEGA_COMMON,
-              width: width < 500 ? 500 : width,
-              height,
-            });
-          });
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchPriceDifference: function() {
-      fetch(`${this.$domain}stats/price-difference/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isPriceDifferenceLoaded = true;
-          setTimeout(() => {
-            const width = document.getElementById("price-diff").clientWidth;
-            const height = document.getElementById("price-diff").clientHeight;
-            vegaEmbed("#price-diff", spec, {
-              ...VEGA_COMMON,
-              width: width < 500 ? 500 : width,
-              height,
-            });
-          });
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchPriceVariation: function() {
-      fetch(`${this.$domain}stats/price-variation/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isPriceVariationLoaded = true;
-          setTimeout(() => {
-            const width = document.getElementById("price-variation")
-              .clientWidth;
-            const height = document.getElementById("price-variation")
-              .clientHeight;
-            vegaEmbed("#price-variation", spec, {
-              ...VEGA_COMMON,
-              width: width < 500 ? 500 : width,
-              height,
-            });
-          });
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchIsLegalPerSurface: function() {
-      fetch(`${this.$domain}stats/is-legal-per-surface/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isLegalPerSurfaceLoaded = true;
-          setTimeout(() => {
-            const width = document.getElementById("is-legal-per-surface")
-              .clientWidth;
-            const height = document.getElementById("is-legal-per-surface")
-              .clientHeight;
-            vegaEmbed("#is-legal-per-surface", spec, {
-              ...VEGA_COMMON,
-              width: width < 500 ? 500 : width,
-              height,
-            });
-          });
         })
         .catch((err) => {
           this.serverError = this.getErrorMessage(err);
@@ -449,22 +230,11 @@ export default {
       this.$refs.recaptcha.reset();
     },
     setNewSelectedOption(selectedOption) {
-      if (this.city === selectedOption.value.toLowerCase()) { return; }
-
-      this.city = selectedOption.value.toLowerCase();
-      this.dropdownConfig.placeholder = selectedOption.value;
-      this.isMapLoaded = false;
-      this.isChloroplethMapLoaded = false;
-      this.isLegalPerSurfaceLoaded = false;
-      this.isPriceDifferenceLoaded = false;
-      this.isPriceVariationLoaded = false;
-      this.isLegalVariationLoaded = false;
-      this.onFetchMap();
-      this.onFetchChloroplethMap();
-      this.onFetchPriceDifference();
-      this.onFetchIsLegalPerSurface();
-      this.onFetchPriceVariation();
-      this.onFetchIsLegalVariation();
+      if (this.city === selectedOption.realValue) {
+        return;
+      }
+      this.city = selectedOption.realValue;
+      this.cityDropdownConfig.placeholder = selectedOption.value;
     },
     leave: function() {
       setTimeout(() => {
@@ -551,10 +321,16 @@ export default {
   transform: translateY(-50%);
 }
 
-.welcome {
+.welcome-section {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 24px;
   max-width: 700px;
+}
 
+.welcome {
   & > span.yellow {
     color: $yellow;
   }
