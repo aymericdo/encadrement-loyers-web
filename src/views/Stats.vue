@@ -44,11 +44,12 @@
             <span>d'annonces illégales.</span>
           </div>
 
-          <div class="dropdown-city">
-            <VueDropdown
-              :config="cityDropdownConfig"
-              @setSelectedOption="setNewSelectedOption($event)"
-            ></VueDropdown>
+          <div class="city-dropdown">
+            <Dropdown
+              :options="cityDropdownOptions"
+              :currentValue="city"
+              @onSelect="changeCity($event)"
+            ></Dropdown>
           </div>
         </div>
 
@@ -56,16 +57,22 @@
           <div class="stats-section -large">
             <Graph
               :id="'is-legal-variation'"
-              :city="this.city"
+              :city="city"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
+            <div class="is-legal-variation-dropdown">
+              <Dropfilters
+                @onSubmit="changeFilters($event)"
+              >
+              </Dropfilters>
+            </div>
           </div>
 
           <div class="stats-section-row">
             <div class="stats-section -high">
               <Graph
                 :id="'is-legal-per-surface'"
-                :city="this.city"
+                :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
             </div>
@@ -74,7 +81,7 @@
               <div class="stats-section">
                 <Graph
                   :id="'chloropleth-map'"
-                  :city="this.city"
+                  :city="city"
                   @errorOutput="getErrorMessage($event)"
                 ></Graph>
               </div>
@@ -82,7 +89,7 @@
               <div class="stats-section">
                 <Graph
                   :id="'map'"
-                  :city="this.city"
+                  :city="city"
                   @errorOutput="getErrorMessage($event)"
                 ></Graph>
               </div>
@@ -93,7 +100,7 @@
             <div class="stats-section">
               <Graph
                 :id="'price-difference'"
-                :city="this.city"
+                :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
             </div>
@@ -101,7 +108,7 @@
             <div class="stats-section">
               <Graph
                 :id="'price-variation'"
-                :city="this.city"
+                :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
             </div>
@@ -123,18 +130,19 @@ import VueRecaptcha from "vue-recaptcha";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import VueDropdown from "vue-dynamic-dropdown";
+import Dropdown from "@/shared/Dropdown.vue";
+import Dropfilters from "@/shared/Dropfilters.vue";
 import Graph from "@/shared/Graph.vue";
 
 const DEFAULT_CITY = "paris";
-const DEFAULT_OPTIONS = [
+const DEFAULT_CITY_OPTIONS = [
   {
-    realValue: 'paris',
-    value: "Paris",
+    value: 'paris',
+    label: "Paris",
   },
   {
-    realValue: 'lille',
-    value: "Lille",
+    value: 'lille',
+    label: "Lille",
   },
 ];
 
@@ -146,7 +154,8 @@ export default {
     Page2Wrapper,
     StrokeIcon,
     FixedButton,
-    VueDropdown,
+    Dropdown,
+    Dropfilters,
     Graph,
   },
   mounted: function() {
@@ -165,15 +174,7 @@ export default {
       sucessfulServerResponse: "",
       serverError: "",
       welcomeData: null,
-      cityDropdownConfig: {
-        options: DEFAULT_OPTIONS,
-        placeholder: DEFAULT_OPTIONS[0].value,
-        disabled: false,
-        backgroundColor: "#fdcd56",
-        textColor: "#050505",
-        borderRadius: "8px",
-        width: 180,
-      },
+      cityDropdownOptions: DEFAULT_CITY_OPTIONS,
     };
   },
   methods: {
@@ -229,12 +230,14 @@ export default {
       this.status = "";
       this.$refs.recaptcha.reset();
     },
-    setNewSelectedOption(selectedOption) {
-      if (this.city === selectedOption.realValue) {
+    changeCity(opt) {
+      if (this.city === opt.value) {
         return;
       }
-      this.city = selectedOption.realValue;
-      this.cityDropdownConfig.placeholder = selectedOption.value;
+      this.city = opt.value;
+    },
+    changeFilters(opt) {
+      console.log(opt)
     },
     leave: function() {
       setTimeout(() => {
@@ -293,24 +296,6 @@ export default {
   transition: all ease 400ms;
 }
 
-.graph {
-  width: 100%;
-  height: 100%;
-  overflow-y: hidden;
-  overflow-x: auto;
-}
-
-.container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  border: 1px white solid;
-  border-radius: 4px;
-  max-width: 100%;
-  width: 100%;
-  height: 100%;
-}
-
 .graph-list {
   width: 100%;
 }
@@ -336,7 +321,16 @@ export default {
   }
 }
 
+.is-legal-variation-dropdown {
+  display: flex;
+  position: absolute;
+  top: 0;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
 .stats-section {
+  position: relative;
   flex-direction: column;
   align-items: center;
   width: calc(50% - 10px);

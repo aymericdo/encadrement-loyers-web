@@ -46,6 +46,11 @@ export default {
   mounted: function() {
     this.onFetchGraph();
   },
+  watch: {
+    city: function() {
+      this.onFetchGraph();
+    },
+  },
   beforeDestroy: function() {
     this.controller.abort();
   },
@@ -57,6 +62,8 @@ export default {
   },
   methods: {
     onFetchGraph: function() {
+      this.isGraphLoaded = false;
+
       fetch(`${this.$domain}stats/${this.id}/${this.city}`, {
         signal: this.controller.signal,
       })
