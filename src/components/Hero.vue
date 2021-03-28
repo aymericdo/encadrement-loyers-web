@@ -1,19 +1,33 @@
 <template>
   <div class="hero-header">
     <div class="hero-heading">
-      <vue-typed-js :stringsElement="'words'" :strings="['<span class='+ 'blue-text' +'>Pa</span>ri<span class='+ 'red-text' +'>s.</span>', 'L<span class='+'lille-color'+'>i</span>l<span class='+'lille-color'+'>le.</span>']" :loop="true" :contentType="'html'" :typeSpeed="100" :startDelay="1000" :backSpeed="50"	:backDelay="1000">
-        <h1>
-          <div>
-            <router-link to="video" class="yellow-text">
-              Encadrement
-            </router-link>
-          </div>
-          est une extension pour vous aider dans votre recherche de location à
-          <div class="paris-word">
-            <span class="typing"></span>
-          </div>
-        </h1>
-      </vue-typed-js>
+      <h1>
+        <div>
+          <router-link to="video" class="yellow-text">
+            Encadrement
+          </router-link>
+        </div>
+        est une extension pour vous aider dans votre recherche de location à
+        <div class="city-word">
+          <span :class="`typing ${cities[currentCity].id}`">
+            <span class="uno">{{
+              city.slice(0, cities[currentCity].text.length / 3)
+            }}</span>
+            <span class="dos">{{
+              city.slice(
+                cities[currentCity].text.length / 3,
+                (cities[currentCity].text.length / 3) * 2
+              )
+            }}</span>
+            <span class="tres">{{
+              city.slice(
+                (cities[currentCity].text.length / 3) * 2,
+                cities[currentCity].text.length
+              )
+            }}</span> </span
+          >|
+        </div>
+      </h1>
       <h2>
         Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous
         saurez.
@@ -29,6 +43,47 @@ export default {
   name: "Hero",
   components: {
     ButtonGroup,
+  },
+  data: function() {
+    return {
+      currentCity: 0,
+      currentLetter: 0,
+      cities: [
+        { id: "paris", text: "Paris." },
+        { id: "lille", text: "Lille." },
+      ],
+      city: "",
+      interval: null,
+    };
+  },
+  mounted: function() {
+    this.writeCity(500);
+  },
+  beforeUnmount: function() {
+    clearInterval(this.interval);
+  },
+  methods: {
+    writeCity: function(speed) {
+      this.interval = setInterval(() => {
+        this.city += this.cities[this.currentCity].text[this.currentLetter];
+        this.currentLetter += 1;
+
+        if (this.currentLetter > 2) {
+          clearInterval(this.interval);
+          this.writeCity(250);
+        }
+
+        if (this.cities[this.currentCity].text.length < this.currentLetter) {
+          clearInterval(this.interval);
+          setTimeout(() => {
+            this.currentLetter = 0;
+            this.currentCity = (this.currentCity + 1) % this.cities.length;
+            this.city = "";
+            this.writeCity(500);
+          }, 500)
+        }
+      }, speed);
+    },
   },
 };
 </script>
@@ -71,19 +126,28 @@ export default {
   }
 }
 
-/deep/ .blue-text {
-  color: #26a1ff;
-  display: inline-block;
+.city-word .typing.paris {
+  > span.uno {
+    color: #26a1ff;
+    display: inline-block;
+  }
+
+   > span.tres {
+    color: #ffaca6;
+    display: inline-block;
+  }
 }
 
-/deep/ .red-text {
-  color: #ffaca6;
-  display: inline-block;
-}
+.city-word .typing.lille {
+  > .uno {
+    color: #e01e13;
+    display: inline-block;
+  }
 
-/deep/ .lille-color {
-  color: #e01e13;
-  display: inline-block;
+  > .tres {
+    color: #e01e13;
+    display: inline-block;
+  }
 }
 
 .yellow-text {

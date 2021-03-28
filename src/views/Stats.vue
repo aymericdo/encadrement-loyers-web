@@ -3,18 +3,21 @@
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper class="page2-wrapper" v-if="isMounted">
         <div class="entire-page-centered">
-          <VueRecaptcha
+          <vue-recaptcha
+            siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
             class="recaptcha"
-            v-if="status !== 'ok' && status !== 'submitting'"
             ref="recaptcha"
+            :show="status !== 'ok' && status !== 'submitting' ? 1 : 0"
+            size="normal"
+            theme="light"
+            :tabindex="0"
             @verify="onCaptchaVerified"
-            @expired="onCaptchaExpired"
-            sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
+            @expire="onCaptchaExpired"
           />
-          <Spinner
-            :speed="0.5"
-            line-fg-color="#fdcd56"
-            size="huge"
+          <half-circle-spinner
+            :animation-duration="1000"
+            color="#fdcd56"
+            :size="120"
             class="spinner"
             v-if="status !== 'ok' && status === 'submitting'"
           />
@@ -61,10 +64,7 @@
               @errorOutput="getErrorMessage($event)"
             ></Graph>
             <div class="is-legal-variation-dropdown">
-              <Dropfilters
-                @onSubmit="changeFilters($event)"
-              >
-              </Dropfilters>
+              <Dropfilters @onSubmit="changeFilters($event)"> </Dropfilters>
             </div>
           </div>
 
@@ -125,8 +125,8 @@
 </template>
 
 <script>
-import Spinner from "vue-simple-spinner";
-import VueRecaptcha from "vue-recaptcha";
+import { HalfCircleSpinner } from "epic-spinners";
+import vueRecaptcha from "vue3-recaptcha2";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
@@ -137,11 +137,11 @@ import Graph from "@/shared/Graph.vue";
 const DEFAULT_CITY = "paris";
 const DEFAULT_CITY_OPTIONS = [
   {
-    value: 'paris',
+    value: "paris",
     label: "Paris",
   },
   {
-    value: 'lille',
+    value: "lille",
     label: "Lille",
   },
 ];
@@ -149,8 +149,8 @@ const DEFAULT_CITY_OPTIONS = [
 export default {
   name: "Stats",
   components: {
-    VueRecaptcha,
-    Spinner,
+    HalfCircleSpinner,
+    vueRecaptcha,
     Page2Wrapper,
     StrokeIcon,
     FixedButton,
@@ -162,7 +162,7 @@ export default {
     this.isMounted = true;
     this.needCaptcha();
   },
-  beforeDestroy: function() {
+  beforeUnmount: function() {
     this.controller.abort();
   },
   data() {
@@ -237,7 +237,7 @@ export default {
       this.city = opt.value;
     },
     changeFilters(opt) {
-      console.log(opt)
+      console.log(opt);
     },
     leave: function() {
       setTimeout(() => {

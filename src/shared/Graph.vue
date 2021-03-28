@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <Spinner
-      :speed="0.5"
-      line-fg-color="#fdcd56"
-      size="large"
+    <half-circle-spinner
+      :animation-duration="1000"
+      color="#fdcd56"
+      :size="60"
       v-if="!isGraphLoaded"
       class="spinner"
     />
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Spinner from "vue-simple-spinner";
+import { HalfCircleSpinner } from 'epic-spinners'
 import vegaEmbed from "vega-embed";
 
 const VEGA_COMMON = {
@@ -41,7 +41,7 @@ export default {
     }
   },
   components: {
-    Spinner,
+    HalfCircleSpinner,
   },
   mounted: function() {
     this.onFetchGraph();
@@ -51,7 +51,7 @@ export default {
       this.onFetchGraph();
     },
   },
-  beforeDestroy: function() {
+  beforeUnmount: function() {
     this.controller.abort();
   },
   data() {

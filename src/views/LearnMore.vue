@@ -87,7 +87,7 @@ export default {
   z-index: 2;
 }
 
-/deep/ .center-wrapper {
+:deep(.center-wrapper) {
   align-items: flex-start;
   text-align: justify;
   box-sizing: border-box;

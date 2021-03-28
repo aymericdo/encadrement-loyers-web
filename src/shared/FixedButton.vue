@@ -23,6 +23,7 @@ button {
   position: fixed;
   display: flex;
   justify-content: center;
+  align-items: center;
   background-color: $yellow;
   font-weight: 600;
   top: 20px;
