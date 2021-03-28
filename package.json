@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/core": "^7.12.10",
     "@vue/cli-service-global": "^4.5.10",
+    "@vueform/slider": "^1.0.3",
     "core-js": "^3.4.8",
     "hooper": "^0.3.4",
     "vega": "^5.17.0",
