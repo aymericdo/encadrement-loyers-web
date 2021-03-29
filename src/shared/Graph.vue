@@ -7,16 +7,12 @@
       v-if="!isGraphLoaded"
       class="spinner"
     />
-    <div
-      v-if="isGraphLoaded"
-      :id="id"
-      class="graph"
-    ></div>
+    <div v-if="isGraphLoaded" :id="id" class="graph"></div>
   </div>
 </template>
 
 <script>
-import { HalfCircleSpinner } from 'epic-spinners'
+import { HalfCircleSpinner } from "epic-spinners";
 import vegaEmbed from "vega-embed";
 
 const VEGA_COMMON = {
@@ -38,7 +34,11 @@ export default {
     city: {
       type: String,
       required: true,
-    }
+    },
+    options: {
+      type: Object,
+      default: null,
+    },
   },
   components: {
     HalfCircleSpinner,
@@ -50,6 +50,9 @@ export default {
     city: function() {
       this.onFetchGraph();
     },
+    options: function() {
+      this.onFetchGraph();
+    },
   },
   beforeUnmount: function() {
     this.controller.abort();
@@ -58,25 +61,38 @@ export default {
     return {
       controller: new AbortController(),
       isGraphLoaded: false,
-    }
+    };
   },
   methods: {
     onFetchGraph: function() {
       this.isGraphLoaded = false;
 
-      fetch(`${this.$domain}stats/${this.id}/${this.city}`, {
+      const strOptions = this.options
+        ? Object.keys(this.options)
+            .map((key) => {
+              return key + "=" + this.options[key];
+            })
+            .join("&")
+        : null;
+
+      fetch(`${this.$domain}stats/${this.id}/${this.city}${strOptions ? '?' + strOptions : ''}`, {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
+        .then((res) => {
+          if (res.message === 'token expired') {
+            throw res;
+          } else {
+            return res;
+          }
+        })
         .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.isGraphLoaded = true;
           setTimeout(() => {
-            const width = document.getElementById(this.id)
-              .clientWidth;
-            const height = document.getElementById(this.id)
-              .clientHeight;
+            const width = document.getElementById(this.id).clientWidth;
+            const height = document.getElementById(this.id).clientHeight;
             vegaEmbed(`#${this.id}`, spec, {
               ...VEGA_COMMON,
               width: width < 500 ? 500 : width,
@@ -85,15 +101,14 @@ export default {
           });
         })
         .catch((err) => {
-          this.$emit('errorOutput', err)
+          this.$emit("errorOutput", err);
         });
     },
   },
-}
+};
 </script>
 
 <style scoped>
-
 .graph {
   width: 100%;
   height: 100%;

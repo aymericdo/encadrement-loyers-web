@@ -49,6 +49,7 @@
 
           <div class="city-dropdown">
             <Dropdown
+              v-if="false"
               :options="cityDropdownOptions"
               :currentValue="city"
               @onSelect="changeCity($event)"
@@ -62,6 +63,7 @@
               ref="isLegalVariation"
               :id="'is-legal-variation'"
               :city="city"
+              :options="legalPercentageOptions"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
             <div class="is-legal-variation-dropdown">
@@ -69,6 +71,7 @@
                 @onSubmit="changeFilters($event)"
                 :width="isLegalVariationWidth"
                 :city="city"
+                :options="legalPercentageOptions"
               ></Dropfilters>
             </div>
           </div>
@@ -196,6 +199,12 @@ export default {
       serverError: ref(""),
       welcomeData: ref(null),
       cityDropdownOptions: DEFAULT_CITY_OPTIONS,
+      legalPercentageOptions: ref({
+        surfaceValue: [9, 100],
+        roomValue: [1, 6],
+        furnishedValue: 'all',
+        districtValues: [],
+      }),
     };
   },
   methods: {
@@ -208,6 +217,11 @@ export default {
       } else {
         responseBody = err.response.data || responseBody;
       }
+
+      if (err.message === 'token expired') {
+        this.status = ''
+      }
+
       return responseBody.message || JSON.stringify(responseBody);
     },
     needCaptcha: function() {
@@ -216,6 +230,13 @@ export default {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
+        .then((res) => {
+          if (res.message === 'token expired') {
+            throw res;
+          } else {
+            return res;
+          }
+        })
         .then((res) => {
           if (res) {
             this.status = "";
@@ -233,6 +254,13 @@ export default {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
+        .then((res) => {
+          if (res.message === 'token expired') {
+            throw res;
+          } else {
+            return res;
+          }
+        })
         .then((res) => {
           this.status = "ok";
           this.welcomeData = res;
@@ -258,7 +286,7 @@ export default {
       this.city = opt.value;
     },
     changeFilters(opt) {
-      console.log(opt);
+      this.legalPercentageOptions = opt;
     },
     leave: function() {
       setTimeout(() => {
@@ -346,7 +374,7 @@ export default {
   display: flex;
   position: absolute;
   top: 0;
-  transform: translateY(-50%);
+  transform: translate(10px, -50%);
   z-index: 1;
 }
 
