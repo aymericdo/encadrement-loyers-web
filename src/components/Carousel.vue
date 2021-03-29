@@ -1,74 +1,83 @@
 <template>
   <div class="carousel">
-    <Hooper ref="carousel" @slide="updateCarousel" :settings="hooperSettings">
-      <Slide v-for="(item, index) in items" v-bind:key="index"></Slide>
-    </Hooper>
-    <div class="button-group">
-      <span class="carousel-title">
-        Exemple sur
-        <b>{{items[currentSlide].website}}</b>
-      </span>
-      <div>
-        <button @click.prevent="slidePrev" class="carousel-control" id="precedent">Prec.</button>
-        <button @click.prevent="slideNext" class="carousel-control" id="suivant">Suiv.</button>
+    <Swiper
+      class="swiper"
+      :slides-per-view="1"
+      :space-between="50"
+      :loop="true"
+      :speed="500"
+      :pagination="{ clickable: true }"
+      :navigation="{
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      }"
+      @slideChange="onSlideChange"
+    >
+      <SwiperSlide class="slide" v-for="item in items" v-bind:key="item.id">
+        <img
+          :src="require(`@/assets/images/${item.id}.png`)"
+          :alt="`screenshot de ${item.website}`"
+        />
+      </SwiperSlide>
+
+      <div class="button-group">
+        <span class="carousel-title">
+          Exemple sur
+          <b>{{ items[currentSlide].website }}</b>
+        </span>
+        <div>
+          <button
+            class="carousel-control prev swiper-button-prev"
+          >
+            <span>Prec.</span>
+          </button>
+          <button
+            class="carousel-control next swiper-button-next"
+          >
+            <span>Suiv.</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </Swiper>
   </div>
 </template>
 
 <script>
-import { Hooper, Slide } from "hooper";
-import "hooper/dist/hooper.css";
+import SwiperCore, { Navigation, Pagination } from "swiper";
+
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/swiper.scss";
+import "swiper/components/navigation/navigation.scss";
+import "swiper/components/pagination/pagination.scss";
+
+SwiperCore.use([Navigation, Pagination]);
 
 export default {
   name: "Carousel",
   components: {
-    Hooper,
-    Slide
+    Swiper,
+    SwiperSlide,
   },
   data: function() {
     return {
       currentSlide: 0,
-      hooperSettings: {
-        itemsToShow: 1,
-        centerMode: true
-      },
-      carouselData: 0,
       items: [
-        { website: "immobilier.lefigaro.fr" },
-        { website: "leboncoin.fr" },
-        { website: "pap.fr" },
-        { website: "orpi.com" },
-        { website: "loueragile.fr" },
-        { website: "seloger.com" },
-      ]
+        { id: "figaro", website: "immobilier.lefigaro.fr" },
+        { id: "leboncoin", website: "leboncoin.fr" },
+        { id: "pap", website: "pap.fr" },
+        { id: "orpi", website: "orpi.com" },
+        { id: "loueragile", website: "loueragile.fr" },
+        { id: "seloger", website: "seloger.com" },
+      ],
     };
   },
-  watch: {
-    carouselData() {
-      this.$refs.carousel.slideTo(this.carouselData);
-    }
-  },
   methods: {
-    slidePrev() {
-      this.$refs.carousel.slidePrev();
+    onSlideChange(event) {
+      this.currentSlide = event.realIndex;
     },
-    slideNext() {
-      this.$refs.carousel.slideNext();
-    },
-    updateCarousel(e) {
-      this.currentSlide = e.currentSlide;
-    }
-  }
+  },
 };
 </script>
-
-<style>
-.hooper > .hooper-list {
-  border: solid 1px transparent;
-  border-radius: 10px;
-}
-</style>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/variables.scss";
@@ -79,35 +88,26 @@ export default {
   margin-top: 32px;
   margin-bottom: 56px;
 }
-.hooper {
-  height: 340px;
-  margin-bottom: 8px;
+
+.swiper {
+  width: 100%;
 }
-.hooper:focus {
-  outline: none;
+
+:deep(.swiper-pagination) {
+  bottom: 24px
 }
-.hooper li {
-  background-position: left;
-  background-size: cover;
+
+:deep(.swiper-pagination .swiper-pagination-bullet-active) {
+  background: $yellow;
 }
-.hooper li:nth-child(1) {
-  background-image: url("../assets/images/figaro.png");
+
+.slide > img {
+  border: solid 1px transparent;
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
 }
-.hooper li:nth-child(2) {
-  background-image: url("../assets/images/leboncoin.png");
-}
-.hooper li:nth-child(3) {
-  background-image: url("../assets/images/pap.png");
-}
-.hooper li:nth-child(4) {
-  background-image: url("../assets/images/orpi.png");
-}
-.hooper li:nth-child(5) {
-  background-image: url("../assets/images/loueragile.png");
-}
-.hooper li:nth-child(6) {
-  background-image: url("../assets/images/seloger.png");	
-}
+
 .button-group {
   display: flex;
   flex-direction: row;
@@ -145,19 +145,39 @@ button.carousel-control {
   }
 }
 
-button#precedent {
+button.prev {
   border-right: solid 1px $deepgrey;
   padding-right: 8px;
   margin-right: 1px;
 }
 
-button#suivant {
+button.next {
   padding-left: 8px;
 }
 
 @media screen and (max-width: $mobileSize) {
-  button#precedent,
-  button#suivant {
+  button.next > span,
+  button.prev > span {
+    display: none;
+  }
+
+  button.prev {
+    border: none;
+    padding-right: 0;
+    margin-right: 0;
+  }
+}
+
+@media screen and (min-width: $mobileSize) {
+  :deep(.swiper-button-prev), :deep(.swiper-button-next) {
+    position: inherit;
+    height: inherit;
+    width: inherit;
+    margin-top: inherit;
+    top: inherit;
+  }
+
+  :deep(.swiper-button-prev::after), :deep(.swiper-button-next::after) {
     display: none;
   }
 }

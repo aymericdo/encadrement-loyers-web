@@ -87,7 +87,7 @@ export default {
   z-index: 2;
 }
 
-/deep/ .center-wrapper {
+:deep(.center-wrapper) {
   align-items: flex-start;
   text-align: justify;
   box-sizing: border-box;
@@ -102,7 +102,7 @@ export default {
   }
 }
 
-.slide-fade-enter,
+.slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
   transform: scale(0);

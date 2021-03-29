@@ -22,7 +22,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/variables.scss";
 
-/deep/ .section-title h3 {
+:deep(.section-title h3) {
     color: $darkeryellow;
 }
 </style>

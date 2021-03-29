@@ -2,34 +2,79 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <VueRecaptcha
+        <GoogleRecaptcha
           class="recaptcha"
-          v-if="status !== 'ok' && status !== 'submitting'"
+          v-if="status !== 'ok' && status !== 'submitting' ? 1 : 0"
           ref="recaptcha"
+          size="normal"
+          theme="light"
+          :tabindex="0"
           @verify="onCaptchaVerified"
-          @expired="onCaptchaExpired"
-          sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
+          @expire="onCaptchaExpired"
+          siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
         />
-        <Spinner :speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
+        <half-circle-spinner
+          :animation-duration="1000"
+          color="#fdcd56"
+          :size="120"
+          v-if="status !== 'ok' && status === 'submitting'"
+          class="spinner"
+        />
         <Section class="stats-section">
-          <SectionTitle v-if="isLegalVariationLoaded" class="title">Pourcentage d'annonces illégales</SectionTitle>
+          <SectionTitle v-if="isLegalVariationLoaded" class="title"
+            >Pourcentage d'annonces illégales</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalVariationLoaded" class="spinner" />
-            <div v-if="isLegalVariationLoaded" id="isLegalVariation" class="graph"></div>
+            <half-circle-spinner
+              :animation-duration="1000"
+              color="#fdcd56"
+              :size="60"
+              v-if="!isLegalVariationLoaded"
+              class="spinner"
+            />
+            <div
+              v-if="isLegalVariationLoaded"
+              id="isLegalVariation"
+              class="graph"
+            ></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
+          <SectionTitle v-if="isPriceVariationLoaded" class="title"
+            >Écart des annonces illégales avec le prix théorique</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isPriceVariationLoaded" class="spinner" />
-            <div v-if="isPriceVariationLoaded" id="priceVariation" class="graph"></div>
+            <half-circle-spinner
+              :animation-duration="1000"
+              color="#fdcd56"
+              :size="60"
+              v-if="!isPriceVariationLoaded"
+              class="spinner"
+            />
+            <div
+              v-if="isPriceVariationLoaded"
+              id="priceVariation"
+              class="graph"
+            ></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isLegalPerRenterLoaded" class="title">Par agence</SectionTitle>
+          <SectionTitle v-if="isLegalPerRenterLoaded" class="title"
+            >Par agence</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isLegalPerRenterLoaded" class="spinner" />
-            <div v-if="isLegalPerRenterLoaded" id="legalPerRenter" class="graph"></div>
+            <half-circle-spinner
+              :animation-duration="1000"
+              color="#fdcd56"
+              :size="60"
+              v-if="!isLegalPerRenterLoaded"
+              class="spinner"
+            />
+            <div
+              v-if="isLegalPerRenterLoaded"
+              id="legalPerRenter"
+              class="graph"
+            ></div>
           </div>
         </Section>
       </Page2Wrapper>
@@ -43,9 +88,9 @@
 </template>
 
 <script>
-import Spinner from 'vue-simple-spinner'
+import { HalfCircleSpinner } from "epic-spinners";
 import vegaEmbed from "vega-embed";
-import VueRecaptcha from "vue-recaptcha";
+import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
@@ -55,18 +100,18 @@ import Section from "@/shared/Section.vue";
 export default {
   name: "StatsAbbePierre",
   components: {
-    Spinner,
+    HalfCircleSpinner,
     SectionTitle,
     StrokeIcon,
     FixedButton,
-    VueRecaptcha,
+    GoogleRecaptcha,
     Page2Wrapper,
-    Section
+    Section,
   },
   mounted: function() {
     this.isMounted = true;
   },
-  beforeDestroy: function() {
+  beforeUnmount: function() {
     this.controller.abort();
   },
   data() {
@@ -95,73 +140,72 @@ export default {
       return responseBody.message || JSON.stringify(responseBody);
     },
     onFetchIsLegalVariation: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/is-legal-variation/${this.city}?recaptchaToken=${recaptchaToken}`, {
-        signal: this.controller.signal,
-      })
-        .then(res => res.json())
-        .then(spec => {
+      fetch(
+        `${this.$domain}stats/is-legal-variation/${this.city}?recaptchaToken=${recaptchaToken}`,
+        {
+          signal: this.controller.signal,
+        }
+      )
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isLegalVariationLoaded = true;
-          this.onFetchPriceVariation()
-          this.onFetchLegalPerRenter()
+          this.onFetchPriceVariation();
+          this.onFetchLegalPerRenter();
           vegaEmbed("#isLegalVariation", spec, {
             tooltip: {
-              theme: "dark"
+              theme: "dark",
             },
-            actions: false
+            actions: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchPriceVariation: function() {
-      fetch(
-        `${this.$domain}stats/price-variation/${this.city}`, {
-          signal: this.controller.signal,
-        }
-      )
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/price-variation/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isPriceVariationLoaded = true;
           vegaEmbed("#priceVariation", spec, {
             tooltip: {
-              theme: "dark"
+              theme: "dark",
             },
-            actions: false
+            actions: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchLegalPerRenter: function() {
-      fetch(
-        `${this.$domain}stats/is-legal-per-renter/${this.city}`, {
-          signal: this.controller.signal,
-        }
-      )
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/is-legal-per-renter/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isLegalPerRenterLoaded = true;
           vegaEmbed("#legalPerRenter", spec, {
             tooltip: {
-              theme: "dark"
+              theme: "dark",
             },
-            actions: false
+            actions: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
@@ -182,8 +226,8 @@ export default {
     },
     unmount: function() {
       this.isMounted = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -207,7 +251,7 @@ export default {
   transform: translateY(-50%);
 }
 
-.slide-fade-enter,
+.slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
   transform: scale(0);
@@ -225,7 +269,7 @@ export default {
   overflow-x: auto;
 }
 
-/deep/ .title {
+:deep(.title) {
   max-width: 100%;
   width: 700px;
 

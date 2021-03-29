@@ -116,7 +116,7 @@ export default {
   }
 }
 
-.opacity-enter,
+.opacity-enter-from,
 .opacity-leave-to {
   opacity: 0;
 }

@@ -2,19 +2,34 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <VueRecaptcha
+        <GoogleRecaptcha
           class="recaptcha"
-          v-if="status !== 'ok' && status !== 'submitting'"
+          v-if="status !== 'ok' && status !== 'submitting' ? 1 : 0"
           ref="recaptcha"
+          size="normal" 
+          theme="light"
+          :tabindex="0"
           @verify="onCaptchaVerified"
-          @expired="onCaptchaExpired"
-          sitekey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
+          @expire="onCaptchaExpired"
+          siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
         />
-        <Spinner :speed="0.5" line-fg-color="#fdcd56" size="huge" class="spinner" v-if="status !== 'ok' && status === 'submitting'" />
+        <half-circle-spinner
+          :animation-duration="1000"
+          color="#fdcd56"
+          :size="120"
+          v-if="status !== 'ok' && status === 'submitting'"
+          class="spinner"
+        />
         <Section class="stats-section">
           <SectionTitle v-if="isAdoptionLoaded" class="title">Adoption</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="adoptionContainer">
-            <Spinner :speed="0.5" line-fg-color="#fdcd56" size="large" v-if="!isAdoptionLoaded" class="spinner" />
+            <half-circle-spinner
+              :animation-duration="1000"
+              color="#fdcd56"
+              :size="60"
+              v-if="!isAdoptionLoaded"
+              class="spinner"
+            />
             <div v-if="isAdoptionLoaded" id="adoption"></div>
           </div>
         </Section>
@@ -29,9 +44,9 @@
 </template>
 
 <script>
-import Spinner from 'vue-simple-spinner'
+import { HalfCircleSpinner } from 'epic-spinners'
 import vegaEmbed from "vega-embed";
-import VueRecaptcha from "vue-recaptcha";
+import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
@@ -41,8 +56,8 @@ import Section from "@/shared/Section.vue";
 export default {
   name: "Adoption",
   components: {
-    Spinner,
-    VueRecaptcha,
+    HalfCircleSpinner,
+    GoogleRecaptcha,
     SectionTitle,
     StrokeIcon,
     FixedButton,
@@ -132,7 +147,7 @@ export default {
   transform: translateY(-50%);
 }
 
-.slide-fade-enter,
+.slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
   transform: scale(0);
@@ -150,7 +165,7 @@ export default {
   overflow-x: auto;
 }
 
-/deep/ .title {
+:deep(.title) {
   max-width: inherit;
 
   & > h3 {
