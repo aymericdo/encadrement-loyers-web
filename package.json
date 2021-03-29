@@ -19,8 +19,7 @@
     "vega-lite": "^4.17.0",
     "vue": "^3.0.0-beta.1",
     "vue-eslint-parser": "^7.3.0",
-    "vue-router": "^4.0.0-alpha.6",
-    "vue3-recaptcha2": "^1.1.0"
+    "vue-router": "^4.0.0-alpha.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.10",

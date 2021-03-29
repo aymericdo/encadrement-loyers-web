@@ -2,11 +2,11 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <vue-recaptcha
+        <GoogleRecaptcha
           class="recaptcha"
-          :show="status !== 'ok' && status !== 'submitting' ? 1 : 0"
+          v-if="status !== 'ok' && status !== 'submitting' ? 1 : 0"
           ref="recaptcha"
-          size="normal" 
+          size="normal"
           theme="light"
           :tabindex="0"
           @verify="onCaptchaVerified"
@@ -21,7 +21,9 @@
           class="spinner"
         />
         <Section class="stats-section">
-          <SectionTitle v-if="isLegalVariationLoaded" class="title">Pourcentage d'annonces illégales</SectionTitle>
+          <SectionTitle v-if="isLegalVariationLoaded" class="title"
+            >Pourcentage d'annonces illégales</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container">
             <half-circle-spinner
               :animation-duration="1000"
@@ -30,11 +32,17 @@
               v-if="!isLegalVariationLoaded"
               class="spinner"
             />
-            <div v-if="isLegalVariationLoaded" id="isLegalVariation" class="graph"></div>
+            <div
+              v-if="isLegalVariationLoaded"
+              id="isLegalVariation"
+              class="graph"
+            ></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isPriceVariationLoaded" class="title">Écart des annonces illégales avec le prix théorique</SectionTitle>
+          <SectionTitle v-if="isPriceVariationLoaded" class="title"
+            >Écart des annonces illégales avec le prix théorique</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container">
             <half-circle-spinner
               :animation-duration="1000"
@@ -43,11 +51,17 @@
               v-if="!isPriceVariationLoaded"
               class="spinner"
             />
-            <div v-if="isPriceVariationLoaded" id="priceVariation" class="graph"></div>
+            <div
+              v-if="isPriceVariationLoaded"
+              id="priceVariation"
+              class="graph"
+            ></div>
           </div>
         </Section>
         <Section class="stats-section">
-          <SectionTitle v-if="isLegalPerRenterLoaded" class="title">Par agence</SectionTitle>
+          <SectionTitle v-if="isLegalPerRenterLoaded" class="title"
+            >Par agence</SectionTitle
+          >
           <div v-if="status === 'ok'" class="container">
             <half-circle-spinner
               :animation-duration="1000"
@@ -56,7 +70,11 @@
               v-if="!isLegalPerRenterLoaded"
               class="spinner"
             />
-            <div v-if="isLegalPerRenterLoaded" id="legalPerRenter" class="graph"></div>
+            <div
+              v-if="isLegalPerRenterLoaded"
+              id="legalPerRenter"
+              class="graph"
+            ></div>
           </div>
         </Section>
       </Page2Wrapper>
@@ -70,9 +88,9 @@
 </template>
 
 <script>
-import { HalfCircleSpinner } from 'epic-spinners'
+import { HalfCircleSpinner } from "epic-spinners";
 import vegaEmbed from "vega-embed";
-import vueRecaptcha from 'vue3-recaptcha2';
+import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
@@ -86,9 +104,9 @@ export default {
     SectionTitle,
     StrokeIcon,
     FixedButton,
-    vueRecaptcha,
+    GoogleRecaptcha,
     Page2Wrapper,
-    Section
+    Section,
   },
   mounted: function() {
     this.isMounted = true;
@@ -122,73 +140,72 @@ export default {
       return responseBody.message || JSON.stringify(responseBody);
     },
     onFetchIsLegalVariation: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/is-legal-variation/${this.city}?recaptchaToken=${recaptchaToken}`, {
-        signal: this.controller.signal,
-      })
-        .then(res => res.json())
-        .then(spec => {
+      fetch(
+        `${this.$domain}stats/is-legal-variation/${this.city}?recaptchaToken=${recaptchaToken}`,
+        {
+          signal: this.controller.signal,
+        }
+      )
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isLegalVariationLoaded = true;
-          this.onFetchPriceVariation()
-          this.onFetchLegalPerRenter()
+          this.onFetchPriceVariation();
+          this.onFetchLegalPerRenter();
           vegaEmbed("#isLegalVariation", spec, {
             tooltip: {
-              theme: "dark"
+              theme: "dark",
             },
-            actions: false
+            actions: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchPriceVariation: function() {
-      fetch(
-        `${this.$domain}stats/price-variation/${this.city}`, {
-          signal: this.controller.signal,
-        }
-      )
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/price-variation/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isPriceVariationLoaded = true;
           vegaEmbed("#priceVariation", spec, {
             tooltip: {
-              theme: "dark"
+              theme: "dark",
             },
-            actions: false
+            actions: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
     onFetchLegalPerRenter: function() {
-      fetch(
-        `${this.$domain}stats/is-legal-per-renter/${this.city}`, {
-          signal: this.controller.signal,
-        }
-      )
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${this.$domain}stats/is-legal-per-renter/${this.city}`, {
+        signal: this.controller.signal,
+      })
+        .then((res) => res.json())
+        .then((spec) => {
           if (this.controller.signal.aborted) return;
 
           this.status = "ok";
           this.isLegalPerRenterLoaded = true;
           vegaEmbed("#legalPerRenter", spec, {
             tooltip: {
-              theme: "dark"
+              theme: "dark",
             },
-            actions: false
+            actions: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
@@ -209,8 +226,8 @@ export default {
     },
     unmount: function() {
       this.isMounted = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -234,7 +251,7 @@ export default {
   transform: translateY(-50%);
 }
 
-.slide-fade-enter,
+.slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
   transform: scale(0);

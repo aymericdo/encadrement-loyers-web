@@ -35,7 +35,6 @@ export default {
   },
   watch: {
     currentValue: function() {
-      console.log('bite')
       this.currentValueDisplay = this.options.find(opt => opt.value === this.currentValue).label
     },
   },
@@ -116,7 +115,7 @@ export default {
   color: $yellow;
 }
 
-.slide-down-enter,
+.slide-down-enter-from,
 .slide-down-leave-to {
   opacity: 0;
   transform: translateY(-100%);

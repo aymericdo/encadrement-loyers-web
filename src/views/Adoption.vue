@@ -2,9 +2,9 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <vue-recaptcha
+        <GoogleRecaptcha
           class="recaptcha"
-          :show="status !== 'ok' && status !== 'submitting' ? 1 : 0"
+          v-if="status !== 'ok' && status !== 'submitting' ? 1 : 0"
           ref="recaptcha"
           size="normal" 
           theme="light"
@@ -46,7 +46,7 @@
 <script>
 import { HalfCircleSpinner } from 'epic-spinners'
 import vegaEmbed from "vega-embed";
-import vueRecaptcha from 'vue3-recaptcha2';
+import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
@@ -57,7 +57,7 @@ export default {
   name: "Adoption",
   components: {
     HalfCircleSpinner,
-    vueRecaptcha,
+    GoogleRecaptcha,
     SectionTitle,
     StrokeIcon,
     FixedButton,
@@ -147,7 +147,7 @@ export default {
   transform: translateY(-50%);
 }
 
-.slide-fade-enter,
+.slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
   transform: scale(0);

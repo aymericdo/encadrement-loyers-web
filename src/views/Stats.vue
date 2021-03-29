@@ -3,11 +3,11 @@
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper class="page2-wrapper" v-if="isMounted">
         <div class="entire-page-centered">
-          <vue-recaptcha
+          <GoogleRecaptcha
             siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
             class="recaptcha"
-            ref="recaptcha"
-            :show="status !== 'ok' && status !== 'submitting' ? 1 : 0"
+            ref="vueRecaptcha"
+            v-if="status !== 'ok' && status !== 'submitting'"
             size="normal"
             theme="light"
             :tabindex="0"
@@ -59,12 +59,13 @@
         <div class="graph-list" v-if="status === 'ok'">
           <div class="stats-section -large">
             <Graph
+              ref="isLegalVariation"
               :id="'is-legal-variation'"
               :city="city"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
             <div class="is-legal-variation-dropdown">
-              <Dropfilters @onSubmit="changeFilters($event)"> </Dropfilters>
+              <Dropfilters @onSubmit="changeFilters($event)" :width="isLegalVariationWidth"></Dropfilters>
             </div>
           </div>
 
@@ -125,9 +126,10 @@
 </template>
 
 <script>
+import { ref, watchEffect } from 'vue'
 import { HalfCircleSpinner } from "epic-spinners";
-import vueRecaptcha from "vue3-recaptcha2";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
+import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Dropdown from "@/shared/Dropdown.vue";
@@ -150,7 +152,7 @@ export default {
   name: "Stats",
   components: {
     HalfCircleSpinner,
-    vueRecaptcha,
+    GoogleRecaptcha,
     Page2Wrapper,
     StrokeIcon,
     FixedButton,
@@ -165,17 +167,29 @@ export default {
   beforeUnmount: function() {
     this.controller.abort();
   },
-  data() {
+  setup() {
+    const isLegalVariation = ref(null)
+    const isLegalVariationWidth = ref(0)
+    watchEffect(() => {
+      if (isLegalVariation.value) {
+        isLegalVariationWidth.value = isLegalVariation.value.$el.clientWidth
+      }
+    }, {
+      flush: 'post'
+    })
+
     return {
+      isLegalVariation,
+      isLegalVariationWidth,
       controller: new AbortController(),
-      isMounted: false,
+      isMounted: ref(false),
       city: DEFAULT_CITY,
-      status: "",
-      sucessfulServerResponse: "",
-      serverError: "",
-      welcomeData: null,
+      status: ref(""),
+      sucessfulServerResponse: ref(""),
+      serverError: ref(""),
+      welcomeData: ref(null),
       cityDropdownOptions: DEFAULT_CITY_OPTIONS,
-    };
+    }
   },
   methods: {
     // helper to get a displayable message to the user
@@ -223,12 +237,12 @@ export default {
     },
     onCaptchaVerified: function(recaptchaToken) {
       this.status = "submitting";
-      this.$refs.recaptcha.reset();
+      this.$refs.vueRecaptcha.reset();
       this.onFetchWelcome(recaptchaToken);
     },
     onCaptchaExpired: function() {
       this.status = "";
-      this.$refs.recaptcha.reset();
+      this.$refs.vueRecaptcha.reset();
     },
     changeCity(opt) {
       if (this.city === opt.value) {
@@ -285,7 +299,7 @@ export default {
   width: 100%;
 }
 
-.slide-fade-enter,
+.slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
   transform: scale(0);
