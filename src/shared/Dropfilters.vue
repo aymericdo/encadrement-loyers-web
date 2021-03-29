@@ -207,8 +207,6 @@ export default {
 
 .option-list {
   position: absolute;
-  max-height: 250px;
-  overflow-y: auto;
   margin-top: 4px;
   box-sizing: border-box;
   width: 500px;
