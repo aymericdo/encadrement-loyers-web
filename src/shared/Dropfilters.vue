@@ -50,7 +50,7 @@
             </MultiDropdown>
           </span>
         </div>
-        <button class="submit-btn" @click="onSubmit()">Filtrer</button>
+        <button class="submit-btn" @click="onSubmit">Filtrer</button>
       </div>
     </transition>
   </div>
@@ -74,6 +74,9 @@ export default {
     width: {
       type: Number,
     },
+    options: {
+      type: Object,
+    }
   },
   computed: {
     cssVars() {
@@ -103,9 +106,8 @@ export default {
     return {
       controller: new AbortController(),
       isOpen: false,
-      currentValueDisplay: "",
-      surfaceValue: [9, 100],
-      roomValue: [1, 6],
+      surfaceValue: this.options.surfaceValue,
+      roomValue: this.options.roomValue,
       furnishedDropdownOptions: [{
         value: "all",
         label: "Tout",
@@ -116,18 +118,23 @@ export default {
         value: "nonFurnished",
         label: "Non meublé",
       }],
-      furnishedValue: 'all',
+      furnishedValue: this.options.furnishedValue,
       districtDropdownOptions: [],
-      districtValues: [],
+      districtValues: this.options.districtValues,
     };
   },
   methods: {
     onOpen: function() {
       this.isOpen = !this.isOpen;
     },
-    onSubmit: function(opt) {
+    onSubmit: function() {
       this.isOpen = false;
-      this.$emit("onSubmit", opt);
+      this.$emit("onSubmit", {
+        districtValues: this.districtValues,
+        furnishedValue: this.furnishedValue,
+        surfaceValue: this.surfaceValue,
+        roomValue: this.roomValue,
+      });
     },
     roomValueFct: function(value) {
       return `${value} pièce${(value > 1 ? 's' : '')}`
@@ -145,8 +152,15 @@ export default {
       })
         .then((res) => res.json())
         .then((res) => {
+          if (res.message === 'token expired') {
+            throw res;
+          } else {
+            return res;
+          }
+        })
+        .then((res) => {
           this.districtDropdownOptions = res.map(district => ({
-            value: district.toLowerCase(),
+            value: district,
             label: district,
           }))
         })

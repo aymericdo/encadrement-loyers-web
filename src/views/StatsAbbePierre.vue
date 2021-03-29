@@ -147,6 +147,13 @@ export default {
         }
       )
         .then((res) => res.json())
+        .then((res) => {
+          if (res.message === 'token expired') {
+            throw res;
+          } else {
+            return res;
+          }
+        })
         .then((spec) => {
           if (this.controller.signal.aborted) return;
 
@@ -171,6 +178,13 @@ export default {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
+        .then((res) => {
+          if (res.message === 'token expired') {
+            throw res;
+          } else {
+            return res;
+          }
+        })
         .then((spec) => {
           if (this.controller.signal.aborted) return;
 
@@ -193,6 +207,13 @@ export default {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
+        .then((res) => {
+          if (res.message === 'token expired') {
+            throw res;
+          } else {
+            return res;
+          }
+        })
         .then((spec) => {
           if (this.controller.signal.aborted) return;
 
