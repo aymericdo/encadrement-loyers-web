@@ -1,15 +1,20 @@
 <template>
-  <div class="dropdown">
+  <div class="multi-dropdown">
     <button @click="onOpen()" :class="{ '-is-open': isOpen }">
-      <span>{{ currentValueDisplay }}</span
-      ><ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
+      <span>{{ currentValuesDisplay }}</span
+      ><ArrowIcon
+        class="arrow-icon"
+        :class="{ '-is-open': isOpen }"
+      ></ArrowIcon>
     </button>
     <transition name="slide-down">
       <div class="option-list" v-if="isOpen">
         <div
           class="option"
           v-for="option in options"
-          :class="{ '-selected': currentValue === option.value }"
+          :class="{
+            '-selected': currentValues.some((v) => v === option.value),
+          }"
           v-bind:key="option.value"
           @click="onSelect(option)"
         >
@@ -23,20 +28,26 @@
 <script>
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 export default {
-  name: "Dropdown",
-  props: ["options", "currentValue"],
+  name: "MultiDropdown",
+  props: ["options", "currentValues"],
   data() {
     return {
       isOpen: false,
-      currentValueDisplay: '',
+      currentValuesDisplay: "",
     };
   },
   mounted: function() {
-    this.currentValueDisplay = this.options.find(opt => opt.value === this.currentValue).label
+    this.currentValuesDisplay = this.options
+      .filter((opt) => this.currentValues.includes(opt.value))
+      .map((opt) => opt.label)
+      .join(", ") || 'Tout';
   },
   watch: {
-    currentValue: function() {
-      this.currentValueDisplay = this.options.find(opt => opt.value === this.currentValue).label
+    currentValues: function() {
+      this.currentValuesDisplay = this.options
+        .filter((opt) => this.currentValues.includes(opt.value))
+        .map((opt) => opt.label)
+        .join(", ") || 'Tout';
     },
   },
   methods: {
@@ -44,7 +55,6 @@ export default {
       this.isOpen = !this.isOpen;
     },
     onSelect: function(opt) {
-      this.isOpen = false;
       this.$emit("onSelect", opt);
     },
   },
@@ -57,11 +67,11 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/variables.scss";
 
-.dropdown {
+.multi-dropdown {
   position: relative;
 }
 
-.dropdown > button {
+.multi-dropdown > button {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -80,11 +90,11 @@ export default {
   }
 }
 
-.dropdown > button.-is-open {
+.multi-dropdown > button.-is-open {
   border: solid white 2px;
 }
 
-.dropdown > button > span {
+.multi-dropdown > button > span {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -102,9 +112,9 @@ export default {
 
 .option-list {
   position: absolute;
-  width: 100%;
   max-height: 250px;
   overflow-y: auto;
+  width: 100%;
   top: 100%;
   margin-top: 4px;
   background-color: $deepblack;

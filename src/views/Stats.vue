@@ -65,7 +65,11 @@
               @errorOutput="getErrorMessage($event)"
             ></Graph>
             <div class="is-legal-variation-dropdown">
-              <Dropfilters @onSubmit="changeFilters($event)" :width="isLegalVariationWidth"></Dropfilters>
+              <Dropfilters
+                @onSubmit="changeFilters($event)"
+                :width="isLegalVariationWidth"
+                :city="city"
+              ></Dropfilters>
             </div>
           </div>
 
@@ -126,7 +130,7 @@
 </template>
 
 <script>
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect } from "vue";
 import { HalfCircleSpinner } from "epic-spinners";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
@@ -168,15 +172,18 @@ export default {
     this.controller.abort();
   },
   setup() {
-    const isLegalVariation = ref(null)
-    const isLegalVariationWidth = ref(0)
-    watchEffect(() => {
-      if (isLegalVariation.value) {
-        isLegalVariationWidth.value = isLegalVariation.value.$el.clientWidth
+    const isLegalVariation = ref(null);
+    const isLegalVariationWidth = ref(0);
+    watchEffect(
+      () => {
+        if (isLegalVariation.value) {
+          isLegalVariationWidth.value = isLegalVariation.value.$el.clientWidth;
+        }
+      },
+      {
+        flush: "post",
       }
-    }, {
-      flush: 'post'
-    })
+    );
 
     return {
       isLegalVariation,
@@ -189,7 +196,7 @@ export default {
       serverError: ref(""),
       welcomeData: ref(null),
       cityDropdownOptions: DEFAULT_CITY_OPTIONS,
-    }
+    };
   },
   methods: {
     // helper to get a displayable message to the user
