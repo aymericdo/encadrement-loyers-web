@@ -373,8 +373,8 @@ export default {
 .is-legal-variation-dropdown {
   display: flex;
   position: absolute;
-  top: 0;
-  transform: translate(10px, -50%);
+  top: -18px;
+  left: 10px;
   z-index: 1;
 }
 

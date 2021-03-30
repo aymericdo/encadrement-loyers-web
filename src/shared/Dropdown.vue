@@ -1,6 +1,7 @@
 <template>
   <div class="dropdown">
-    <button @click="onOpen()" :class="{ '-is-open': isOpen }">
+    <div class="overlay" v-if="isOpen" @click="onOpen"></div>
+    <button @click="onOpen" :class="{ '-is-open': isOpen }">
       <span>{{ currentValueDisplay }}</span
       ><ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
     </button>
@@ -82,6 +83,7 @@ export default {
 
 .dropdown > button.-is-open {
   border: solid white 2px;
+  z-index: 2;
 }
 
 .dropdown > button > span {
@@ -100,6 +102,18 @@ export default {
   transform: rotate(180deg);
 }
 
+.overlay {
+  background: rgba(19,15,64,.4);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 1;
+  overflow: hidden;
+}
+
 .option-list {
   position: absolute;
   width: 100%;
@@ -110,7 +124,7 @@ export default {
   background-color: $deepblack;
   border-radius: 4px;
   border: 1px solid white;
-  z-index: 1;
+  z-index: 2;
 }
 
 .option {
