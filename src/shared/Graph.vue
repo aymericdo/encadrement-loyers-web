@@ -72,9 +72,6 @@ export default {
   },
   methods: {
     onFetchGraph: function() {
-      if (this.controller.signal.aborted) {
-        this.controller.abort();
-      }
       this.isGraphLoaded = false;
 
       const optionParams = {
