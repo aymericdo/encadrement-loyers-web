@@ -260,6 +260,7 @@ export default {
 
       if (err.message === "token expired") {
         this.status = "";
+        this.welcomeData = null;
       }
 
       return responseBody.message || JSON.stringify(responseBody);
