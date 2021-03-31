@@ -444,6 +444,17 @@ export default {
   margin-top: 36px;
 }
 
+@media screen and (max-width: $mobileSize) {
+  .welcome-section > .row {
+    flex-direction: column;
+  }
+
+  .welcome-section > .row > .slider {
+    margin-top: 50px;
+  }
+}
+
+
 .welcome-section > .row :deep(.slider-target .slider-connect) {
   background: $yellow;
 }

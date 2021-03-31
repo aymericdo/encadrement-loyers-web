@@ -21,7 +21,6 @@
           class="spinner"
         />
         <Section class="stats-section">
-          <SectionTitle v-if="isAdoptionLoaded" class="title">Adoption</SectionTitle>
           <div v-if="status === 'ok'" class="container" ref="adoptionContainer">
             <half-circle-spinner
               :animation-duration="1000"
@@ -49,7 +48,6 @@ import vegaEmbed from "vega-embed";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
 
@@ -58,7 +56,6 @@ export default {
   components: {
     HalfCircleSpinner,
     GoogleRecaptcha,
-    SectionTitle,
     StrokeIcon,
     FixedButton,
     Page2Wrapper,
