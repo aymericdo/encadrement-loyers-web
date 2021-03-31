@@ -22,7 +22,7 @@
         />
         <Section class="stats-section">
           <SectionTitle v-if="isLegalVariationLoaded" class="title"
-            >Pourcentage d'annonces illégales</SectionTitle
+            >Pourcentage d'annonces non conformes</SectionTitle
           >
           <div v-if="status === 'ok'" class="container">
             <half-circle-spinner
@@ -41,7 +41,7 @@
         </Section>
         <Section class="stats-section">
           <SectionTitle v-if="isPriceVariationLoaded" class="title"
-            >Écart des annonces illégales avec le prix théorique</SectionTitle
+            >Écart des annonces non conformes avec le prix théorique</SectionTitle
           >
           <div v-if="status === 'ok'" class="container">
             <half-circle-spinner

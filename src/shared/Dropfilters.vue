@@ -1,7 +1,7 @@
 <template>
   <div class="dropfilters">
     <button @click="onOpen()" :class="{ '-is-open': isOpen }">
-      <span>Filtre</span>
+      <span>Filtres</span>
       <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
     </button>
     <transition name="slide-down">

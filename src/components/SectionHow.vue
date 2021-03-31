@@ -3,12 +3,12 @@
     <SectionTitle>Comment ?</SectionTitle>
     <SectionRightPart>
       <h4>
-        L’extension vous donne automatiquement le prix le plus haut que vous
-        devriez payer.
+        L’extension vous donne automatiquement le prix maximum estimé que vous
+        devriez payer
       </h4>
-      <p>Selon les critères trouvés sur la page du logement.</p>
+      <p>Selon les critères trouvés sur l'annonce.</p>
       <Carousel />
-      <h4>Accédez aux détails du calcul.</h4>
+      <h4>Accédez aux détails du calcul</h4>
       <p>
         En cliquant sur la petite icône de l'extension, à droite de la barre
         d'URL.

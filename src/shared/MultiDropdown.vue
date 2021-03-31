@@ -120,7 +120,7 @@ export default {
   top: 0;
   left: 0;
   cursor: pointer;
-  z-index: 1;
+  z-index: 2;
   overflow: hidden;
 }
 

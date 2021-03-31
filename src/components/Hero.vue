@@ -29,8 +29,7 @@
         </div>
       </h1>
       <h2>
-        Conforme ou pas à la loi de l’encadrement des loyers parisiens, vous
-        saurez.
+        Vérifiez si les annonces sont conformes ou non à la loi de l’encadrement des loyers.
       </h2>
     </div>
     <ButtonGroup />

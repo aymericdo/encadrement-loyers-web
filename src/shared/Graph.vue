@@ -35,6 +35,10 @@ export default {
       type: String,
       required: true,
     },
+    date: {
+      type: String,
+      required: true,
+    },
     options: {
       type: Object,
       default: null,
@@ -48,6 +52,9 @@ export default {
   },
   watch: {
     city: function() {
+      this.onFetchGraph();
+    },
+    date: function() {
       this.onFetchGraph();
     },
     options: function() {
@@ -65,12 +72,20 @@ export default {
   },
   methods: {
     onFetchGraph: function() {
+      if (this.controller.signal.aborted) {
+        this.controller.abort();
+      }
       this.isGraphLoaded = false;
 
-      const strOptions = this.options
-        ? Object.keys(this.options)
+      const optionParams = {
+        ...this.options,
+        dateValue: this.date,
+      }
+
+      const strOptions = optionParams
+        ? Object.keys(optionParams)
             .map((key) => {
-              return key + "=" + this.options[key];
+              return key + "=" + optionParams[key];
             })
             .join("&")
         : null;

@@ -24,36 +24,47 @@
         </div>
 
         <div class="welcome-section" v-if="welcomeData">
-          <div class="welcome">
-            <span>Sur les</span>
-            <span class="yellow"
-              >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
-            >
-            <span>cas étudiés,</span>
-            <span class="yellow"
-              >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
-            >
-            <span
-              >sont illégales. Pour les annonces d'une surface inférieure
-              à</span
-            >
-            <span class="yellow">&nbsp;{{ welcomeData.pivotSurface }}m²</span>
-            <span>, il y a</span>
-            <span class="yellow"
-              >&nbsp;{{
-                welcomeData.isSmallSurfaceIllegalPercentage
-              }}%&nbsp;</span
-            >
-            <span>d'annonces illégales.</span>
-          </div>
+          <div class="row">
+            <div class="welcome">
+              <span>Sur les</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
+              >
+              <span>annonces étudiées,</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
+              >
+              <span
+                >sont non conformes. Pour les annonces d'une surface inférieure
+                à</span
+              >
+              <span class="yellow">&nbsp;{{ welcomeData.pivotSurface }}m²</span>
+              <span>, il y a</span>
+              <span class="yellow"
+                >&nbsp;{{
+                  welcomeData.isSmallSurfaceIllegalPercentage
+                }}%&nbsp;</span
+              >
+              <span>d'annonces non conformes.</span>
+            </div>
 
-          <div class="city-dropdown">
-            <Dropdown
-              v-if="false"
-              :options="cityDropdownOptions"
-              :currentValue="city"
-              @onSelect="changeCity($event)"
-            ></Dropdown>
+            <div class="city-dropdown">
+              <Dropdown
+                :options="cityDropdownOptions"
+                :currentValue="city"
+                @onSelect="changeCity($event)"
+              ></Dropdown>
+            </div>
+          </div>
+          <div class="row">
+            <Slider
+              class="slider"
+              v-model="dateValue"
+              :min="0"
+              :max="maxDateValue"
+              :format="dateValueFct"
+              @change="setDateValueStr"
+            />
           </div>
         </div>
 
@@ -63,6 +74,7 @@
               ref="isLegalVariation"
               :id="'is-legal-variation'"
               :city="city"
+              :date="getDatesFromValues"
               :options="legalPercentageOptions"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
@@ -80,6 +92,7 @@
             <div class="stats-section -high">
               <Graph
                 :id="'is-legal-per-surface'"
+                :date="getDatesFromValues"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
@@ -89,6 +102,7 @@
               <div class="stats-section">
                 <Graph
                   :id="'chloropleth-map'"
+                  :date="getDatesFromValues"
                   :city="city"
                   @errorOutput="getErrorMessage($event)"
                 ></Graph>
@@ -97,6 +111,7 @@
               <div class="stats-section">
                 <Graph
                   :id="'map'"
+                  :date="getDatesFromValues"
                   :city="city"
                   @errorOutput="getErrorMessage($event)"
                 ></Graph>
@@ -108,6 +123,7 @@
             <div class="stats-section">
               <Graph
                 :id="'price-difference'"
+                :date="getDatesFromValues"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
@@ -116,6 +132,7 @@
             <div class="stats-section">
               <Graph
                 :id="'price-variation'"
+                :date="getDatesFromValues"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
@@ -142,6 +159,7 @@ import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Dropdown from "@/shared/Dropdown.vue";
 import Dropfilters from "@/shared/Dropfilters.vue";
 import Graph from "@/shared/Graph.vue";
+import Slider from "@vueform/slider";
 
 const DEFAULT_CITY = "paris";
 const DEFAULT_CITY_OPTIONS = [
@@ -166,13 +184,20 @@ export default {
     Dropdown,
     Dropfilters,
     Graph,
+    Slider,
   },
   mounted: function() {
     this.isMounted = true;
     this.needCaptcha();
+    this.setDateValueStr(this.dateValue)
   },
   beforeUnmount: function() {
     this.controller.abort();
+  },
+  computed: {
+    getDatesFromValues() {
+      return this.dateValueStr;
+    },
   },
   setup() {
     const isLegalVariation = ref(null);
@@ -188,12 +213,23 @@ export default {
       }
     );
 
+    const realStartDate = new Date("2019-10-22");
+    const realEndDate = new Date();
+    const maxDateValue = Math.round(
+      (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
+    );
+    const minDateValue = Math.round(
+      (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) -
+        realStartDate) /
+        (1000 * 60 * 60 * 24)
+    );
+
     return {
       isLegalVariation,
       isLegalVariationWidth,
       controller: new AbortController(),
       isMounted: ref(false),
-      city: DEFAULT_CITY,
+      city: ref(DEFAULT_CITY),
       status: ref(""),
       sucessfulServerResponse: ref(""),
       serverError: ref(""),
@@ -202,9 +238,13 @@ export default {
       legalPercentageOptions: ref({
         surfaceValue: [9, 100],
         roomValue: [1, 6],
-        furnishedValue: 'all',
+        furnishedValue: "all",
         districtValues: [],
       }),
+      realStartDate,
+      dateValue: ref([minDateValue, maxDateValue]),
+      maxDateValue,
+      dateValueStr: ref(''),
     };
   },
   methods: {
@@ -218,8 +258,8 @@ export default {
         responseBody = err.response.data || responseBody;
       }
 
-      if (err.message === 'token expired') {
-        this.status = ''
+      if (err.message === "token expired") {
+        this.status = "";
       }
 
       return responseBody.message || JSON.stringify(responseBody);
@@ -231,7 +271,7 @@ export default {
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.message === 'token expired') {
+          if (res.message === "token expired") {
             throw res;
           } else {
             return res;
@@ -255,7 +295,7 @@ export default {
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.message === 'token expired') {
+          if (res.message === "token expired") {
             throw res;
           } else {
             return res;
@@ -283,6 +323,7 @@ export default {
       if (this.city === opt.value) {
         return;
       }
+
       this.city = opt.value;
     },
     changeFilters(opt) {
@@ -295,6 +336,33 @@ export default {
     },
     unmount: function() {
       this.isMounted = false;
+    },
+    getDateFromValue: function(value) {
+      const copy = new Date(Number(this.realStartDate));
+      copy.setDate(this.realStartDate.getDate() + value);
+      return copy;
+    },
+    dateValueFct: function(value) {
+      return this.getDateFromValue(value).toLocaleDateString();
+    },
+    getDateValueStr: function(dateValue) {
+      const date = [
+        this.getDateFromValue(dateValue[0]),
+        this.getDateFromValue(dateValue[1]),
+      ];
+
+      const currDate1 = date[0].getDate();
+      const currMonth1 = date[0].getMonth() + 1; //Months are zero based
+      const currYear1 = date[0].getFullYear();
+
+      const currDate2 = date[1].getDate();
+      const currMonth2 = date[1].getMonth() + 1; //Months are zero based
+      const currYear2 = date[1].getFullYear();
+
+      return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
+    },
+    setDateValueStr: function(dateValue) {
+      this.dateValueStr = this.getDateValueStr(dateValue);
     },
   },
 };
@@ -358,10 +426,32 @@ export default {
 .welcome-section {
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 24px;
   max-width: 700px;
+  margin-bottom: 24px;
+}
+
+.welcome-section > .row {
+  display: flex;
+  width: 100%;
+}
+
+.welcome-section > .row > .slider {
+  width: 100%;
+  margin-top: 36px;
+}
+
+.welcome-section > .row :deep(.slider-target .slider-connect) {
+  background: $yellow;
+}
+
+.welcome-section > .row :deep(.slider-target .slider-tooltip) {
+  background: $deepblack;
+  border-color: $yellow;
+  line-height: 16px;
 }
 
 .welcome {
