@@ -13,6 +13,7 @@
 
 <script>
 import { HalfCircleSpinner } from "epic-spinners";
+import { timeFormatLocale, formatLocale } from "../tools/vegaFormatLocale";
 import vegaEmbed from "vega-embed";
 
 const VEGA_COMMON = {
@@ -81,7 +82,7 @@ export default {
       };
 
       if (this.date) {
-        optionParams['dateValue'] = this.date
+        optionParams["dateValue"] = this.date;
       }
 
       const strOptions = optionParams
@@ -119,6 +120,8 @@ export default {
               ...VEGA_COMMON,
               width: width < 500 ? 500 : width,
               height,
+              formatLocale,
+              timeFormatLocale,
             });
           });
         })
