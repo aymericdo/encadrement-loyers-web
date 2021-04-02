@@ -89,34 +89,32 @@
           </div>
 
           <div class="stats-section-row">
-            <div class="stats-section -high">
+            <div class="stats-section">
               <Graph
-                :id="'is-legal-per-surface'"
+                :id="'chloropleth-map'"
                 :date="getDatesFromValues"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
             </div>
 
-            <div class="sub-column">
-              <div class="stats-section">
-                <Graph
-                  :id="'chloropleth-map'"
-                  :date="getDatesFromValues"
-                  :city="city"
-                  @errorOutput="getErrorMessage($event)"
-                ></Graph>
-              </div>
-
-              <div class="stats-section">
-                <Graph
-                  :id="'map'"
-                  :date="getDatesFromValues"
-                  :city="city"
-                  @errorOutput="getErrorMessage($event)"
-                ></Graph>
-              </div>
+            <div class="stats-section">
+              <Graph
+                :id="'map'"
+                :date="getDatesFromValues"
+                :city="city"
+                @errorOutput="getErrorMessage($event)"
+              ></Graph>
             </div>
+          </div>
+
+          <div class="stats-section -large">
+            <Graph
+              :id="'is-legal-per-surface'"
+              :date="getDatesFromValues"
+              :city="city"
+              @errorOutput="getErrorMessage($event)"
+            ></Graph>
           </div>
 
           <div class="stats-section-row">
@@ -189,7 +187,7 @@ export default {
   mounted: function() {
     this.isMounted = true;
     this.needCaptcha();
-    this.setDateValueStr(this.dateValue)
+    this.setDateValueStr(this.dateValue);
   },
   beforeUnmount: function() {
     this.controller.abort();
@@ -244,7 +242,7 @@ export default {
       realStartDate,
       dateValue: ref([minDateValue, maxDateValue]),
       maxDateValue,
-      dateValueStr: ref(''),
+      dateValueStr: ref(""),
     };
   },
   methods: {
@@ -454,7 +452,6 @@ export default {
     margin-top: 50px;
   }
 }
-
 
 .welcome-section > .row :deep(.slider-target .slider-connect) {
   background: $yellow;
