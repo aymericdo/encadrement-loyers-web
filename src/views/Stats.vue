@@ -2,12 +2,13 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper class="page2-wrapper" v-if="isMounted">
-        <div class="entire-page-centered">
+        <SectionTitle class="title">Stats</SectionTitle>
+        <div v-if="status !== 'ok'" class="entire-page-centered">
           <GoogleRecaptcha
             siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
             class="recaptcha"
             ref="vueRecaptcha"
-            v-if="status !== 'ok' && status !== 'submitting'"
+            v-if="status !== 'submitting'"
             size="normal"
             theme="light"
             :tabindex="0"
@@ -19,7 +20,7 @@
             color="#fdcd56"
             :size="120"
             class="spinner"
-            v-if="status !== 'ok' && status === 'submitting'"
+            v-if="status === 'submitting'"
           />
         </div>
 
@@ -151,6 +152,7 @@
 import { ref, watchEffect } from "vue";
 import { HalfCircleSpinner } from "epic-spinners";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
@@ -176,6 +178,7 @@ export default {
   components: {
     HalfCircleSpinner,
     GoogleRecaptcha,
+    SectionTitle,
     Page2Wrapper,
     StrokeIcon,
     FixedButton,
@@ -420,6 +423,19 @@ export default {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.title {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 700px;
+
+  :deep(h3) {
+    margin: 0;
+  }
 }
 
 .welcome-section {

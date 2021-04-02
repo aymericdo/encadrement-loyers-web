@@ -4,7 +4,7 @@
       <Page2Wrapper v-if="isMounted">
         <GoogleRecaptcha
           class="recaptcha"
-          v-if="status !== 'ok' && status !== 'submitting' ? 1 : 0"
+          v-if="status !== 'ok' && status !== 'submitting'"
           ref="recaptcha"
           size="normal" 
           theme="light"

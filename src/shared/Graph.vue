@@ -37,7 +37,7 @@ export default {
     },
     date: {
       type: String,
-      required: true,
+      required: false,
     },
     options: {
       type: Object,
@@ -73,10 +73,15 @@ export default {
   methods: {
     onFetchGraph: function() {
       this.isGraphLoaded = false;
+      this.controller.abort();
+      this.controller = new AbortController();
 
       const optionParams = {
         ...this.options,
-        dateValue: this.date,
+      };
+
+      if (this.data) {
+        optionParams['dateValue'] = this.date
       }
 
       const strOptions = optionParams
@@ -87,12 +92,17 @@ export default {
             .join("&")
         : null;
 
-      fetch(`${this.$domain}stats/${this.id}/${this.city}${strOptions ? '?' + strOptions : ''}`, {
-        signal: this.controller.signal,
-      })
+      fetch(
+        `${this.$domain}stats/${this.id}/${this.city}${
+          strOptions ? "?" + strOptions : ""
+        }`,
+        {
+          signal: this.controller.signal,
+        }
+      )
         .then((res) => res.json())
         .then((res) => {
-          if (res.message === 'token expired') {
+          if (res.message === "token expired") {
             throw res;
           } else {
             return res;

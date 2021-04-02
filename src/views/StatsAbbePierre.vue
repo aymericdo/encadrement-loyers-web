@@ -2,81 +2,43 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <GoogleRecaptcha
-          class="recaptcha"
-          v-if="status !== 'ok' && status !== 'submitting' ? 1 : 0"
-          ref="recaptcha"
-          size="normal"
-          theme="light"
-          :tabindex="0"
-          @verify="onCaptchaVerified"
-          @expire="onCaptchaExpired"
-          siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
-        />
-        <half-circle-spinner
-          :animation-duration="1000"
-          color="#fdcd56"
-          :size="120"
-          v-if="status !== 'ok' && status === 'submitting'"
-          class="spinner"
-        />
-        <Section class="stats-section">
-          <SectionTitle v-if="isLegalVariationLoaded" class="title"
-            >Pourcentage d'annonces non conformes</SectionTitle
-          >
-          <div v-if="status === 'ok'" class="container">
-            <half-circle-spinner
-              :animation-duration="1000"
-              color="#fdcd56"
-              :size="60"
-              v-if="!isLegalVariationLoaded"
-              class="spinner"
-            />
-            <div
-              v-if="isLegalVariationLoaded"
-              id="isLegalVariation"
-              class="graph"
-            ></div>
-          </div>
-        </Section>
-        <Section class="stats-section">
-          <SectionTitle v-if="isPriceVariationLoaded" class="title"
-            >Écart des annonces non conformes avec le prix théorique</SectionTitle
-          >
-          <div v-if="status === 'ok'" class="container">
-            <half-circle-spinner
-              :animation-duration="1000"
-              color="#fdcd56"
-              :size="60"
-              v-if="!isPriceVariationLoaded"
-              class="spinner"
-            />
-            <div
-              v-if="isPriceVariationLoaded"
-              id="priceVariation"
-              class="graph"
-            ></div>
-          </div>
-        </Section>
-        <Section class="stats-section">
-          <SectionTitle v-if="isLegalPerRenterLoaded" class="title"
-            >Par agence</SectionTitle
-          >
-          <div v-if="status === 'ok'" class="container">
-            <half-circle-spinner
-              :animation-duration="1000"
-              color="#fdcd56"
-              :size="60"
-              v-if="!isLegalPerRenterLoaded"
-              class="spinner"
-            />
-            <div
-              v-if="isLegalPerRenterLoaded"
-              id="legalPerRenter"
-              class="graph"
-            ></div>
-          </div>
-        </Section>
+        <SectionTitle class="title">Stats pour la fondation Abbé Pierre</SectionTitle>
+        <div v-if="status !== 'ok'" class="entire-page-centered">
+          <GoogleRecaptcha
+            class="recaptcha"
+            v-if="status !== 'submitting'"
+            ref="recaptcha"
+            size="normal"
+            theme="light"
+            :tabindex="0"
+            @verify="onCaptchaVerified"
+            @expire="onCaptchaExpired"
+            siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
+          />
+          <half-circle-spinner
+            :animation-duration="1000"
+            color="#fdcd56"
+            :size="120"
+            v-if="status === 'submitting'"
+            class="spinner"
+          />
+        </div>
+        <div class="graph-list" v-if="status === 'ok'">
+          <Section class="stats-section -large">
+            <Graph
+              :id="'is-legal-per-website'"
+              :city="city"
+              @errorOutput="getErrorMessage($event)"
+            ></Graph>
+          </Section>
+          <Section class="stats-section -large">
+            <Graph
+              :id="'is-legal-per-renter'"
+              :city="city"
+              @errorOutput="getErrorMessage($event)"
+            ></Graph>
+          </Section>
+        </div>
       </Page2Wrapper>
     </transition>
     <div @click="unmount">
@@ -89,27 +51,29 @@
 
 <script>
 import { HalfCircleSpinner } from "epic-spinners";
-import vegaEmbed from "vega-embed";
+import SectionTitle from "@/shared/SectionTitle.vue";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
+import Graph from "@/shared/Graph.vue";
 
 export default {
   name: "StatsAbbePierre",
   components: {
     HalfCircleSpinner,
-    SectionTitle,
     StrokeIcon,
+    SectionTitle,
     FixedButton,
     GoogleRecaptcha,
     Page2Wrapper,
+    Graph,
     Section,
   },
   mounted: function() {
     this.isMounted = true;
+    this.needCaptcha();
   },
   beforeUnmount: function() {
     this.controller.abort();
@@ -125,6 +89,7 @@ export default {
       sucessfulServerResponse: "",
       serverError: "",
       status: "",
+      welcomeData: null,
     };
   },
   methods: {
@@ -137,94 +102,54 @@ export default {
       } else {
         responseBody = err.response.data || responseBody;
       }
+
+      if (err.message === "token expired") {
+        this.status = "";
+        this.welcomeData = null;
+      }
+
       return responseBody.message || JSON.stringify(responseBody);
     },
-    onFetchIsLegalVariation: function(recaptchaToken) {
-      fetch(
-        `${this.$domain}stats/is-legal-variation/${this.city}?recaptchaToken=${recaptchaToken}`,
-        {
-          signal: this.controller.signal,
-        }
-      )
+    needCaptcha: function() {
+      this.status = "submitting";
+      fetch(`${this.$domain}stats/need-captcha`, {
+        signal: this.controller.signal,
+      })
         .then((res) => res.json())
         .then((res) => {
-          if (res.message === 'token expired') {
+          if (res.message === "token expired") {
             throw res;
           } else {
             return res;
           }
         })
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isLegalVariationLoaded = true;
-          this.onFetchPriceVariation();
-          this.onFetchLegalPerRenter();
-          vegaEmbed("#isLegalVariation", spec, {
-            tooltip: {
-              theme: "dark",
-            },
-            actions: false,
-          });
+        .then((res) => {
+          if (res) {
+            this.status = "";
+          } else {
+            this.onFetchWelcome(null);
+          }
         })
         .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
     },
-    onFetchPriceVariation: function() {
-      fetch(`${this.$domain}stats/price-variation/${this.city}`, {
+    onFetchWelcome: function(recaptchaToken) {
+      fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.message === 'token expired') {
+          if (res.message === "token expired") {
             throw res;
           } else {
             return res;
           }
         })
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
-          this.status = "ok";
-          this.isPriceVariationLoaded = true;
-          vegaEmbed("#priceVariation", spec, {
-            tooltip: {
-              theme: "dark",
-            },
-            actions: false,
-          });
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchLegalPerRenter: function() {
-      fetch(`${this.$domain}stats/is-legal-per-renter/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
         .then((res) => {
-          if (res.message === 'token expired') {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
-
           this.status = "ok";
-          this.isLegalPerRenterLoaded = true;
-          vegaEmbed("#legalPerRenter", spec, {
-            tooltip: {
-              theme: "dark",
-            },
-            actions: false,
-          });
+          this.welcomeData = res;
         })
         .catch((err) => {
           this.serverError = this.getErrorMessage(err);
@@ -234,7 +159,7 @@ export default {
     onCaptchaVerified: function(recaptchaToken) {
       this.status = "submitting";
       this.$refs.recaptcha.reset();
-      this.onFetchIsLegalVariation(recaptchaToken);
+      this.onFetchWelcome(recaptchaToken);
     },
     onCaptchaExpired: function() {
       this.status = "";
@@ -272,6 +197,14 @@ export default {
   transform: translateY(-50%);
 }
 
+.entire-page-centered {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   opacity: 0;
@@ -300,6 +233,10 @@ export default {
   }
 }
 
+.graph-list {
+  width: 100%;
+}
+
 .container {
   position: relative;
   display: flex;
@@ -324,12 +261,57 @@ export default {
 }
 
 .stats-section {
+  position: relative;
   flex-direction: column;
   align-items: center;
-  margin-top: 0;
+  width: calc(50% - 10px);
+  height: 500px;
+  margin-right: 20px;
+  margin-bottom: 20px;
 
-  &:last-child {
-    margin-bottom: 20px;
+  &:last-of-type {
+    margin: 0;
+  }
+}
+
+.stats-section.-high {
+  height: 1020px;
+  width: calc(50% - 10px);
+}
+
+.sub-column {
+  display: flex;
+  flex-direction: column;
+  width: calc(50% - 10px);
+}
+
+.sub-column > .stats-section {
+  width: 100%;
+}
+
+.stats-section-row {
+  display: flex;
+}
+
+.stats-section.-large {
+  width: 100%;
+}
+
+@media screen and (max-width: $mobileSize) {
+  .stats-section,
+  .stats-section.-large,
+  .stats-section.-high {
+    height: 500px;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .sub-column {
+    width: 100%;
+  }
+
+  .stats-section-row {
+    flex-wrap: wrap;
   }
 }
 </style>
