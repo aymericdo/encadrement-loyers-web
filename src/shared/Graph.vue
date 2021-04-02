@@ -80,7 +80,7 @@ export default {
         ...this.options,
       };
 
-      if (this.data) {
+      if (this.date) {
         optionParams['dateValue'] = this.date
       }
 
