@@ -214,11 +214,14 @@ export default {
       }
     );
 
+    // Date of the first ad in the db
     const realStartDate = new Date("2019-10-22");
     const realEndDate = new Date();
+    // Number of days between the first ad in the db and today
     const maxDateValue = Math.round(
       (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
     );
+    // Number of days between the first ad in the db and 3 months before today 
     const minDateValue = Math.round(
       (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) -
         realStartDate) /
