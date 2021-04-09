@@ -6,7 +6,7 @@
           class="recaptcha"
           v-if="status !== 'ok' && status !== 'submitting'"
           ref="recaptcha"
-          size="normal" 
+          size="normal"
           theme="light"
           :tabindex="0"
           @verify="onCaptchaVerified"
@@ -43,13 +43,14 @@
 </template>
 
 <script>
-import { HalfCircleSpinner } from 'epic-spinners'
+import { HalfCircleSpinner } from "epic-spinners";
 import vegaEmbed from "vega-embed";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
+import { domain } from "@/helper/config";
 
 export default {
   name: "Adoption",
@@ -59,7 +60,7 @@ export default {
     StrokeIcon,
     FixedButton,
     Page2Wrapper,
-    Section
+    Section,
   },
   mounted: function() {
     this.isMounted = true;
@@ -86,19 +87,19 @@ export default {
       return responseBody.message || JSON.stringify(responseBody);
     },
     onFetchAdoption: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/adoption?recaptchaToken=${recaptchaToken}`)
-        .then(res => res.json())
-        .then(spec => {
+      fetch(`${domain}stats/adoption?recaptchaToken=${recaptchaToken}`)
+        .then((res) => res.json())
+        .then((spec) => {
           this.status = "ok";
           this.isAdoptionLoaded = true;
           vegaEmbed("#adoption", spec, {
             tooltip: {
-              theme: "dark"
+              theme: "dark",
             },
-            actions: false
+            actions: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.serverError = this.getErrorMessage(err);
           this.status = "error";
         });
@@ -119,8 +120,8 @@ export default {
     },
     unmount: function() {
       this.isMounted = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

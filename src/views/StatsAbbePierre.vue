@@ -2,7 +2,9 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <SectionTitle class="title">Stats pour la fondation Abbé Pierre</SectionTitle>
+        <SectionTitle class="title"
+          >Stats pour la fondation Abbé Pierre</SectionTitle
+        >
         <div v-if="status !== 'ok'" class="entire-page-centered">
           <GoogleRecaptcha
             class="recaptcha"
@@ -58,6 +60,7 @@ import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
 import Graph from "@/shared/Graph.vue";
+import { domain } from "@/helper/config";
 
 export default {
   name: "StatsAbbePierre",
@@ -112,7 +115,7 @@ export default {
     },
     needCaptcha: function() {
       this.status = "submitting";
-      fetch(`${this.$domain}stats/need-captcha`, {
+      fetch(`${domain}stats/need-captcha`, {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
@@ -136,7 +139,7 @@ export default {
         });
     },
     onFetchWelcome: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
+      fetch(`${domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
         signal: this.controller.signal,
       })
         .then((res) => res.json())

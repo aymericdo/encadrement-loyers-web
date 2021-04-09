@@ -82,6 +82,7 @@
             <div class="is-legal-variation-dropdown">
               <Dropfilters
                 @onSubmit="changeFilters($event)"
+                @onReset="changeFilters()"
                 @onDropFilterChanged="showCloseButton = !$event"
                 :city="city"
                 :options="legalPercentageOptions"
@@ -160,6 +161,7 @@ import Dropdown from "@/shared/Dropdown.vue";
 import Dropfilters from "@/shared/Dropfilters.vue";
 import Graph from "@/shared/Graph.vue";
 import Slider from "@vueform/slider";
+import { domain } from "@/helper/config";
 
 const DEFAULT_CITY = "paris";
 const DEFAULT_CITY_OPTIONS = [
@@ -218,6 +220,13 @@ export default {
         (1000 * 60 * 60 * 24)
     );
 
+    const initialLegalPercentageOptions = {
+      surfaceValue: [9, 100],
+      roomValue: [1, 6],
+      furnishedValue: "all",
+      districtValues: [],
+    };
+
     return {
       showCloseButton,
       isLegalVariation,
@@ -229,11 +238,9 @@ export default {
       serverError: ref(""),
       welcomeData: ref(null),
       cityDropdownOptions: DEFAULT_CITY_OPTIONS,
+      initialLegalPercentageOptions,
       legalPercentageOptions: ref({
-        surfaceValue: [9, 100],
-        roomValue: [1, 6],
-        furnishedValue: "all",
-        districtValues: [],
+        ...initialLegalPercentageOptions,
       }),
       realStartDate,
       dateValue: ref([minDateValue, maxDateValue]),
@@ -261,7 +268,7 @@ export default {
     },
     needCaptcha: function() {
       this.status = "submitting";
-      fetch(`${this.$domain}stats/need-captcha`, {
+      fetch(`${domain}stats/need-captcha`, {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
@@ -285,7 +292,7 @@ export default {
         });
     },
     onFetchWelcome: function(recaptchaToken) {
-      fetch(`${this.$domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
+      fetch(`${domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
         signal: this.controller.signal,
       })
         .then((res) => res.json())
@@ -321,8 +328,12 @@ export default {
 
       this.city = opt.value;
     },
-    changeFilters(opt) {
-      this.legalPercentageOptions = opt;
+    changeFilters(opt = null) {
+      if (opt) {
+        this.legalPercentageOptions = { ...opt };
+      } else {
+        this.legalPercentageOptions = { ...this.initialLegalPercentageOptions };
+      }
     },
     leave: function() {
       setTimeout(() => {

@@ -15,6 +15,7 @@
 import { HalfCircleSpinner } from "epic-spinners";
 import { timeFormatLocale, formatLocale } from "../tools/vegaFormatLocale";
 import vegaEmbed from "vega-embed";
+import { domain } from "@/helper/config";
 
 const VEGA_COMMON = {
   tooltip: {
@@ -94,7 +95,7 @@ export default {
         : null;
 
       fetch(
-        `${this.$domain}stats/${this.id}/${this.city}${
+        `${domain}stats/${this.id}/${this.city}${
           strOptions ? "?" + strOptions : ""
         }`,
         {

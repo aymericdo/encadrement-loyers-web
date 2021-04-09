@@ -21,7 +21,7 @@
           <span class="label">Surface</span>
           <span class="slider">
             <Slider
-              v-model="surfaceValue"
+              v-model="optionValues.surfaceValue"
               :min="9"
               :max="100"
               :format="{ suffix: 'm²', decimals: 0 }"
@@ -32,7 +32,7 @@
           <span class="label">Nombre de pièce(s)</span>
           <span class="slider">
             <Slider
-              v-model="roomValue"
+              v-model="optionValues.roomValue"
               :min="1"
               :max="6"
               :format="roomValueFct"
@@ -45,8 +45,8 @@
             <Dropdown
               class="dropdown"
               :options="furnishedDropdownOptions"
-              :currentValue="furnishedValue"
-              @onSelect="furnishedValue = $event.value"
+              :currentValue="optionValues.furnishedValue"
+              @onSelect="optionValues.furnishedValue = $event.value"
             >
             </Dropdown>
           </span>
@@ -57,13 +57,16 @@
             <MultiDropdown
               class="dropdown"
               :options="districtDropdownOptions"
-              :currentValues="districtValues"
+              :currentValues="optionValues.districtValues"
               @onSelect="districtValuesChanged($event)"
             >
             </MultiDropdown>
           </span>
         </div>
-        <button class="submit-btn" @click="onSubmit">Go</button>
+        <div class="row actions-btn">
+          <button class="reset-btn" @click="onReset">Reset</button>
+          <button class="submit-btn" @click="onSubmit">Go</button>
+        </div>
       </div>
     </transition>
   </div>
@@ -75,10 +78,12 @@ import StrokeIcon from "@/icons/StrokeIcon.vue";
 import Slider from "@vueform/slider";
 import Dropdown from "@/shared/Dropdown.vue";
 import MultiDropdown from "@/shared/MultiDropdown.vue";
+import { domain } from "@/helper/config";
+import { defineComponent, ref, toRefs, watchEffect } from "vue";
 
 import "@vueform/slider/themes/default.css";
 
-export default {
+export default defineComponent({
   name: "Dropfilters",
   props: {
     city: {
@@ -89,16 +94,8 @@ export default {
       type: Object,
     },
   },
-  mounted: function() {
-    this.fetchDistricts();
-  },
   beforeUnmount: function() {
     this.controller.abort();
-  },
-  watch: {
-    city: function() {
-      this.fetchDistricts();
-    },
   },
   components: {
     ArrowIcon,
@@ -107,12 +104,67 @@ export default {
     Dropdown,
     MultiDropdown,
   },
-  data() {
+  setup(props) {
+    const { city, options } = toRefs(props);
+
+    const controller = new AbortController();
+    const districtDropdownOptions = ref([]);
+
+    const fetchDistricts = () => {
+      fetch(`${domain}stats/district-list/${city.value}`, {
+        signal: controller.signal,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.message === "token expired") {
+            throw res;
+          } else {
+            return res;
+          }
+        })
+        .then((res) => {
+          districtDropdownOptions.value = res.map((district) => ({
+            value: district,
+            label: district,
+          }));
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+
+    watchEffect(
+      () => {
+        if (city) {
+          if (city !== "all") {
+            fetchDistricts();
+          }
+          options.districtValues = [];
+        }
+      },
+      {
+        flush: "post",
+      }
+    );
+
     return {
-      controller: new AbortController(),
-      isOpen: false,
-      surfaceValue: this.options.surfaceValue,
-      roomValue: this.options.roomValue,
+      controller,
+      isOpen: ref(false),
+      optionValues: options,
+      cityDropdownOptions: [
+        {
+          value: "all",
+          label: "Tout",
+        },
+        {
+          value: "paris",
+          label: "Paris",
+        },
+        {
+          value: "lille",
+          label: "Lille",
+        },
+      ],
       furnishedDropdownOptions: [
         {
           value: "all",
@@ -127,9 +179,7 @@ export default {
           label: "Non meublé",
         },
       ],
-      furnishedValue: this.options.furnishedValue,
-      districtDropdownOptions: [],
-      districtValues: this.options.districtValues,
+      districtDropdownOptions,
     };
   },
   methods: {
@@ -137,52 +187,38 @@ export default {
       this.isOpen = !this.isOpen;
       this.$emit("onDropFilterChanged", this.isOpen);
     },
+    onReset: function() {
+      this.isOpen = false;
+      this.$emit("onReset");
+    },
     onSubmit: function() {
       this.isOpen = false;
       this.$emit("onSubmit", {
-        districtValues: this.districtValues,
-        furnishedValue: this.furnishedValue,
-        surfaceValue: this.surfaceValue,
-        roomValue: this.roomValue,
+        districtValues: this.optionValues.districtValues,
+        furnishedValue: this.optionValues.furnishedValue,
+        surfaceValue: this.optionValues.surfaceValue,
+        roomValue: this.optionValues.roomValue,
       });
     },
     roomValueFct: function(value) {
       return `${value} pièce${value > 1 ? "s" : ""}`;
     },
     districtValuesChanged: function(opt) {
-      if (this.districtValues.some((value) => value === opt.value)) {
-        this.districtValues = this.districtValues.filter(
+      if (
+        this.optionValues.districtValues.some((value) => value === opt.value)
+      ) {
+        this.optionValues.districtValues = this.optionValues.districtValues.filter(
           (value) => value !== opt.value
         );
       } else {
-        this.districtValues = [...this.districtValues, opt.value];
+        this.optionValues.districtValues = [
+          ...this.optionValues.districtValues,
+          opt.value,
+        ];
       }
     },
-    fetchDistricts: function() {
-      fetch(`${this.$domain}stats/district-list/${this.city}`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          this.districtDropdownOptions = res.map((district) => ({
-            value: district,
-            label: district,
-          }));
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -206,8 +242,10 @@ export default {
   border-color: transparent;
   transition: background-color ease 0.3s;
 
-  &:hover {
-    border: solid white 2px;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border: solid white 2px;
+    }
   }
 }
 
@@ -292,6 +330,35 @@ export default {
   transform: translate(-50%) rotate(180deg);
 }
 
+.row.actions-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reset-btn {
+  display: flex;
+  align-self: flex-end;
+  color: white;
+  display: flex;
+  justify-content: center;
+  font-weight: 400;
+  background-color: $lightgrey;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-color: transparent;
+  transition: background-color ease 0.3s;
+  margin-right: 0.875rem;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border: solid white 2px;
+    }
+  }
+}
+
 .submit-btn {
   display: flex;
   align-self: flex-end;
@@ -309,13 +376,11 @@ export default {
   transition: background-color ease 0.3s;
   float: right;
 
-  &:hover {
-    border: solid white 2px;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border: solid white 2px;
+    }
   }
-}
-
-.option:hover {
-  color: $yellow;
 }
 
 .slide-down-enter-from,
@@ -352,7 +417,7 @@ export default {
     overflow-y: auto;
   }
 
-  .option-list > .row {
+  .option-list > .row:not(.actions-btn) {
     flex-direction: column;
   }
 
