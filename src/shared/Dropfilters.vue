@@ -1,14 +1,25 @@
 <template>
   <div class="dropfilters">
-    <button @click="onOpen()" :class="{ '-is-open': isOpen }">
+    <button
+      class="dropdown-btn"
+      @click="onOpen()"
+      :class="{ '-is-open': isOpen }"
+    >
       <span>Filtres</span>
       <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
     </button>
+    <button
+      class="mobile-back-btn"
+      :class="{ '-is-open': isOpen }"
+      @click="onOpen()"
+    >
+      <StrokeIcon></StrokeIcon>
+    </button>
     <transition name="slide-down">
-      <div class="option-list" v-if="isOpen" :style="cssVars">
+      <div class="option-list" v-if="isOpen">
         <div class="row">
           <span class="label">Surface</span>
-          <span>
+          <span class="slider">
             <Slider
               v-model="surfaceValue"
               :min="9"
@@ -19,7 +30,7 @@
         </div>
         <div class="row">
           <span class="label">Nombre de pièce(s)</span>
-          <span>
+          <span class="slider">
             <Slider
               v-model="roomValue"
               :min="1"
@@ -35,7 +46,8 @@
               class="dropdown"
               :options="furnishedDropdownOptions"
               :currentValue="furnishedValue"
-              @onSelect="furnishedValue = $event.value">
+              @onSelect="furnishedValue = $event.value"
+            >
             </Dropdown>
           </span>
         </div>
@@ -46,11 +58,12 @@
               class="dropdown"
               :options="districtDropdownOptions"
               :currentValues="districtValues"
-              @onSelect="districtValuesChanged($event)">
+              @onSelect="districtValuesChanged($event)"
+            >
             </MultiDropdown>
           </span>
         </div>
-        <button class="submit-btn" @click="onSubmit">Filtrer</button>
+        <button class="submit-btn" @click="onSubmit">Go</button>
       </div>
     </transition>
   </div>
@@ -58,6 +71,7 @@
 
 <script>
 import ArrowIcon from "@/icons/ArrowIcon.vue";
+import StrokeIcon from "@/icons/StrokeIcon.vue";
 import Slider from "@vueform/slider";
 import Dropdown from "@/shared/Dropdown.vue";
 import MultiDropdown from "@/shared/MultiDropdown.vue";
@@ -71,19 +85,9 @@ export default {
       type: String,
       required: true,
     },
-    width: {
-      type: Number,
-    },
     options: {
       type: Object,
-    }
-  },
-  computed: {
-    cssVars() {
-      return {
-        '--width': `${this.width}px`,
-      };
-    }
+    },
   },
   mounted: function() {
     this.fetchDistricts();
@@ -98,6 +102,7 @@ export default {
   },
   components: {
     ArrowIcon,
+    StrokeIcon,
     Slider,
     Dropdown,
     MultiDropdown,
@@ -108,16 +113,20 @@ export default {
       isOpen: false,
       surfaceValue: this.options.surfaceValue,
       roomValue: this.options.roomValue,
-      furnishedDropdownOptions: [{
-        value: "all",
-        label: "Tout",
-      }, {
-        value: "furnished",
-        label: "Meublé",
-      }, {
-        value: "nonFurnished",
-        label: "Non meublé",
-      }],
+      furnishedDropdownOptions: [
+        {
+          value: "all",
+          label: "Tout",
+        },
+        {
+          value: "furnished",
+          label: "Meublé",
+        },
+        {
+          value: "nonFurnished",
+          label: "Non meublé",
+        },
+      ],
       furnishedValue: this.options.furnishedValue,
       districtDropdownOptions: [],
       districtValues: this.options.districtValues,
@@ -126,6 +135,7 @@ export default {
   methods: {
     onOpen: function() {
       this.isOpen = !this.isOpen;
+      this.$emit("onDropFilterChanged", this.isOpen);
     },
     onSubmit: function() {
       this.isOpen = false;
@@ -137,13 +147,15 @@ export default {
       });
     },
     roomValueFct: function(value) {
-      return `${value} pièce${(value > 1 ? 's' : '')}`
+      return `${value} pièce${value > 1 ? "s" : ""}`;
     },
     districtValuesChanged: function(opt) {
-      if (this.districtValues.some(value => value === opt.value)) {
-        this.districtValues = this.districtValues.filter(value => value !== opt.value)
+      if (this.districtValues.some((value) => value === opt.value)) {
+        this.districtValues = this.districtValues.filter(
+          (value) => value !== opt.value
+        );
       } else {
-        this.districtValues = [...this.districtValues, opt.value]
+        this.districtValues = [...this.districtValues, opt.value];
       }
     },
     fetchDistricts: function() {
@@ -152,17 +164,17 @@ export default {
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.message === 'token expired') {
+          if (res.message === "token expired") {
             throw res;
           } else {
             return res;
           }
         })
         .then((res) => {
-          this.districtDropdownOptions = res.map(district => ({
+          this.districtDropdownOptions = res.map((district) => ({
             value: district,
             label: district,
-          }))
+          }));
         })
         .catch((err) => {
           this.serverError = this.getErrorMessage(err);
@@ -199,6 +211,10 @@ export default {
   }
 }
 
+.dropfilters > button.dropdown-btn {
+  width: 100%;
+}
+
 .dropfilters > button.-is-open {
   border: solid white 2px;
 }
@@ -207,7 +223,6 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 180px;
 }
 
 .arrow-icon {
@@ -217,6 +232,10 @@ export default {
 
 .arrow-icon.-is-open {
   transform: rotate(180deg);
+}
+
+.dropfilters > button.mobile-back-btn {
+  display: none;
 }
 
 .option-list {
@@ -238,30 +257,12 @@ export default {
   margin: 16px 0;
 }
 
-@media screen and (max-width: $mobileSize) {
-  .option-list {
-    width: var(--width);
-  }
-
-  .option-list > .row {
-    flex-direction: column;
-  }
-
-  .option-list > .row > span.label {
-    margin-bottom: 36px;
-  }
-
-  .option-list > .row > span {
-    width: 100%;
-  }
+.option-list > .row > span:first-child {
+  width: 30%;
 }
 
-.option-list > .row > span.label {
-  min-width: 200px;
-}
-
-.option-list > .row > span {
-  flex: 1;
+.option-list > .row > span:last-child {
+  width: 70%;
 }
 
 .option-list > .row .dropdown {
@@ -279,8 +280,16 @@ export default {
 
 .option-list > .row :deep(.slider-target .slider-tooltip) {
   background: $deepblack;
+  color: white;
   border-color: $yellow;
   line-height: 16px;
+  top: 24px;
+  bottom: inherit;
+}
+
+.option-list > .row :deep(.slider-target .slider-tooltip::before) {
+  top: -10px;
+  transform: translate(-50%) rotate(180deg);
 }
 
 .submit-btn {
@@ -319,5 +328,49 @@ export default {
 .slide-down-leave-active {
   transition: all ease 400ms;
   transition-property: opacity, transform;
+}
+
+@media screen and (max-width: $mobileSize) {
+  .dropfilters > button.mobile-back-btn.-is-open {
+    z-index: 3;
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    display: block;
+  }
+
+  .option-list {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    padding: 2rem;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    margin-top: 0;
+    border: none;
+    overflow-y: auto;
+  }
+
+  .option-list > .row {
+    flex-direction: column;
+  }
+
+  .option-list > .row > span.label {
+    font-weight: 500;
+  }
+
+  .option-list > .row > span:first-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .option-list > .row > span.slider {
+    margin-bottom: 1.5rem;
+  }
+
+  .option-list > .row > span:first-child,
+  .option-list > .row > span:last-child {
+    width: 100%;
+  }
 }
 </style>

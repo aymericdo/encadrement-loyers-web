@@ -9,7 +9,7 @@
       ></ArrowIcon>
     </button>
     <transition name="slide-down">
-      <div class="option-list" v-if="isOpen">
+      <div class="option-list" v-if="isOpen" ref="optionListRef">
         <div
           class="option"
           v-for="option in options"
@@ -27,42 +27,78 @@
 </template>
 
 <script>
+import { defineComponent, ref, watchEffect, onMounted, onUnmounted } from "vue";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
-export default {
+
+export default defineComponent({
   name: "MultiDropdown",
   props: ["options", "currentValues"],
-  data() {
+  setup(props) {
+    const optionListRef = ref(null);
+    const isOpen = ref(false);
+    const currentValuesDisplay = ref("");
+    let scrollIntoViewTimeout = null;
+
+    watchEffect(
+      () => {
+        if (!isOpen.value) {
+          clearTimeout(scrollIntoViewTimeout);
+        }
+
+        if (optionListRef.value && isOpen) {
+          scrollIntoViewTimeout = setTimeout(() => {
+            optionListRef.value.scrollIntoView({
+              behavior: "smooth",
+              block: "end",
+              inline: "end",
+            });
+          }, 800);
+        }
+      },
+      {
+        flush: "post",
+      }
+    );
+
+    onMounted(() => {
+      currentValuesDisplay.value =
+        props.options
+          .filter((opt) => props.currentValues.includes(opt.value))
+          .map((opt) => opt.label)
+          .join(", ") || "Tout";
+    });
+
+    onUnmounted(() => {
+      clearTimeout(scrollIntoViewTimeout);
+    });
+
     return {
-      isOpen: false,
-      currentValuesDisplay: "",
+      optionListRef,
+      isOpen,
+      currentValuesDisplay,
     };
   },
-  mounted: function() {
-    this.currentValuesDisplay = this.options
-      .filter((opt) => this.currentValues.includes(opt.value))
-      .map((opt) => opt.label)
-      .join(", ") || 'Tout';
-  },
   watch: {
-    currentValues: function() {
-      this.currentValuesDisplay = this.options
-        .filter((opt) => this.currentValues.includes(opt.value))
-        .map((opt) => opt.label)
-        .join(", ") || 'Tout';
+    currentValues: function () {
+      this.currentValuesDisplay =
+        this.options
+          .filter((opt) => this.currentValues.includes(opt.value))
+          .map((opt) => opt.label)
+          .join(", ") || "Tout";
     },
   },
   methods: {
-    onOpen: function() {
+    onOpen: function () {
       this.isOpen = !this.isOpen;
     },
-    onSelect: function(opt) {
+    onSelect: function (opt) {
       this.$emit("onSelect", opt);
     },
   },
   components: {
     ArrowIcon,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -75,11 +111,12 @@ export default {
 .multi-dropdown > button {
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
+  position: relative;
   align-items: center;
   background-color: $yellow;
   font-weight: 600;
   height: 36px;
+  width: 100%;
   border-radius: 4px;
   font-size: 20px;
   padding: 6px 12px;
@@ -87,12 +124,11 @@ export default {
   transition: background-color ease 0.3s;
 
   &:hover {
-    border: solid white 2px;
+    box-shadow: 0 0 0 1px white;
   }
 }
 
 .multi-dropdown > button.-is-open {
-  border: solid white 2px;
   z-index: 2;
 }
 
@@ -100,11 +136,14 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 180px;
+  max-width: 100%;
+  width: 100%;
+  padding-right: 1em;
 }
 
 .arrow-icon {
-  margin-left: 4px;
+  position: absolute;
+  right: 14px;
   transition: transform ease 0.3s;
 }
 
@@ -113,7 +152,7 @@ export default {
 }
 
 .overlay {
-  background: rgba(19,15,64,.4);
+  background: rgba(19, 15, 64, 0.4);
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -138,18 +177,31 @@ export default {
 }
 
 .option {
-  color: white;
   display: flex;
-  justify-content: center;
+  min-height: 36px;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 1em;
   font-weight: 400;
   cursor: pointer;
   transition: all ease 0.3s;
+  color: white;
   transition-property: background-color, color;
+  border-bottom: solid 1px white;
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .option.-selected,
 .option:hover {
-  color: $yellow;
+  background-color: $yellow;
+  color: $deepblack;
+}
+
+.option.-selected {
+  font-weight: 500;
 }
 
 .slide-down-enter-from,

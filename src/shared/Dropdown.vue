@@ -3,10 +3,13 @@
     <div class="overlay" v-if="isOpen" @click="onOpen"></div>
     <button @click="onOpen" :class="{ '-is-open': isOpen }">
       <span>{{ currentValueDisplay }}</span
-      ><ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
+      ><ArrowIcon
+        class="arrow-icon"
+        :class="{ '-is-open': isOpen }"
+      ></ArrowIcon>
     </button>
     <transition name="slide-down">
-      <div class="option-list" v-if="isOpen">
+      <div class="option-list" v-if="isOpen" ref="optionListRef">
         <div
           class="option"
           v-for="option in options"
@@ -23,28 +26,65 @@
 
 <script>
 import ArrowIcon from "@/icons/ArrowIcon.vue";
-export default {
+import { defineComponent, ref, watchEffect, onMounted, onUnmounted } from "vue";
+export default defineComponent({
   name: "Dropdown",
   props: ["options", "currentValue"],
-  data() {
+  setup(props) {
+    const optionListRef = ref(null);
+    const isOpen = ref(false);
+    const currentValueDisplay = ref("");
+    let scrollIntoViewTimeout = null;
+
+    watchEffect(
+      () => {
+        if (!isOpen.value) {
+          clearTimeout(scrollIntoViewTimeout);
+        }
+
+        if (optionListRef.value && isOpen) {
+          scrollIntoViewTimeout = setTimeout(() => {
+            optionListRef.value.scrollIntoView({
+              behavior: "smooth",
+              block: "end",
+              inline: "end",
+            });
+          }, 800);
+        }
+      },
+      {
+        flush: "post",
+      }
+    );
+
+    onMounted(() => {
+      currentValueDisplay.value = props.options.find(
+        (opt) => opt.value === props.currentValue
+      ).label;
+    });
+
+    onUnmounted(() => {
+      clearTimeout(scrollIntoViewTimeout);
+    });
+
     return {
-      isOpen: false,
-      currentValueDisplay: '',
+      optionListRef,
+      isOpen,
+      currentValueDisplay,
     };
   },
-  mounted: function() {
-    this.currentValueDisplay = this.options.find(opt => opt.value === this.currentValue).label
-  },
   watch: {
-    currentValue: function() {
-      this.currentValueDisplay = this.options.find(opt => opt.value === this.currentValue).label
+    currentValue: function () {
+      this.currentValueDisplay = this.options.find(
+        (opt) => opt.value === this.currentValue
+      ).label;
     },
   },
   methods: {
-    onOpen: function() {
+    onOpen: function () {
       this.isOpen = !this.isOpen;
     },
-    onSelect: function(opt) {
+    onSelect: function (opt) {
       this.isOpen = false;
       this.$emit("onSelect", opt);
     },
@@ -52,7 +92,7 @@ export default {
   components: {
     ArrowIcon,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -65,11 +105,12 @@ export default {
 .dropdown > button {
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
+  position: relative;
   align-items: center;
   background-color: $yellow;
   font-weight: 600;
   height: 36px;
+  width: 100%;
   border-radius: 4px;
   font-size: 20px;
   padding: 6px 12px;
@@ -77,12 +118,11 @@ export default {
   transition: background-color ease 0.3s;
 
   &:hover {
-    border: solid white 2px;
+    box-shadow: 0 0 0 1px white;
   }
 }
 
 .dropdown > button.-is-open {
-  border: solid white 2px;
   z-index: 2;
 }
 
@@ -90,11 +130,14 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  width: 180px;
+  width: 100%;
+  max-width: 100%;
+  padding-right: 1em;
 }
 
 .arrow-icon {
-  margin-left: 4px;
+  position: absolute;
+  right: 14px;
   transition: transform ease 0.3s;
 }
 
@@ -103,7 +146,7 @@ export default {
 }
 
 .overlay {
-  background: rgba(19,15,64,.4);
+  background: rgba(19, 15, 64, 0.4);
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -128,18 +171,31 @@ export default {
 }
 
 .option {
-  color: white;
   display: flex;
-  justify-content: center;
+  min-height: 36px;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 1em;
   font-weight: 400;
   cursor: pointer;
   transition: all ease 0.3s;
+  color: white;
   transition-property: background-color, color;
+  border-bottom: solid 1px white;
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .option.-selected,
 .option:hover {
-  color: $yellow;
+  background-color: $yellow;
+  color: $deepblack;
+}
+
+.option.-selected {
+  font-weight: 500;
 }
 
 .slide-down-enter-from,

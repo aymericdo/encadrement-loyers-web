@@ -82,7 +82,7 @@
             <div class="is-legal-variation-dropdown">
               <Dropfilters
                 @onSubmit="changeFilters($event)"
-                :width="isLegalVariationWidth"
+                @onDropFilterChanged="showCloseButton = !$event"
                 :city="city"
                 :options="legalPercentageOptions"
               ></Dropfilters>
@@ -140,7 +140,7 @@
         </div>
       </Page2Wrapper>
     </transition>
-    <div @click="unmount">
+    <div v-if="showCloseButton" @click="unmount">
       <FixedButton>
         <StrokeIcon :width="'20px'" :height="'20px'" />
       </FixedButton>
@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import { HalfCircleSpinner } from "epic-spinners";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
@@ -201,18 +201,8 @@ export default {
     },
   },
   setup() {
+    const showCloseButton = ref(true);
     const isLegalVariation = ref(null);
-    const isLegalVariationWidth = ref(0);
-    watchEffect(
-      () => {
-        if (isLegalVariation.value) {
-          isLegalVariationWidth.value = isLegalVariation.value.$el.clientWidth;
-        }
-      },
-      {
-        flush: "post",
-      }
-    );
 
     // Date of the first ad in the db
     const realStartDate = new Date("2019-10-22");
@@ -221,7 +211,7 @@ export default {
     const maxDateValue = Math.round(
       (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
     );
-    // Number of days between the first ad in the db and 3 months before today 
+    // Number of days between the first ad in the db and 3 months before today
     const minDateValue = Math.round(
       (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) -
         realStartDate) /
@@ -229,8 +219,8 @@ export default {
     );
 
     return {
+      showCloseButton,
       isLegalVariation,
-      isLegalVariationWidth,
       controller: new AbortController(),
       isMounted: ref(false),
       city: ref(DEFAULT_CITY),
