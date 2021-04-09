@@ -79,7 +79,7 @@ export default defineComponent({
     };
   },
   watch: {
-    currentValues: function () {
+    currentValues: function() {
       this.currentValuesDisplay =
         this.options
           .filter((opt) => this.currentValues.includes(opt.value))
@@ -88,10 +88,10 @@ export default defineComponent({
     },
   },
   methods: {
-    onOpen: function () {
+    onOpen: function() {
       this.isOpen = !this.isOpen;
     },
-    onSelect: function (opt) {
+    onSelect: function(opt) {
       this.$emit("onSelect", opt);
     },
   },
@@ -122,10 +122,6 @@ export default defineComponent({
   padding: 6px 12px;
   border-color: transparent;
   transition: background-color ease 0.3s;
-
-  &:hover {
-    box-shadow: 0 0 0 1px white;
-  }
 }
 
 .multi-dropdown > button.-is-open {
@@ -195,7 +191,7 @@ export default defineComponent({
 }
 
 .option.-selected,
-.option:hover {
+.option:active {
   background-color: $yellow;
   color: $deepblack;
 }
@@ -214,5 +210,15 @@ export default defineComponent({
 .slide-down-leave-active {
   transition: all ease 400ms;
   transition-property: opacity, transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dropdown > button:hover {
+    box-shadow: 0 0 0 1px white;
+  }
+
+  .option:hover {
+    background-color: $yellow;
+  }
 }
 </style>

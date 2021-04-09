@@ -74,17 +74,17 @@ export default defineComponent({
     };
   },
   watch: {
-    currentValue: function () {
+    currentValue: function() {
       this.currentValueDisplay = this.options.find(
         (opt) => opt.value === this.currentValue
       ).label;
     },
   },
   methods: {
-    onOpen: function () {
+    onOpen: function() {
       this.isOpen = !this.isOpen;
     },
-    onSelect: function (opt) {
+    onSelect: function(opt) {
       this.isOpen = false;
       this.$emit("onSelect", opt);
     },
@@ -116,10 +116,6 @@ export default defineComponent({
   padding: 6px 12px;
   border-color: transparent;
   transition: background-color ease 0.3s;
-
-  &:hover {
-    box-shadow: 0 0 0 1px white;
-  }
 }
 
 .dropdown > button.-is-open {
@@ -189,7 +185,7 @@ export default defineComponent({
 }
 
 .option.-selected,
-.option:hover {
+.option:active {
   background-color: $yellow;
   color: $deepblack;
 }
@@ -208,5 +204,15 @@ export default defineComponent({
 .slide-down-leave-active {
   transition: all ease 400ms;
   transition-property: opacity, transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dropdown > button:hover {
+    box-shadow: 0 0 0 1px white;
+  }
+
+  .option:hover {
+    background-color: $yellow;
+  }
 }
 </style>
