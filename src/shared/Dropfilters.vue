@@ -6,6 +6,9 @@
       :class="{ '-is-open': isOpen }"
     >
       <span>Filtres</span>
+      <span v-if="filtersCount > 0" class="badge-count">{{
+        filtersCount
+      }}</span>
       <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
     </button>
     <button
@@ -79,7 +82,7 @@ import Slider from "@vueform/slider";
 import Dropdown from "@/shared/Dropdown.vue";
 import MultiDropdown from "@/shared/MultiDropdown.vue";
 import { domain } from "@/helper/config";
-import { defineComponent, ref, toRefs, watchEffect } from "vue";
+import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
 
 import "@vueform/slider/themes/default.css";
 
@@ -93,6 +96,9 @@ export default defineComponent({
     options: {
       type: Object,
     },
+    filtersCount: {
+      type: Number,
+    },
   },
   beforeUnmount: function() {
     this.controller.abort();
@@ -105,10 +111,11 @@ export default defineComponent({
     MultiDropdown,
   },
   setup(props) {
-    const { city, options } = toRefs(props);
+    const { options, city } = toRefs(props);
 
     const controller = new AbortController();
     const districtDropdownOptions = ref([]);
+    const optionValues = ref({ ...options.value });
 
     const fetchDistricts = () => {
       fetch(`${domain}stats/district-list/${city.value}`, {
@@ -133,24 +140,31 @@ export default defineComponent({
         });
     };
 
-    watchEffect(
-      () => {
-        if (city) {
-          if (city !== "all") {
-            fetchDistricts();
-          }
-          options.districtValues = [];
+    watch(
+      () => props.city,
+      (newValue) => {
+        if (newValue !== "all") {
+          fetchDistricts();
         }
-      },
-      {
-        flush: "post",
+        options.value.districtValues = [];
       }
     );
+
+    watch(
+      () => props.options,
+      (newValue) => {
+        optionValues.value = newValue;
+      }
+    );
+
+    onMounted(() => {
+      fetchDistricts();
+    });
 
     return {
       controller,
       isOpen: ref(false),
-      optionValues: options,
+      optionValues,
       cityDropdownOptions: [
         {
           value: "all",
@@ -251,6 +265,17 @@ export default defineComponent({
 
 .dropfilters > button.dropdown-btn {
   width: 100%;
+}
+
+.dropfilters > button.dropdown-btn > .badge-count {
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  border-radius: 50%;
+  background-color: white;
+  color: $deepblack;
+  width: 24px;
+  height: 24px;
 }
 
 .dropfilters > button.-is-open {

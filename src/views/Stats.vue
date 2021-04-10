@@ -86,6 +86,7 @@
                 @onDropFilterChanged="showCloseButton = !$event"
                 :city="city"
                 :options="legalPercentageOptions"
+                :filtersCount="legalPercentageFiltersCount"
               ></Dropfilters>
             </div>
           </div>
@@ -150,7 +151,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { HalfCircleSpinner } from "epic-spinners";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
@@ -205,6 +206,7 @@ export default {
   setup() {
     const showCloseButton = ref(true);
     const isLegalVariation = ref(null);
+    const legalPercentageFiltersCount = ref(0);
 
     // Date of the first ad in the db
     const realStartDate = new Date("2019-10-22");
@@ -227,6 +229,31 @@ export default {
       districtValues: [],
     };
 
+    const legalPercentageOptions = ref({
+      ...initialLegalPercentageOptions,
+    });
+
+    watchEffect(
+      () => {
+        if (legalPercentageOptions.value) {
+          let cpt = 0;
+          Object.keys(legalPercentageOptions.value).forEach((key) => {
+            if (
+              JSON.stringify(legalPercentageOptions.value[key]) !==
+              JSON.stringify(initialLegalPercentageOptions[key])
+            ) {
+              cpt += 1;
+            }
+          });
+
+          legalPercentageFiltersCount.value = cpt;
+        }
+      },
+      {
+        flush: "post",
+      }
+    );
+
     return {
       showCloseButton,
       isLegalVariation,
@@ -239,9 +266,8 @@ export default {
       welcomeData: ref(null),
       cityDropdownOptions: DEFAULT_CITY_OPTIONS,
       initialLegalPercentageOptions,
-      legalPercentageOptions: ref({
-        ...initialLegalPercentageOptions,
-      }),
+      legalPercentageOptions,
+      legalPercentageFiltersCount,
       realStartDate,
       dateValue: ref([minDateValue, maxDateValue]),
       maxDateValue,
