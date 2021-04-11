@@ -83,7 +83,7 @@
               <Dropfilters
                 @onSubmit="changeFilters($event)"
                 @onReset="changeFilters()"
-                @onDropFilterChanged="showCloseButton = !$event"
+                @onDropFilterOpeningChanged="showCloseButton = !$event"
                 :city="city"
                 :options="legalPercentageOptions"
                 :filtersCount="legalPercentageFiltersCount"
@@ -142,7 +142,11 @@
         </div>
       </Page2Wrapper>
     </transition>
-    <div v-if="showCloseButton" @click="unmount">
+    <div
+      class="fixed-btn"
+      :class="{ 'show-on-mobile': showCloseButton }"
+      @click="unmount"
+    >
       <FixedButton>
         <StrokeIcon :width="'20px'" :height="'20px'" />
       </FixedButton>
@@ -489,16 +493,6 @@ export default {
   margin-top: 36px;
 }
 
-@media screen and (max-width: $mobileSize) {
-  .welcome-section > .row {
-    flex-direction: column;
-  }
-
-  .welcome-section > .row > .slider {
-    margin-top: 50px;
-  }
-}
-
 .welcome-section > .row :deep(.slider-target .slider-connect) {
   background: $yellow;
 }
@@ -561,6 +555,14 @@ export default {
 }
 
 @media screen and (max-width: $mobileSize) {
+  .welcome-section > .row {
+    flex-direction: column;
+  }
+
+  .welcome-section > .row > .slider {
+    margin-top: 50px;
+  }
+
   .stats-section,
   .stats-section.-large,
   .stats-section.-high {
@@ -575,6 +577,10 @@ export default {
 
   .stats-section-row {
     flex-wrap: wrap;
+  }
+
+  .fixed-btn:not(.show-on-mobile) {
+    display: none;
   }
 }
 </style>

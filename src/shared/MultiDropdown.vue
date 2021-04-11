@@ -10,24 +10,62 @@
     </button>
     <transition name="slide-down">
       <div class="option-list" v-if="isOpen" ref="optionListRef">
-        <div
-          class="option"
-          v-for="option in options"
-          :class="{
-            '-selected': currentValues.some((v) => v === option.value),
-          }"
-          v-bind:key="option.value"
-          @click="onSelect(option)"
-        >
-          {{ option.label }}
-        </div>
+        <template v-if="isGroupBy">
+          <template
+            v-for="groupByKey in Object.keys(groupByList)"
+            v-bind:key="groupByKey"
+          >
+            <div
+              class="option grouped"
+              :class="{
+                '-selected': groupByList[groupByKey].every((opt) =>
+                  currentValues.includes(opt.value)
+                ),
+              }"
+              @click="onGroupBySelect(groupByKey)"
+            >
+              {{ groupByKey }}
+            </div>
+            <div
+              class="option"
+              v-for="option in groupByList[groupByKey]"
+              :class="{
+                '-selected': currentValues.some((v) => v === option.value),
+              }"
+              v-bind:key="option.value"
+              @click="onSelect(option)"
+            >
+              {{ option.label }}
+            </div>
+          </template>
+        </template>
+        <template v-else>
+          <div
+            class="option"
+            v-for="option in options"
+            :class="{
+              '-selected': currentValues.some((v) => v === option.value),
+            }"
+            v-bind:key="option.value"
+            @click="onSelect(option)"
+          >
+            {{ option.label }}
+          </div>
+        </template>
       </div>
     </transition>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, onMounted, onUnmounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  watchEffect,
+  watch,
+  onMounted,
+  onUnmounted,
+} from "vue";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 
 export default defineComponent({
@@ -37,8 +75,46 @@ export default defineComponent({
     const optionListRef = ref(null);
     const isOpen = ref(false);
     const currentValuesDisplay = ref("");
-    let scrollIntoViewTimeout = null;
+    const groupByList = ref({});
+    const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
 
+    const setgroupByList = (currentOptions) => {
+      groupByList.value = currentOptions.reduce((prev, currentValue) => {
+        if (prev[currentValue.groupBy]) {
+          prev[currentValue.groupBy].push(currentValue);
+        } else {
+          prev[currentValue.groupBy] = [currentValue];
+        }
+        return prev;
+      }, {});
+    };
+
+    const setCurrentValueDisplay = (newCurrentValues) => {
+      currentValuesDisplay.value =
+        props.options
+          .filter((opt) => newCurrentValues.includes(opt.value))
+          .map((opt) => opt.label)
+          .join(", ") || "Tout";
+    };
+
+    watch(
+      () => props.options,
+      (newValue) => {
+        isGroupBy.value = newValue.length && !!newValue[0].groupBy;
+        if (isGroupBy.value) {
+          setgroupByList(newValue);
+        }
+      }
+    );
+
+    watch(
+      () => props.currentValues,
+      (newValue) => {
+        setCurrentValueDisplay(newValue);
+      }
+    );
+
+    let scrollIntoViewTimeout = null;
     watchEffect(
       () => {
         if (!isOpen.value) {
@@ -61,11 +137,11 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      currentValuesDisplay.value =
-        props.options
-          .filter((opt) => props.currentValues.includes(opt.value))
-          .map((opt) => opt.label)
-          .join(", ") || "Tout";
+      if (isGroupBy.value) {
+        setgroupByList(props.options);
+      }
+
+      setCurrentValueDisplay(props.currentValues);
     });
 
     onUnmounted(() => {
@@ -76,23 +152,19 @@ export default defineComponent({
       optionListRef,
       isOpen,
       currentValuesDisplay,
+      isGroupBy,
+      groupByList,
     };
-  },
-  watch: {
-    currentValues: function() {
-      this.currentValuesDisplay =
-        this.options
-          .filter((opt) => this.currentValues.includes(opt.value))
-          .map((opt) => opt.label)
-          .join(", ") || "Tout";
-    },
   },
   methods: {
     onOpen: function() {
       this.isOpen = !this.isOpen;
     },
     onSelect: function(opt) {
-      this.$emit("onSelect", opt);
+      this.$emit("onSelect", [opt]);
+    },
+    onGroupBySelect: function(groupByKey) {
+      this.$emit("onSelect", this.groupByList[groupByKey]);
     },
   },
   components: {
@@ -177,7 +249,7 @@ export default defineComponent({
   min-height: 36px;
   justify-content: flex-start;
   align-items: center;
-  padding-left: 1em;
+  padding-left: 1rem;
   font-weight: 400;
   cursor: pointer;
   transition: all ease 0.3s;
@@ -188,6 +260,14 @@ export default defineComponent({
   &:last-child {
     border-bottom: none;
   }
+}
+
+.option.grouped {
+  border-bottom: solid 4px white;
+}
+
+.option:not(.grouped) {
+  padding-left: 2rem;
 }
 
 .option.-selected,
@@ -219,6 +299,7 @@ export default defineComponent({
 
   .option:hover {
     background-color: $yellow;
+    color: $deepblack;
   }
 }
 </style>
