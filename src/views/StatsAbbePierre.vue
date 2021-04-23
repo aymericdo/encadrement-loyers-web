@@ -40,6 +40,13 @@
               @errorOutput="getErrorMessage($event)"
             ></Graph>
           </Section>
+          <Section class="stats-section -large">
+            <Graph
+              :id="'is-legal-per-classic-renter'"
+              :city="city"
+              @errorOutput="getErrorMessage($event)"
+            ></Graph>
+          </Section>
         </div>
       </Page2Wrapper>
     </transition>

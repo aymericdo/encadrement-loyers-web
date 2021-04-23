@@ -66,6 +66,18 @@
             </MultiDropdown>
           </span>
         </div>
+        <div class="row">
+          <span class="label">Particulier</span>
+          <span>
+            <Dropdown
+              class="dropdown"
+              :options="particulierDropdownOptions"
+              :currentValue="optionValues.isParticulierValue"
+              @onSelect="optionValues.isParticulierValue = $event.value"
+            >
+            </Dropdown>
+          </span>
+        </div>
         <div class="row actions-btn">
           <button class="reset-btn" @click="onReset">Reset</button>
           <button class="submit-btn" @click="onSubmit">Go</button>
@@ -194,6 +206,20 @@ export default defineComponent({
           label: "Non meublé",
         },
       ],
+      particulierDropdownOptions: [
+        {
+          value: "all",
+          label: "Tout",
+        },
+        {
+          value: "true",
+          label: "Particulier",
+        },
+        {
+          value: "false",
+          label: "Agence",
+        },
+      ],
       districtDropdownOptions,
     };
   },
@@ -213,6 +239,7 @@ export default defineComponent({
         furnishedValue: this.optionValues.furnishedValue,
         surfaceValue: this.optionValues.surfaceValue,
         roomValue: this.optionValues.roomValue,
+        isParticulierValue: this.optionValues.isParticulierValue,
       });
     },
     roomValueFct: function(value) {

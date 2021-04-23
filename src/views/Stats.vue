@@ -231,6 +231,7 @@ export default {
       roomValue: [1, 6],
       furnishedValue: "all",
       districtValues: [],
+      isParticulierValue: "all",
     };
 
     const legalPercentageOptions = ref({
