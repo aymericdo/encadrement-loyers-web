@@ -27,26 +27,28 @@
         <div class="welcome-section" v-if="welcomeData">
           <div class="row">
             <div class="welcome">
-              <span>Sur les</span>
-              <span class="yellow"
-                >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
-              >
-              <span>annonces étudiées,</span>
-              <span class="yellow"
-                >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
-              >
-              <span
-                >sont non conformes. Pour les annonces d'une surface inférieure
-                à</span
-              >
-              <span class="yellow">&nbsp;{{ welcomeData.pivotSurface }}m²</span>
-              <span>, il y a</span>
-              <span class="yellow"
-                >&nbsp;{{
-                  welcomeData.isSmallSurfaceIllegalPercentage
-                }}%&nbsp;</span
-              >
-              <span>d'annonces non conformes.</span>
+              <div>
+                <span>Sur les</span>
+                <span class="yellow"
+                  >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
+                >
+                <span>annonces étudiées,</span>
+                <span class="yellow">
+                  &nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;
+                </span>
+                <span>sont non conformes.</span>
+              </div>
+              <div>
+                <span>Pour les annonces d'une surface inférieure à</span>
+                <span class="yellow">
+                  &nbsp;{{ welcomeData.pivotSurface }}m²
+                </span>
+                <span>, il y a</span>
+                <span class="yellow">
+                  &nbsp;{{ welcomeData.isSmallSurfaceIllegalPercentage }}%&nbsp;
+                </span>
+                <span>d'annonces non conformes.</span>
+              </div>
             </div>
 
             <div class="city-dropdown">
@@ -505,7 +507,8 @@ export default {
 }
 
 .welcome {
-  & > span.yellow {
+  padding-right: 1rem;
+  & div > span.yellow {
     color: $yellow;
   }
 }
