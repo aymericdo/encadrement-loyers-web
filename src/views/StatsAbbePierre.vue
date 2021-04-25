@@ -279,8 +279,12 @@ export default {
   margin-right: 20px;
   margin-bottom: 20px;
 
+  &:first-of-type {
+    margin-top: 60px;
+  }
+
   &:last-of-type {
-    margin: 0;
+    margin-bottom: 60px;
   }
 }
 
