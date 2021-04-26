@@ -62,7 +62,7 @@ export default {
     };
   },
   mounted() {
-    if (!localStorage.isFirstVisitDone) {
+    if (this.$route.name === "home" && !localStorage.isFirstVisitDone) {
       this.$router.push({ path: "video" });
       localStorage.isFirstVisitDone = true;
     }
