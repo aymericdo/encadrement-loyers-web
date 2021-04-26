@@ -32,7 +32,7 @@
                 <span class="yellow"
                   >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
                 >
-                <span>annonces étudiées,</span>
+                <span>annonces étudiées au total,</span>
                 <span class="yellow">
                   &nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;
                 </span>
