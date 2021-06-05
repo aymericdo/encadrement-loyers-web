@@ -13,27 +13,27 @@
       }"
       @slideChange="onSlideChange"
     >
-      <SwiperSlide class="slide" v-for="item in items" v-bind:key="item.id">
+      <SwiperSlide
+        class="slide"
+        v-for="(item, index) in items"
+        v-bind:key="index"
+      >
         <img
-          :src="require(`@/assets/images/${item.id}.png`)"
-          :alt="`screenshot de ${item.website}`"
+          :src="require(`@/assets/images/capture${index + 1}.jpg`)"
+          :alt="`screenshot de l'extension`"
         />
       </SwiperSlide>
 
       <div class="button-group">
         <span class="carousel-title">
-          Exemple sur
-          <b>{{ items[currentSlide].website }}</b>
+          Exemple d'une annonce
+          <b>{{ items[currentSlide] }}</b>
         </span>
         <div>
-          <button
-            class="carousel-control prev swiper-button-prev"
-          >
+          <button class="carousel-control prev swiper-button-prev">
             <span>Prec.</span>
           </button>
-          <button
-            class="carousel-control next swiper-button-next"
-          >
+          <button class="carousel-control next swiper-button-next">
             <span>Suiv.</span>
           </button>
         </div>
@@ -62,12 +62,12 @@ export default {
     return {
       currentSlide: 0,
       items: [
-        { id: "figaro", website: "immobilier.lefigaro.fr" },
-        { id: "leboncoin", website: "leboncoin.fr" },
-        { id: "pap", website: "pap.fr" },
-        { id: "orpi", website: "orpi.com" },
-        { id: "loueragile", website: "loueragile.fr" },
-        { id: "seloger", website: "seloger.com" },
+        "non conforme",
+        "non conforme",
+        "conforme",
+        "conforme",
+        "conforme",
+        "conforme",
       ],
     };
   },
@@ -94,7 +94,7 @@ export default {
 }
 
 :deep(.swiper-pagination) {
-  bottom: 24px
+  bottom: 24px;
 }
 
 :deep(.swiper-pagination .swiper-pagination-bullet-active) {
@@ -169,7 +169,8 @@ button.next {
 }
 
 @media screen and (min-width: $mobileSize) {
-  :deep(.swiper-button-prev), :deep(.swiper-button-next) {
+  :deep(.swiper-button-prev),
+  :deep(.swiper-button-next) {
     position: inherit;
     height: inherit;
     width: inherit;
@@ -177,7 +178,8 @@ button.next {
     top: inherit;
   }
 
-  :deep(.swiper-button-prev::after), :deep(.swiper-button-next::after) {
+  :deep(.swiper-button-prev::after),
+  :deep(.swiper-button-next::after) {
     display: none;
   }
 }
