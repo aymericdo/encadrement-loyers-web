@@ -1,5 +1,6 @@
 <template>
   <div id="home">
+    <Menu></Menu>
     <router-view />
     <div
       class="center-wrapper inactivable"
@@ -17,14 +18,6 @@
         <Footer />
       </div>
     </div>
-    <router-link to="/stats">
-      <transition name="opacity">
-        <FixedButton v-if="$route.name === 'home'" class="fixed-button">
-          <GraphIcon :width="'26px'" :height="'26px'" />
-          <span class="label-stats">Stats</span>
-        </FixedButton>
-      </transition>
-    </router-link>
   </div>
 </template>
 
@@ -38,15 +31,12 @@ import SectionThanks from "@/components/SectionThanks.vue";
 import SectionBlog from "@/components/SectionBlog.vue";
 import SectionUs from "@/components/SectionUs.vue";
 import Footer from "@/components/Footer.vue";
-import GraphIcon from "@/icons/GraphIcon.vue";
-import FixedButton from "@/shared/FixedButton.vue";
+import Menu from "@/components/menu/Menu.vue";
 
 export default {
   name: "Home",
   components: {
-    FixedButton,
     Footer,
-    GraphIcon,
     Hero,
     SectionDisclaimer,
     SectionBlog,
@@ -55,6 +45,7 @@ export default {
     SectionWhere,
     SectionUs,
     SectionWhy,
+    Menu,
   },
   data: function() {
     return {

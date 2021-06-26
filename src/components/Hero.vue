@@ -29,7 +29,8 @@
         </div>
       </h1>
       <h2>
-        Vérifiez si les annonces sont conformes ou non à la loi de l’encadrement des loyers.
+        Vérifiez si les annonces sont conformes ou non à la loi de l’encadrement
+        des loyers.
       </h2>
     </div>
     <ButtonGroup />
@@ -50,6 +51,7 @@ export default {
       cities: [
         { id: "paris", text: "Paris." },
         { id: "lille", text: "Lille." },
+        { id: "plaine_commune", text: "Plaine Commune." },
       ],
       city: "",
       interval: null,
@@ -79,7 +81,7 @@ export default {
             this.currentCity = (this.currentCity + 1) % this.cities.length;
             this.city = "";
             this.writeCity(500);
-          }, 500)
+          }, 500);
         }
       }, speed);
     },
@@ -131,7 +133,7 @@ export default {
     display: inline-block;
   }
 
-   > span.tres {
+  > span.tres {
     color: #ffaca6;
     display: inline-block;
   }
@@ -145,6 +147,18 @@ export default {
 
   > .tres {
     color: #e01e13;
+    display: inline-block;
+  }
+}
+
+.city-word .typing.plaine_commune {
+  > .dos {
+    color: #f28f2a;
+    display: inline-block;
+  }
+
+  > .tres {
+    color: #71c828;
     display: inline-block;
   }
 }
