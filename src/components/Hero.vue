@@ -152,9 +152,14 @@ export default {
 }
 
 .city-word .typing.plaine_commune {
-  > .dos {
-    color: #f28f2a;
+  > .uno {
+    color: #71c828;
     display: inline-block;
+  }
+
+  > .dos {
+    -webkit-text-stroke: 2px white;
+    color: black;
   }
 
   > .tres {

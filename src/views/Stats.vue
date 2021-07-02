@@ -180,6 +180,10 @@ const DEFAULT_CITY_OPTIONS = [
     value: "lille",
     label: "Lille",
   },
+  {
+    value: "plaine_commune",
+    label: "Plaine Commune",
+  },
 ];
 
 export default {
@@ -484,6 +488,10 @@ export default {
   padding: 24px;
   max-width: 700px;
   margin-bottom: 24px;
+}
+
+.welcome-section .city-dropdown {
+  width: 200px;
 }
 
 .welcome-section > .row {
