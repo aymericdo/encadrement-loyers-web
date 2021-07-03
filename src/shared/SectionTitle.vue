@@ -7,7 +7,7 @@
 </template>
 <script>
 export default {
-  name: "SectionTitle"
+  name: "SectionTitle",
 };
 </script>
 
@@ -26,6 +26,8 @@ export default {
   color: #f7f7f5;
   letter-spacing: -0.31px;
   line-height: 52px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media screen and (max-width: $mobileSize) {

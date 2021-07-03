@@ -58,6 +58,10 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "@/assets/scss/variables.scss";
 
+.menu {
+  width: 0;
+}
+
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 200ms ease;
