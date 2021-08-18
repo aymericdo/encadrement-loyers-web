@@ -58,8 +58,9 @@
                 class="dropdown input"
                 :options="addressDropdownOptions"
                 :currentValue="optionValues.addressValue"
+                :textTyped="optionValues.addressTyped"
                 @onTyping="handleSearchingAddress"
-                @onSelect="optionValues.addressValue = $event.value"
+                @onSelect="handleAddressSelect($event)"
               >
               </Input>
               <Dropdown
@@ -116,6 +117,7 @@ export default {
       roomValue: 2,
       furnishedValue: "furnished",
       addressValue: "",
+      addressTyped: "",
       districtValue: "",
       cityValue: "paris",
     };
@@ -229,6 +231,10 @@ export default {
       this.isMounted = false;
     },
     handleSearchingAddress: function(address) {
+      this.optionValues.districtValue = "";
+      this.optionValues.addressValue = "";
+      this.optionValues.addressTyped = address;
+
       if (this.timeoutRef !== null) {
         clearTimeout(this.timeoutRef);
       }
@@ -252,6 +258,7 @@ export default {
             this.addressDropdownOptions = res.map((a) => ({
               value: a.fields.l_adr,
               label: a.fields.l_adr,
+              district: a.districts[0].properties.l_qu,
             }));
           })
           .catch((err) => {
@@ -259,8 +266,13 @@ export default {
           });
       }, 500);
     },
+    handleAddressSelect: function(event) {
+      this.optionValues.addressValue = event.value;
+      this.optionValues.districtValue = event.district;
+    },
     onReset: function() {
       Object.assign(this.optionValues, this.initialOptionValues);
+      this.addressDropdownOptions = [];
     },
   },
 };

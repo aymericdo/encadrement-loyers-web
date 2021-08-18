@@ -33,12 +33,11 @@ import ArrowIcon from "@/icons/ArrowIcon.vue";
 import { defineComponent, ref, watchEffect, onMounted, onUnmounted } from "vue";
 export default defineComponent({
   name: "Input",
-  props: ["options", "currentValue"],
+  props: ["options", "currentValue", "textTyped"],
   setup(props) {
     const optionListRef = ref(null);
     const isOpen = ref(false);
     const currentValueDisplay = ref("");
-    const textTyped = ref("");
     let scrollIntoViewTimeout = null;
 
     watchEffect(
@@ -76,7 +75,6 @@ export default defineComponent({
       optionListRef,
       isOpen,
       currentValueDisplay,
-      textTyped,
     };
   },
   watch: {
@@ -103,7 +101,6 @@ export default defineComponent({
       this.$emit("onSelect", opt);
     },
     onTyping: function(opt) {
-      this.textTyped = opt.target.value;
       this.$emit("onTyping", opt.target.value);
       this.$emit("onSelect", "");
       this.isOpen = true;
