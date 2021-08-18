@@ -492,6 +492,7 @@ export default {
 
 .welcome-section .city-dropdown {
   width: 200px;
+  min-width: 200px;
 }
 
 .welcome-section > .row {
@@ -527,6 +528,7 @@ export default {
   top: -18px;
   left: 10px;
   z-index: 1;
+  min-width: 150px;
 }
 
 .stats-section {

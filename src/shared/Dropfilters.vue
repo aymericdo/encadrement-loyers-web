@@ -191,6 +191,10 @@ export default defineComponent({
           value: "lille",
           label: "Lille",
         },
+        {
+          value: "plaine_commune",
+          label: "Plaine Commune",
+        },
       ],
       furnishedDropdownOptions: [
         {
@@ -293,6 +297,7 @@ export default defineComponent({
 
 .dropfilters {
   position: relative;
+  width: 100%;
 }
 
 .dropfilters > button {
@@ -420,7 +425,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   font-weight: 400;
-  background-color: $lightgrey;
+  background-color: black;
   cursor: pointer;
   font-weight: 600;
   border-radius: 4px;

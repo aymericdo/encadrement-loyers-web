@@ -1,13 +1,17 @@
 <template>
-  <div class="dropdown">
+  <div class="input">
     <div class="overlay" v-if="isOpen" @click="onOpen"></div>
-    <button @click="onOpen" :class="{ '-is-open': isOpen }">
-      <span>{{ currentValueDisplay }}</span
-      ><ArrowIcon
-        class="arrow-icon"
-        :class="{ '-is-open': isOpen }"
-      ></ArrowIcon>
-    </button>
+    <div class="button" @click="onOpen" :class="{ '-is-open': isOpen }">
+      <input
+        class="main-input"
+        ref="myinput"
+        @focus="onFocusing"
+        @input="onTyping"
+        type="text"
+        :value="currentValueDisplay || textTyped"
+      />
+      <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
+    </div>
     <transition name="slide-down">
       <div class="option-list" v-if="isOpen" ref="optionListRef">
         <div
@@ -28,12 +32,13 @@
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 import { defineComponent, ref, watchEffect, onMounted, onUnmounted } from "vue";
 export default defineComponent({
-  name: "Dropdown",
+  name: "Input",
   props: ["options", "currentValue"],
   setup(props) {
     const optionListRef = ref(null);
     const isOpen = ref(false);
     const currentValueDisplay = ref("");
+    const textTyped = ref("");
     let scrollIntoViewTimeout = null;
 
     watchEffect(
@@ -71,6 +76,7 @@ export default defineComponent({
       optionListRef,
       isOpen,
       currentValueDisplay,
+      textTyped,
     };
   },
   watch: {
@@ -81,12 +87,29 @@ export default defineComponent({
     },
   },
   methods: {
-    onOpen: function() {
+    onOpen: function(event) {
+      if (this.isOpen && event.target.className === "main-input") {
+        return;
+      }
+
       this.isOpen = !this.isOpen;
+
+      if (this.isOpen) {
+        this.$refs.myinput.focus();
+      }
     },
     onSelect: function(opt) {
       this.isOpen = false;
       this.$emit("onSelect", opt);
+    },
+    onTyping: function(opt) {
+      this.textTyped = opt.target.value;
+      this.$emit("onTyping", opt.target.value);
+      this.$emit("onSelect", "");
+      this.isOpen = true;
+    },
+    onFocusing: function() {
+      this.isOpen = true;
     },
   },
   components: {
@@ -98,11 +121,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "@/assets/scss/variables.scss";
 
-.dropdown {
+.input {
   position: relative;
 }
 
-.dropdown > button {
+.input > div.button {
   cursor: pointer;
   display: flex;
   position: relative;
@@ -116,19 +139,28 @@ export default defineComponent({
   padding: 6px 12px;
   border-color: transparent;
   transition: background-color ease 0.3s;
+  box-sizing: border-box;
 }
 
-.dropdown > button.-is-open {
+.input > div.button.-is-open {
   z-index: 2;
 }
 
-.dropdown > button > span {
+.main-input {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
   max-width: 100%;
   padding-right: 1em;
+  border: 0;
+  background: transparent;
+  font-weight: 500;
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .arrow-icon {
@@ -207,7 +239,7 @@ export default defineComponent({
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .dropdown > button:hover {
+  .input > div.button:hover {
     box-shadow: 0 0 0 1px white;
   }
 

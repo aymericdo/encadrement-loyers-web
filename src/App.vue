@@ -18,29 +18,29 @@ export default {
   name: "App",
   data: function() {
     return {
-      hits: []
+      hits: [],
     };
   },
   mounted: function() {
     const sounds = {
-      65: this.$refs.asymetrie,
-      90: this.$refs.hommepresse,
-      71: this.$refs.gstaad
+      a: this.$refs.asymetrie,
+      h: this.$refs.hommepresse,
+      g: this.$refs.gstaad,
     };
 
-    document.addEventListener("keydown", event => {
-      const eventCode = event.keyCode;
+    document.addEventListener("keydown", (event) => {
+      const eventCode = event.key;
       this.hits.push({
         event: eventCode,
-        date: Date.now()
+        date: Date.now(),
       });
 
       if (
         this.hits.length > 4 &&
-        this.hits.every(hit => hit.event === eventCode) &&
+        this.hits.every((hit) => hit.event === eventCode) &&
         this.hits[4].date - this.hits[0].date < 600
       ) {
-        if (eventCode === 83) {
+        if (eventCode === "g") {
           this.$route.name === "stats" &&
             sounds[eventCode] &&
             sounds[eventCode].play();
@@ -53,7 +53,7 @@ export default {
         this.hits.shift();
       }
     });
-  }
+  },
 };
 </script>
 

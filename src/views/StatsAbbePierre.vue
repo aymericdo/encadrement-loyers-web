@@ -3,7 +3,7 @@
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
         <SectionTitle class="title"
-          >Stats pour la fondation Abbé Pierre (sur les {{ nbMonths }} derniers
+          >Stats pour la fondation Abbé Pierre (sur les {{ monthsNb }} derniers
           mois)</SectionTitle
         >
         <div v-if="status !== 'ok'" class="entire-page-centered">
@@ -73,6 +73,8 @@ import Section from "@/shared/Section.vue";
 import Graph from "@/shared/Graph.vue";
 import { domain } from "@/helper/config";
 
+const MONTHS_NB = 3;
+
 export default {
   name: "StatsAbbePierre",
   components: {
@@ -93,11 +95,11 @@ export default {
     this.controller.abort();
   },
   data() {
-    const nbMonths = 3;
+    const monthsNb = MONTHS_NB;
     const today = new Date();
     const realEndDate = new Date();
     const realStartDate = new Date(
-      realEndDate.setMonth(realEndDate.getMonth() - nbMonths)
+      realEndDate.setMonth(realEndDate.getMonth() - monthsNb)
     );
 
     const currDate1 = realStartDate.getDate();
@@ -119,7 +121,7 @@ export default {
       serverError: "",
       status: "",
       welcomeData: null,
-      nbMonths,
+      monthsNb,
       datesValues: `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`,
     };
   },
