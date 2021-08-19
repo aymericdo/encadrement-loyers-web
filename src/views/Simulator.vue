@@ -85,6 +85,9 @@
               </Dropdown>
             </span>
           </div>
+          <div v-if="simulationResult.isLegal !== null">
+            {{ simulationResult.isLegal ? "conforme" : "non conforme" }}
+          </div>
           <div class="row actions-btn">
             <button class="reset-btn" @click="onReset">Reset</button>
           </div>
@@ -142,6 +145,7 @@ export default {
 
     const districtDropdownOptions = ref([]);
     const addressDropdownOptions = ref([]);
+    const simulationResult = ref(null);
 
     const fetchDistricts = () => {
       fetch(`${domain}districts/list/${optionValues.cityValue}`, {
@@ -229,7 +233,7 @@ export default {
               }
             })
             .then((res) => {
-              console.log(res);
+              simulationResult.value = res;
             })
             .catch((err) => {
               console.error(err);
@@ -249,6 +253,7 @@ export default {
 
     return {
       controller: new AbortController(),
+      simulationResult,
       isMounted,
       optionValues,
       initialOptionValues,
