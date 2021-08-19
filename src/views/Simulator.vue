@@ -85,7 +85,7 @@
               </Dropdown>
             </span>
           </div>
-          <div v-if="simulationResult.isLegal !== null">
+          <div v-if="simulationResult !== null">
             {{ simulationResult.isLegal ? "conforme" : "non conforme" }}
           </div>
           <div class="row actions-btn">
