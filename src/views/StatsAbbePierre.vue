@@ -116,7 +116,7 @@ export default {
       isPriceVariationLoaded: false,
       isLegalPerRenterLoaded: false,
       isMounted: false,
-      city: "all",
+      city: "paris",
       sucessfulServerResponse: "",
       serverError: "",
       status: "",

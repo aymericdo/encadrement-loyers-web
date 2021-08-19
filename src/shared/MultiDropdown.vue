@@ -41,7 +41,7 @@
         </template>
         <template v-else>
           <div
-            class="option"
+            class="option classic"
             v-for="option in options"
             :class="{
               '-selected': currentValues.some((v) => v === option.value),
@@ -78,7 +78,7 @@ export default defineComponent({
     const groupByList = ref({});
     const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
 
-    const setgroupByList = (currentOptions) => {
+    const setGroupByList = (currentOptions) => {
       groupByList.value = currentOptions.reduce((prev, currentValue) => {
         if (prev[currentValue.groupBy]) {
           prev[currentValue.groupBy].push(currentValue);
@@ -102,7 +102,7 @@ export default defineComponent({
       (newValue) => {
         isGroupBy.value = newValue.length && !!newValue[0].groupBy;
         if (isGroupBy.value) {
-          setgroupByList(newValue);
+          setGroupByList(newValue);
         }
       }
     );
@@ -138,7 +138,7 @@ export default defineComponent({
 
     onMounted(() => {
       if (isGroupBy.value) {
-        setgroupByList(props.options);
+        setGroupByList(props.options);
       }
 
       setCurrentValueDisplay(props.currentValues);
@@ -266,7 +266,7 @@ export default defineComponent({
   border-bottom: solid 4px white;
 }
 
-.option:not(.grouped) {
+.option:not(.grouped):not(.classic) {
   padding-left: 2rem;
 }
 

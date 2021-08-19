@@ -16,6 +16,19 @@
             </span>
           </div>
           <div class="row">
+            <span class="label">Prix (hors charges</span>
+            <span class="slider">
+              <Slider
+                :modelValue="optionValues.priceValue"
+                :min="200"
+                :max="3000"
+                :step="5"
+                :format="{ suffix: '€', decimals: 0 }"
+                @change="optionValues.priceValue = $event"
+              />
+            </span>
+          </div>
+          <div class="row">
             <span class="label">Surface</span>
             <span class="slider">
               <Slider
@@ -114,6 +127,7 @@ export default {
 
     const initialOptionValues = {
       surfaceValue: 20,
+      priceValue: 1000,
       roomValue: 2,
       furnishedValue: "furnished",
       addressValue: "",
@@ -143,6 +157,7 @@ export default {
         })
         .then((res) => {
           districtDropdownOptions.value = res.map((district) => ({
+            groupBy: district.groupBy,
             value: district.value,
             label: district.value,
           }));
@@ -157,7 +172,8 @@ export default {
       (newOptionValues, prevOptionValues) => {
         if (newOptionValues !== prevOptionValues) {
           fetchDistricts();
-          optionValues.districtValue = null;
+          optionValues.districtValue = "";
+          optionValues.addressValue = "";
         }
       }
     );
@@ -165,13 +181,60 @@ export default {
     watch(
       () => [
         optionValues.surfaceValue,
+        optionValues.priceValue,
         optionValues.roomValue,
         optionValues.furnishedValue,
         optionValues.districtValue,
         optionValues.cityValue,
       ],
       () => {
-        console.log(optionValues.surfaceValue);
+        if (
+          optionValues.surfaceValue &&
+          optionValues.priceValue &&
+          optionValues.roomValue &&
+          optionValues.furnishedValue &&
+          optionValues.districtValue &&
+          optionValues.cityValue
+        ) {
+          const optionParams = {
+            surfaceValue: optionValues.surfaceValue,
+            priceValue: optionValues.priceValue,
+            roomValue: optionValues.roomValue,
+            furnishedValue: optionValues.furnishedValue,
+            districtValue: optionValues.districtValue,
+          };
+
+          const strOptions = optionParams
+            ? Object.keys(optionParams)
+                .map((key) => {
+                  return key + "=" + optionParams[key];
+                })
+                .join("&")
+            : null;
+
+          fetch(
+            `${domain}simulator/${optionValues.cityValue}${
+              strOptions ? "?" + strOptions : ""
+            }`,
+            {
+              signal: controller.signal,
+            }
+          )
+            .then((res) => res.json())
+            .then((res) => {
+              if (res.message === "token expired") {
+                throw res;
+              } else {
+                return res;
+              }
+            })
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
       }
     );
 
@@ -258,7 +321,7 @@ export default {
             this.addressDropdownOptions = res.map((a) => ({
               value: a.fields.l_adr,
               label: a.fields.l_adr,
-              district: a.districts[0].properties.l_qu,
+              district: a.districtName,
             }));
           })
           .catch((err) => {
