@@ -14,14 +14,14 @@ export default {
 @import "@/assets/scss/variables.scss";
 
 .center-wrapper {
-    align-items: center;
-    background: #050505;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    overflow-y: auto;
-    padding: 0 24px;
-    position: relative;
-  }
+  align-items: center;
+  background: #050505;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding: 0 24px;
+  position: relative;
+}
 </style>

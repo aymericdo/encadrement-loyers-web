@@ -3,91 +3,141 @@
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
         <div class="option-list">
-          <div class="row">
-            <span class="label">Ville</span>
-            <span>
-              <Dropdown
-                class="dropdown"
-                :options="cityDropdownOptions"
-                :currentValue="optionValues.cityValue"
-                @onSelect="optionValues.cityValue = $event.value"
+          <transition name="slide-side-r2l">
+            <div key="1" v-if="!displayMoreInfo" class="global-content">
+              <div class="row">
+                <span class="label">Ville</span>
+                <span>
+                  <Dropdown
+                    class="dropdown"
+                    :options="cityDropdownOptions"
+                    :currentValue="optionValues.cityValue"
+                    @onSelect="optionValues.cityValue = $event.value"
+                  >
+                  </Dropdown>
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Prix (hors charges)</span>
+                <span class="slider">
+                  <Slider
+                    :modelValue="optionValues.priceValue"
+                    :min="200"
+                    :max="3000"
+                    :step="5"
+                    :format="{ suffix: '€', decimals: 0 }"
+                    @change="optionValues.priceValue = $event"
+                  />
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Surface</span>
+                <span class="slider">
+                  <Slider
+                    :modelValue="optionValues.surfaceValue"
+                    :min="9"
+                    :max="100"
+                    :format="{ suffix: 'm²', decimals: 0 }"
+                    @change="optionValues.surfaceValue = $event"
+                  />
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Nombre de pièce(s)</span>
+                <span class="slider">
+                  <Slider
+                    :modelValue="optionValues.roomValue"
+                    :min="1"
+                    :max="6"
+                    :format="roomValueFct"
+                    @change="optionValues.roomValue = $event"
+                  />
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Meublé</span>
+                <span>
+                  <Dropdown
+                    class="dropdown"
+                    :options="furnishedDropdownOptions"
+                    :currentValue="optionValues.furnishedValue"
+                    @onSelect="optionValues.furnishedValue = $event.value"
+                  >
+                  </Dropdown>
+                </span>
+              </div>
+              <div class="row" v-if="districtDropdownOptions.length">
+                <span class="label">Localisation</span>
+                <span>
+                  <Input
+                    class="dropdown input"
+                    :placeholder="'Entre ton adresse...'"
+                    :options="addressDropdownOptions"
+                    :currentValue="optionValues.addressValue"
+                    :textTyped="optionValues.addressTyped"
+                    @onTyping="handleSearchingAddress"
+                    @onSelect="handleAddressSelect($event)"
+                  >
+                  </Input>
+                  <Dropdown
+                    class="dropdown"
+                    :options="districtDropdownOptions"
+                    :currentValue="optionValues.districtValue"
+                    @onSelect="optionValues.districtValue = $event.value"
+                  >
+                  </Dropdown>
+                </span>
+              </div>
+            </div>
+          </transition>
+          <transition name="slide-side-l2r">
+            <div key="2" v-if="displayMoreInfo" class="grid global-content">
+              <span class="label">Année de construction</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
               >
-              </Dropdown>
-            </span>
-          </div>
-          <div class="row">
-            <span class="label">Prix (hors charges</span>
-            <span class="slider">
-              <Slider
-                :modelValue="optionValues.priceValue"
-                :min="200"
-                :max="3000"
-                :step="5"
-                :format="{ suffix: '€', decimals: 0 }"
-                @change="optionValues.priceValue = $event"
+                {{ simulationResult.yearBuilt }}
+              </span>
+              <span class="label">Prix maximum au m²</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxPrice }}€
+              </span>
+              <span class="label">Prix maximum hors charges</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxTotalPrice }}€
+              </span>
+            </div>
+          </transition>
+
+          <transition name="slide-fade">
+            <div
+              v-if="simulationResultsLoading || simulationResults !== null"
+              class="row result"
+            >
+              <half-circle-spinner
+                :animation-duration="1000"
+                color="#fdcd56"
+                :size="20"
+                v-if="simulationResults === null"
+                class="spinner"
               />
-            </span>
-          </div>
-          <div class="row">
-            <span class="label">Surface</span>
-            <span class="slider">
-              <Slider
-                :modelValue="optionValues.surfaceValue"
-                :min="9"
-                :max="100"
-                :format="{ suffix: 'm²', decimals: 0 }"
-                @change="optionValues.surfaceValue = $event"
-              />
-            </span>
-          </div>
-          <div class="row">
-            <span class="label">Nombre de pièce(s)</span>
-            <span class="slider">
-              <Slider
-                :modelValue="optionValues.roomValue"
-                :min="1"
-                :max="6"
-                :format="roomValueFct"
-                @change="optionValues.roomValue = $event"
-              />
-            </span>
-          </div>
-          <div class="row">
-            <span class="label">Meublé</span>
-            <span>
-              <Dropdown
-                class="dropdown"
-                :options="furnishedDropdownOptions"
-                :currentValue="optionValues.furnishedValue"
-                @onSelect="optionValues.furnishedValue = $event.value"
-              >
-              </Dropdown>
-            </span>
-          </div>
-          <div class="row" v-if="districtDropdownOptions.length">
-            <span class="label">Localisation</span>
-            <span>
-              <Input
-                class="dropdown input"
-                :options="addressDropdownOptions"
-                :currentValue="optionValues.addressValue"
-                :textTyped="optionValues.addressTyped"
-                @onTyping="handleSearchingAddress"
-                @onSelect="handleAddressSelect($event)"
-              >
-              </Input>
-              <Dropdown
-                class="dropdown"
-                :options="districtDropdownOptions"
-                :currentValue="optionValues.districtValue"
-                @onSelect="optionValues.districtValue = $event.value"
-              >
-              </Dropdown>
-            </span>
-          </div>
-          <div v-if="simulationResult !== null">
-            {{ simulationResult.isLegal ? "conforme" : "non conforme" }}
-          </div>
+              <template v-else>
+                {{ simulationResults[0].isLegal ? "Conforme" : "Non conforme" }}
+                <button
+                  class="arrow-icon"
+                  @click="onClickMoreInfo"
+                  :class="{ '-is-open': displayMoreInfo }"
+                >
+                  <ArrowIcon :iconColor="'white'"></ArrowIcon>
+                </button>
+              </template>
+            </div>
+          </transition>
           <div class="row actions-btn">
             <button class="reset-btn" @click="onReset">Reset</button>
           </div>
@@ -107,9 +157,11 @@ import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue";
 import Dropdown from "@/shared/Dropdown.vue";
 import Input from "@/shared/Input.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
+import ArrowIcon from "@/icons/ArrowIcon.vue";
 import Slider from "@vueform/slider";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import FixedButton from "@/shared/FixedButton.vue";
+import { HalfCircleSpinner } from "epic-spinners";
 import { domain } from "@/helper/config";
 
 import "@vueform/slider/themes/default.css";
@@ -123,9 +175,11 @@ export default {
     Slider,
     Input,
     StrokeIcon,
+    ArrowIcon,
+    HalfCircleSpinner,
   },
   setup() {
-    const controller = new AbortController();
+    let controller = new AbortController();
     const isMounted = ref(false);
 
     const initialOptionValues = {
@@ -144,8 +198,9 @@ export default {
     });
 
     const districtDropdownOptions = ref([]);
-    const addressDropdownOptions = ref([]);
-    const simulationResult = ref(null);
+    const simulationResults = ref(null);
+    const simulationResultsLoading = ref(false);
+    let simulationTimeoutRef = null;
 
     const fetchDistricts = () => {
       fetch(`${domain}districts/list/${optionValues.cityValue}`, {
@@ -200,44 +255,56 @@ export default {
           optionValues.districtValue &&
           optionValues.cityValue
         ) {
-          const optionParams = {
-            surfaceValue: optionValues.surfaceValue,
-            priceValue: optionValues.priceValue,
-            roomValue: optionValues.roomValue,
-            furnishedValue: optionValues.furnishedValue,
-            districtValue: optionValues.districtValue,
-          };
+          simulationResultsLoading.value = true;
 
-          const strOptions = optionParams
-            ? Object.keys(optionParams)
-                .map((key) => {
-                  return key + "=" + optionParams[key];
-                })
-                .join("&")
-            : null;
+          if (simulationTimeoutRef !== null) {
+            clearTimeout(simulationTimeoutRef);
+          }
 
-          fetch(
-            `${domain}simulator/${optionValues.cityValue}${
-              strOptions ? "?" + strOptions : ""
-            }`,
-            {
-              signal: controller.signal,
-            }
-          )
-            .then((res) => res.json())
-            .then((res) => {
-              if (res.message === "token expired") {
-                throw res;
-              } else {
-                return res;
+          controller.abort();
+          controller = new AbortController();
+
+          simulationTimeoutRef = setTimeout(() => {
+            const optionParams = {
+              surfaceValue: optionValues.surfaceValue,
+              priceValue: optionValues.priceValue,
+              roomValue: optionValues.roomValue,
+              furnishedValue: optionValues.furnishedValue,
+              districtValue: optionValues.districtValue,
+            };
+
+            const strOptions = optionParams
+              ? Object.keys(optionParams)
+                  .map((key) => {
+                    return key + "=" + optionParams[key];
+                  })
+                  .join("&")
+              : null;
+
+            fetch(
+              `${domain}simulator/${optionValues.cityValue}${
+                strOptions ? "?" + strOptions : ""
+              }`,
+              {
+                signal: controller.signal,
               }
-            })
-            .then((res) => {
-              simulationResult.value = res;
-            })
-            .catch((err) => {
-              console.error(err);
-            });
+            )
+              .then((res) => res.json())
+              .then((res) => {
+                if (res.message === "token expired") {
+                  throw res;
+                } else {
+                  return res;
+                }
+              })
+              .then((res) => {
+                simulationResults.value = res;
+                simulationResultsLoading.value = false;
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }, 1000);
         }
       }
     );
@@ -252,8 +319,8 @@ export default {
     });
 
     return {
-      controller: new AbortController(),
-      simulationResult,
+      controller,
+      simulationResults,
       isMounted,
       optionValues,
       initialOptionValues,
@@ -282,8 +349,10 @@ export default {
         },
       ],
       districtDropdownOptions,
-      addressDropdownOptions,
+      addressDropdownOptions: ref([]),
       timeoutRef: null,
+      displayMoreInfo: ref(false),
+      simulationResultsLoading,
     };
   },
   methods: {
@@ -306,6 +375,9 @@ export default {
       if (this.timeoutRef !== null) {
         clearTimeout(this.timeoutRef);
       }
+
+      this.controller.abort();
+      this.controller = new AbortController();
 
       this.timeoutRef = setTimeout(() => {
         fetch(
@@ -341,6 +413,11 @@ export default {
     onReset: function() {
       Object.assign(this.optionValues, this.initialOptionValues);
       this.addressDropdownOptions = [];
+      this.simulationResults = null;
+      this.displayMoreInfo = false;
+    },
+    onClickMoreInfo: function() {
+      this.displayMoreInfo = !this.displayMoreInfo;
     },
   },
 };
@@ -376,48 +453,74 @@ export default {
 }
 
 .option-list {
+  position: relative;
   margin-top: 4px;
   box-sizing: border-box;
   width: 100%;
-  padding: 8px 14px;
+  max-width: 800px;
   border-radius: 4px;
   border: 1px solid white;
   z-index: 1;
 }
 
-.option-list > .row {
+.option-list > div.global-content {
+  display: block;
+  padding: 8px 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.option-list > div.global-content.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 2fr);
+}
+
+.option-list > div.global-content.grid > span {
+  padding: 8px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.option-list > div.global-content.grid > span:nth-child(5n + 1) {
+  font-weight: bold;
+  text-align: left;
+  line-height: normal;
+}
+
+.option-list div > .row {
   display: flex;
   align-items: center;
   width: 100%;
   margin: 16px 0;
 }
 
-.option-list > .row > span:first-child {
+.option-list div > .row > span:first-child {
   width: 30%;
 }
 
-.option-list > .row > span:last-child {
+.option-list div > .row > span:last-child {
   width: 70%;
 }
 
-.option-list > .row .dropdown {
+.option-list div > .row .dropdown {
   display: flex;
   justify-content: center;
 }
 
-.option-list > .row .dropdown.input {
+.option-list div > .row .dropdown.input {
   margin-bottom: 0.625rem;
 }
 
-.option-list > .row .dropdown :deep(button) {
+.option-list div > .row .dropdown :deep(button) {
   width: 100%;
 }
 
-.option-list > .row :deep(.slider-target .slider-connect) {
+.option-list div > .row :deep(.slider-target .slider-connect) {
   background: $yellow;
 }
 
-.option-list > .row :deep(.slider-target .slider-tooltip) {
+.option-list div > .row :deep(.slider-target .slider-tooltip) {
   background: $deepblack;
   color: white;
   border-color: $yellow;
@@ -426,7 +529,7 @@ export default {
   bottom: inherit;
 }
 
-.option-list > .row :deep(.slider-target .slider-tooltip::before) {
+.option-list div > .row :deep(.slider-target .slider-tooltip::before) {
   top: -10px;
   transform: translate(-50%) rotate(180deg);
 }
@@ -434,6 +537,28 @@ export default {
 .row.actions-btn {
   display: flex;
   justify-content: flex-end;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.row.result {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  height: 50px;
+  box-sizing: border-box;
+  border: 1px solid white;
+  position: relative;
+  align-items: center;
+  border-radius: 2px;
+  margin: 16px;
+}
+
+.row.result .spinner {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .reset-btn {
@@ -457,6 +582,26 @@ export default {
       border: solid white 2px;
     }
   }
+}
+
+.arrow-icon {
+  position: absolute;
+  transition: transform ease 0.3s;
+  right: 14px;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid $yellow;
+  border-radius: 2px;
+  transform: rotate(-90deg);
+  background: transparent;
+  padding: 4px;
+}
+
+.arrow-icon.-is-open {
+  transform: rotate(90deg);
 }
 
 .submit-btn {
@@ -483,18 +628,6 @@ export default {
   }
 }
 
-.slide-down-enter-from,
-.slide-down-leave-to {
-  opacity: 0;
-  transform: translateY(-100%);
-}
-
-.slide-down-enter-active,
-.slide-down-leave-active {
-  transition: all ease 400ms;
-  transition-property: opacity, transform;
-}
-
 @media screen and (max-width: $mobileSize) {
   .dropfilters > button.mobile-back-btn.-is-open {
     z-index: 3;
@@ -517,24 +650,24 @@ export default {
     overflow-y: auto;
   }
 
-  .option-list > .row:not(.actions-btn) {
+  .option-list div > .row:not(.actions-btn) {
     flex-direction: column;
   }
 
-  .option-list > .row > span.label {
+  .option-list div > .row > span.label {
     font-weight: 500;
   }
 
-  .option-list > .row > span:first-child {
+  .option-list div > .row > span:first-child {
     margin-bottom: 0.5rem;
   }
 
-  .option-list > .row > span.slider {
+  .option-list div > .row > span.slider {
     margin-bottom: 1.5rem;
   }
 
-  .option-list > .row > span:first-child,
-  .option-list > .row > span:last-child {
+  .option-list div > .row > span:first-child,
+  .option-list div > .row > span:last-child {
     width: 100%;
   }
 }
@@ -545,8 +678,40 @@ export default {
   transform: scale(0);
 }
 
+.slide-side-l2r-enter-active,
+.slide-side-l2r-leave-active,
+.slide-side-r2l-enter-active,
+.slide-side-r2l-leave-active,
 .slide-fade-enter-active,
 .slide-fade-leave-active {
   transition: all ease 400ms;
+}
+
+.slide-side-r2l-enter-from {
+  position: absolute;
+  opacity: 0;
+  transform: translateX(-100%);
+  top: 0;
+}
+
+.slide-side-r2l-leave-to {
+  position: absolute;
+  opacity: 0;
+  transform: translateX(-100%);
+  top: 0;
+}
+
+.slide-side-l2r-leave-to {
+  position: absolute;
+  opacity: 0;
+  transform: translateX(100%);
+  top: 0;
+}
+
+.slide-side-l2r-enter-from {
+  position: absolute;
+  opacity: 0;
+  transform: translateX(100%);
+  top: 0;
 }
 </style>

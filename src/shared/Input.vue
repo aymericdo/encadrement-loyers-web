@@ -8,6 +8,7 @@
         @focus="onFocusing"
         @input="onTyping"
         type="text"
+        :placeholder="placeholder"
         :value="currentValueDisplay || textTyped"
       />
       <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
@@ -33,7 +34,7 @@ import ArrowIcon from "@/icons/ArrowIcon.vue";
 import { defineComponent, ref, watchEffect, onMounted, onUnmounted } from "vue";
 export default defineComponent({
   name: "Input",
-  props: ["options", "currentValue", "textTyped"],
+  props: ["options", "currentValue", "textTyped", "placeholder"],
   setup(props) {
     const optionListRef = ref(null);
     const isOpen = ref(false);
