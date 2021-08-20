@@ -66,6 +66,18 @@
                   </Dropdown>
                 </span>
               </div>
+              <div class="row">
+                <span class="label">Date de construction</span>
+                <span class="slider">
+                  <Slider
+                    :modelValue="optionValues.dateBuiltValue"
+                    :min="-1"
+                    :max="possibleDateYearsCount"
+                    :format="getDateBuiltValue"
+                    @change="setDateBuiltValue"
+                  />
+                </span>
+              </div>
               <div class="row" v-if="districtDropdownOptions.length">
                 <span class="label">Localisation</span>
                 <span>
@@ -91,26 +103,62 @@
             </div>
           </transition>
           <transition name="slide-side-l2r">
-            <div key="2" v-if="displayMoreInfo" class="grid global-content">
-              <span class="label">Année de construction</span>
-              <span
-                v-for="simulationResult in simulationResults"
-                v-bind:key="simulationResult.yearBuilt"
+            <div v-if="displayMoreInfo">
+              <div
+                key="2"
+                class="grid global-content"
+                v-bind:style="{
+                  'grid-template-columns': `repeat(${simulationResults.length +
+                    1}, 2fr)`,
+                }"
               >
-                {{ simulationResult.yearBuilt }}
-              </span>
-              <span class="label">Prix maximum au m²</span>
-              <span
-                v-for="simulationResult in simulationResults"
-                v-bind:key="simulationResult.yearBuilt"
-                >{{ simulationResult.maxPrice }}€
-              </span>
-              <span class="label">Prix maximum hors charges</span>
-              <span
-                v-for="simulationResult in simulationResults"
-                v-bind:key="simulationResult.yearBuilt"
-                >{{ simulationResult.maxTotalPrice }}€
-              </span>
+                <span class="label">Année de construction</span>
+                <span
+                  v-for="simulationResult in simulationResults"
+                  v-bind:key="simulationResult.yearBuilt"
+                >
+                  {{ simulationResult.yearBuilt }}
+                </span>
+                <span class="label">Prix maximum au m²</span>
+                <span
+                  v-for="simulationResult in simulationResults"
+                  v-bind:key="simulationResult.yearBuilt"
+                  >{{ simulationResult.maxPrice }}€
+                </span>
+                <span class="label">Prix maximum hors charges</span>
+                <span
+                  v-for="simulationResult in simulationResults"
+                  v-bind:key="simulationResult.yearBuilt"
+                  >{{ simulationResult.maxTotalPrice }}€
+                </span>
+              </div>
+              <div
+                class="pushy-text"
+                v-if="
+                  simulationResults?.length &&
+                    !simulationResults.some((r) => r.isLegal)
+                "
+              >
+                <p>
+                  Une fois le bail signé, s'il est non-conforme et qu'aucune
+                  mention justificative n'apparait dans les documents, vous
+                  pouvez vous renseignez afin de faire valoir vos droits.
+                </p>
+                <div class="reference-links">
+                  <a
+                    href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
+                    target="_blank"
+                  >
+                    Lien 1
+                  </a>
+                  <a
+                    href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
+                    target="_blank"
+                  >
+                    Lien 2
+                  </a>
+                </div>
+              </div>
             </div>
           </transition>
 
@@ -123,11 +171,15 @@
                 :animation-duration="1000"
                 color="#fdcd56"
                 :size="20"
-                v-if="simulationResults === null"
+                v-if="simulationResultsLoading"
                 class="spinner"
               />
               <template v-else>
-                {{ simulationResults[0].isLegal ? "Conforme" : "Non conforme" }}
+                {{
+                  simulationResults.some((r) => r.isLegal)
+                    ? "Conforme"
+                    : "Non conforme"
+                }}
                 <button
                   class="arrow-icon"
                   @click="onClickMoreInfo"
@@ -182,10 +234,17 @@ export default {
     let controller = new AbortController();
     const isMounted = ref(false);
 
+    const olderYear = 1700;
+    const currentYear = +new Date().getFullYear();
+    const possibleDateYearsCount = currentYear - olderYear;
+    const idkId = -1;
+
     const initialOptionValues = {
       surfaceValue: 20,
       priceValue: 1000,
       roomValue: 2,
+      dateBuiltValue: idkId,
+      dateBuiltValueStr: idkId,
       furnishedValue: "furnished",
       addressValue: "",
       addressTyped: "",
@@ -244,6 +303,7 @@ export default {
         optionValues.roomValue,
         optionValues.furnishedValue,
         optionValues.districtValue,
+        optionValues.dateBuiltValueStr,
         optionValues.cityValue,
       ],
       () => {
@@ -253,6 +313,7 @@ export default {
           optionValues.roomValue &&
           optionValues.furnishedValue &&
           optionValues.districtValue &&
+          optionValues.dateBuiltValueStr &&
           optionValues.cityValue
         ) {
           simulationResultsLoading.value = true;
@@ -270,6 +331,7 @@ export default {
               priceValue: optionValues.priceValue,
               roomValue: optionValues.roomValue,
               furnishedValue: optionValues.furnishedValue,
+              dateBuiltValueStr: optionValues.dateBuiltValueStr,
               districtValue: optionValues.districtValue,
             };
 
@@ -353,6 +415,8 @@ export default {
       timeoutRef: null,
       displayMoreInfo: ref(false),
       simulationResultsLoading,
+      possibleDateYearsCount,
+      olderYear,
     };
   },
   methods: {
@@ -363,6 +427,18 @@ export default {
     },
     roomValueFct: function(value) {
       return `${value} pièce${value > 1 ? "s" : ""}`;
+    },
+    getDateBuiltValue: function(value) {
+      if (value === -1) {
+        return "Je ne sais pas";
+      } else {
+        return value + this.olderYear;
+      }
+    },
+    setDateBuiltValue: function(value) {
+      this.optionValues.dateBuiltValue = value;
+      this.optionValues.dateBuiltValueStr =
+        value === -1 ? value : this.getDateBuiltValue(value);
     },
     unmount: function() {
       this.isMounted = false;
@@ -442,6 +518,7 @@ export default {
   text-align: justify;
   box-sizing: border-box;
   padding: 124px;
+  align-items: center;
 
   @media screen and (max-width: $mobileSize) {
     padding: 124px 16px;
@@ -463,26 +540,34 @@ export default {
   z-index: 1;
 }
 
-.option-list > div.global-content {
+.option-list div.global-content {
   display: block;
   padding: 8px 14px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.option-list > div.global-content.grid {
+.option-list div.global-content.grid {
   display: grid;
-  grid-template-columns: repeat(5, 2fr);
 }
 
-.option-list > div.global-content.grid > span {
+.option-list .pushy-text {
+  padding: 8px 22px;
+}
+
+.option-list .pushy-text .reference-links {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.option-list div.global-content.grid > span {
   padding: 8px;
   justify-content: center;
   align-items: center;
   display: flex;
 }
 
-.option-list > div.global-content.grid > span:nth-child(5n + 1) {
+.option-list div.global-content.grid > .label {
   font-weight: bold;
   text-align: left;
   line-height: normal;
