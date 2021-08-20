@@ -142,7 +142,7 @@
                 <p>
                   Une fois le bail signé, s'il est non-conforme et qu'aucune
                   mention justificative n'apparait dans les documents, vous
-                  pouvez vous renseignez afin de faire valoir vos droits.
+                  pouvez vous renseigner afin de faire valoir vos droits.
                 </p>
                 <div class="reference-links">
                   <a
