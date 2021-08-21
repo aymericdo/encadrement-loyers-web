@@ -17,6 +17,18 @@
                   </Dropdown>
                 </span>
               </div>
+              <div v-if="hasHouse" class="row">
+                <span class="label">Maison</span>
+                <span>
+                  <Dropdown
+                    class="dropdown"
+                    :options="isHouseValueDropdownOptions"
+                    :currentValue="optionValues.isHouseValue"
+                    @onSelect="optionValues.isHouseValue = $event.value"
+                  >
+                  </Dropdown>
+                </span>
+              </div>
               <div class="row">
                 <span class="label">Prix (hors charges)</span>
                 <span class="slider">
@@ -247,6 +259,7 @@ export default {
       dateBuiltValueStr: idkId,
       furnishedValue: "furnished",
       addressValue: "",
+      isHouseValue: 0,
       addressTyped: "",
       districtValue: "",
       cityValue: "paris",
@@ -256,10 +269,28 @@ export default {
       ...initialOptionValues,
     });
 
+    const cityDropdownOptions = [
+      {
+        value: "paris",
+        label: "Paris",
+      },
+      {
+        value: "lille",
+        label: "Lille",
+      },
+      {
+        value: "plaine_commune",
+        label: "Plaine Commune",
+        hasHouse: true,
+      },
+    ];
     const districtDropdownOptions = ref([]);
+    const addressDropdownOptions = ref([]);
     const simulationResults = ref(null);
     const simulationResultsLoading = ref(false);
     let simulationTimeoutRef = null;
+
+    const hasHouse = ref(false);
 
     const fetchDistricts = () => {
       fetch(`${domain}districts/list/${optionValues.cityValue}`, {
@@ -287,11 +318,16 @@ export default {
 
     watch(
       () => optionValues.cityValue,
-      (newOptionValues, prevOptionValues) => {
-        if (newOptionValues !== prevOptionValues) {
+      (newCity, prevCity) => {
+        hasHouse.value = !!cityDropdownOptions.find((c) => c.value === newCity)
+          ?.hasHouse;
+        if (newCity !== prevCity) {
           fetchDistricts();
+          addressDropdownOptions.value = [];
+          simulationResults.value = null;
           optionValues.districtValue = "";
           optionValues.addressValue = "";
+          optionValues.addressTyped = "";
         }
       }
     );
@@ -305,6 +341,7 @@ export default {
         optionValues.districtValue,
         optionValues.dateBuiltValueStr,
         optionValues.cityValue,
+        optionValues.isHouseValue,
       ],
       () => {
         if (
@@ -333,6 +370,7 @@ export default {
               furnishedValue: optionValues.furnishedValue,
               dateBuiltValueStr: optionValues.dateBuiltValueStr,
               districtValue: optionValues.districtValue,
+              isHouseValue: optionValues.isHouseValue,
             };
 
             const strOptions = optionParams
@@ -386,20 +424,7 @@ export default {
       isMounted,
       optionValues,
       initialOptionValues,
-      cityDropdownOptions: [
-        {
-          value: "paris",
-          label: "Paris",
-        },
-        {
-          value: "lille",
-          label: "Lille",
-        },
-        {
-          value: "plaine_commune",
-          label: "Plaine Commune",
-        },
-      ],
+      cityDropdownOptions,
       furnishedDropdownOptions: [
         {
           value: "furnished",
@@ -410,8 +435,19 @@ export default {
           label: "Non meublé",
         },
       ],
+      isHouseValueDropdownOptions: [
+        {
+          value: 1,
+          label: "Maison",
+        },
+        {
+          value: 0,
+          label: "Appartement",
+        },
+      ],
       districtDropdownOptions,
-      addressDropdownOptions: ref([]),
+      addressDropdownOptions,
+      hasHouse,
       timeoutRef: null,
       displayMoreInfo: ref(false),
       simulationResultsLoading,
