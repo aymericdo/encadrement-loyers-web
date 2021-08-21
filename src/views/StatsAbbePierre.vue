@@ -73,7 +73,7 @@ import Section from "@/shared/Section.vue";
 import Graph from "@/shared/Graph.vue";
 import { domain } from "@/helper/config";
 
-const MONTHS_NB = 3;
+const MONTHS_NB = 6;
 
 export default {
   name: "StatsAbbePierre",
