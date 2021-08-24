@@ -293,6 +293,9 @@ export default {
     const hasHouse = ref(false);
 
     const fetchDistricts = () => {
+      controller.abort();
+      controller = new AbortController();
+
       fetch(`${domain}districts/list/${optionValues.cityValue}`, {
         signal: controller.signal,
       })

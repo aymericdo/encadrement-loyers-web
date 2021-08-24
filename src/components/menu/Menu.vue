@@ -21,9 +21,9 @@
         <li>
           <router-link to="/stats">Stats</router-link>
         </li>
-        <!-- <li>
+        <li>
           <router-link to="/simulator">Simulateur</router-link>
-        </li> -->
+        </li>
       </ul>
     </Sidebar>
   </div>
