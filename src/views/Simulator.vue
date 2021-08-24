@@ -324,6 +324,11 @@ export default {
       (newCity, prevCity) => {
         hasHouse.value = !!cityDropdownOptions.find((c) => c.value === newCity)
           ?.hasHouse;
+
+        if (!hasHouse.value) {
+          optionValues.isHouseValue = 0;
+        }
+
         if (newCity !== prevCity) {
           fetchDistricts();
           addressDropdownOptions.value = [];
