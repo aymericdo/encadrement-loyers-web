@@ -27,6 +27,16 @@
           />
         </div>
         <div class="graph-list" v-if="status === 'ok'">
+          <div class="row">
+            <Slider
+              class="slider"
+              v-model="monthValue"
+              :min="1"
+              :max="3"
+              :format="monthFormatValueFct"
+            />
+          </div>
+
           <Section class="stats-section -large">
             <Graph
               :id="'is-legal-per-website'"
@@ -63,6 +73,7 @@
 </template>
 
 <script>
+import { ref, watchEffect } from "vue";
 import { HalfCircleSpinner } from "epic-spinners";
 import SectionTitle from "@/shared/SectionTitle.vue";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
@@ -72,8 +83,9 @@ import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/Section.vue";
 import Graph from "@/shared/Graph.vue";
 import { domain } from "@/helper/config";
+import Slider from "@vueform/slider";
 
-const MONTHS_NB = 6;
+import "@vueform/slider/themes/default.css";
 
 export default {
   name: "StatsAbbePierre",
@@ -86,6 +98,7 @@ export default {
     Page2Wrapper,
     Graph,
     Section,
+    Slider,
   },
   mounted: function() {
     this.isMounted = true;
@@ -94,35 +107,74 @@ export default {
   beforeUnmount: function() {
     this.controller.abort();
   },
-  data() {
-    const monthsNb = MONTHS_NB;
-    const today = new Date();
-    const realEndDate = new Date();
-    const realStartDate = new Date(
-      realEndDate.setMonth(realEndDate.getMonth() - monthsNb)
+  setup() {
+    const monthValue = ref(2);
+
+    function getMonthNbValue(value) {
+      switch (value) {
+        case 1:
+          return 3;
+        case 2:
+          return 6;
+        case 3:
+          return 12;
+      }
+    }
+
+    function formatDate(monthValue) {
+      const today = new Date();
+      const realEndDate = new Date();
+      const realStartDate = new Date(
+        realEndDate.setMonth(realEndDate.getMonth() - monthValue)
+      );
+
+      const currDate1 = realStartDate.getDate();
+      const currMonth1 = realStartDate.getMonth() + 1; // Months are zero based
+      const currYear1 = realStartDate.getFullYear();
+
+      const currDate2 = today.getDate();
+      const currMonth2 = today.getMonth() + 1; // Months are zero based
+      const currYear2 = today.getFullYear();
+
+      return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
+    }
+
+    function monthFormatValueFct(monthsNb) {
+      return `${monthsNb} mois`;
+    }
+
+    const monthsNb = ref(getMonthNbValue(monthValue.value));
+    const monthFormatValue = ref(monthFormatValueFct(monthsNb.value));
+    const datesValues = ref(formatDate(monthsNb.value));
+
+    watchEffect(
+      () => {
+        if (monthValue.value) {
+          monthsNb.value = getMonthNbValue(monthValue.value);
+          monthFormatValue.value = monthFormatValueFct(monthsNb.value);
+          datesValues.value = formatDate(monthsNb.value);
+        }
+      },
+      {
+        flush: "post",
+      }
     );
-
-    const currDate1 = realStartDate.getDate();
-    const currMonth1 = realStartDate.getMonth() + 1; // Months are zero based
-    const currYear1 = realStartDate.getFullYear();
-
-    const currDate2 = today.getDate();
-    const currMonth2 = today.getMonth() + 1; // Months are zero based
-    const currYear2 = today.getFullYear();
 
     return {
       controller: new AbortController(),
-      isLegalVariationLoaded: false,
-      isPriceVariationLoaded: false,
-      isLegalPerRenterLoaded: false,
-      isMounted: false,
+      isLegalVariationLoaded: ref(false),
+      isPriceVariationLoaded: ref(false),
+      isLegalPerRenterLoaded: ref(false),
+      isMounted: ref(false),
       city: "paris",
-      sucessfulServerResponse: "",
-      serverError: "",
-      status: "",
-      welcomeData: null,
+      sucessfulServerResponse: ref(""),
+      serverError: ref(""),
+      status: ref(""),
+      welcomeData: ref(null),
       monthsNb,
-      datesValues: `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`,
+      monthValue,
+      monthFormatValue,
+      datesValues,
     };
   },
   methods: {
@@ -206,6 +258,19 @@ export default {
     unmount: function() {
       this.isMounted = false;
     },
+    getMonthNbValue(value) {
+      switch (value) {
+        case 1:
+          return 3;
+        case 2:
+          return 6;
+        case 3:
+          return 12;
+      }
+    },
+    monthFormatValueFct: function(monthsNb) {
+      return `${this.getMonthNbValue(monthsNb)} mois`;
+    },
   },
 };
 </script>
@@ -222,6 +287,26 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 2;
+}
+
+.graph-list > .row {
+  display: flex;
+  justify-content: center;
+}
+
+.graph-list > .row > .slider {
+  width: 100px;
+  margin-top: 36px;
+}
+
+.graph-list > .row :deep(.slider-target .slider-connect) {
+  background: $yellow;
+}
+
+.graph-list > .row :deep(.slider-target .slider-tooltip) {
+  background: $deepblack;
+  border-color: $yellow;
+  line-height: 16px;
 }
 
 .recaptcha {

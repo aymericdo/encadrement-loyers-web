@@ -170,6 +170,8 @@ import Graph from "@/shared/Graph.vue";
 import Slider from "@vueform/slider";
 import { domain } from "@/helper/config";
 
+import "@vueform/slider/themes/default.css";
+
 const DEFAULT_CITY = "paris";
 const DEFAULT_CITY_OPTIONS = [
   {
