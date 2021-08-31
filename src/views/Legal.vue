@@ -24,7 +24,7 @@
           et de son suivi :
         </p>
         <p>
-          <strong>Propriétaire</strong> : Aymeric Dominique – – 166 bd Voltaire,
+          <strong>Propriétaire</strong> : Aymeric Dominique – – 16 bd Voltaire,
           75011, Paris, France
           <br />
           <strong>Créateur</strong> :
