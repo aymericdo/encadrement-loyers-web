@@ -186,6 +186,10 @@ const DEFAULT_CITY_OPTIONS = [
     value: "plaine_commune",
     label: "Plaine Commune",
   },
+  {
+    value: "lyon",
+    label: "Lyon",
+  },
 ];
 
 export default {

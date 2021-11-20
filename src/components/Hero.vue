@@ -52,6 +52,7 @@ export default {
         { id: "paris", text: "Paris." },
         { id: "lille", text: "Lille." },
         { id: "plaine_commune", text: "Plaine Commune." },
+        { id: "lyon", text: "Lyon." },
       ],
       city: "",
       interval: null,
@@ -164,6 +165,18 @@ export default {
 
   > .tres {
     color: #71c828;
+    display: inline-block;
+  }
+}
+
+.city-word .typing.lyon {
+  > .uno {
+    color: #2a56d8;
+    display: inline-block;
+  }
+
+  > .tres {
+    color: #d82525;
     display: inline-block;
   }
 }

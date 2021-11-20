@@ -21,7 +21,7 @@ const VEGA_COMMON = {
   tooltip: {
     theme: "dark",
   },
-  actions: true,
+  actions: false,
   // not working héhé
   // width: 'container',
 };

@@ -195,6 +195,10 @@ export default defineComponent({
           value: "plaine_commune",
           label: "Plaine Commune",
         },
+        {
+          value: "lyon",
+          label: "Lyon",
+        },
       ],
       furnishedDropdownOptions: [
         {

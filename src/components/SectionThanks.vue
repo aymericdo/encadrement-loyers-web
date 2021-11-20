@@ -27,6 +27,15 @@
           </a>
           <span>Open Data Lille</span>
         </div>
+        <div class="image">
+          <a href="https://data.grandlyon.com/" target="_blank">
+            <img
+              src="@/assets/images/grand-lyon.jpeg"
+              alt="Photo logo Grand Lyon"
+            />
+          </a>
+          <span>Open Data Lyon</span>
+        </div>
       </div>
     </div>
   </Section>

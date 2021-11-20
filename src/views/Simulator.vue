@@ -283,6 +283,10 @@ export default {
         label: "Plaine Commune",
         hasHouse: true,
       },
+      {
+        value: "lyon",
+        label: "Lyon",
+      },
     ];
     const districtDropdownOptions = ref([]);
     const addressDropdownOptions = ref([]);
