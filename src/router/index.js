@@ -29,6 +29,13 @@ const routes = [
       {
         path: "stats",
         name: "stats",
+        redirect: "/stats/paris",
+        component: () =>
+          import(/* webpackChunkName: "stats" */ "../views/Stats.vue"),
+      },
+      {
+        path: "stats/:city",
+        name: "statsCity",
         component: () =>
           import(/* webpackChunkName: "stats" */ "../views/Stats.vue"),
       },

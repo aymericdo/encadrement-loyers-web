@@ -159,6 +159,7 @@
 <script>
 import { ref, watchEffect } from "vue";
 import { HalfCircleSpinner } from "epic-spinners";
+import { useRoute } from "vue-router";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
@@ -172,7 +173,6 @@ import { domain } from "@/helper/config";
 
 import "@vueform/slider/themes/default.css";
 
-const DEFAULT_CITY = "paris";
 const DEFAULT_CITY_OPTIONS = [
   {
     value: "paris",
@@ -220,6 +220,7 @@ export default {
     },
   },
   setup() {
+    const route = useRoute();
     const showCloseButton = ref(true);
     const isLegalVariation = ref(null);
     const legalPercentageFiltersCount = ref(0);
@@ -276,7 +277,7 @@ export default {
       isLegalVariation,
       controller: new AbortController(),
       isMounted: ref(false),
-      city: ref(DEFAULT_CITY),
+      city: ref(route.params.city || "paris"),
       status: ref(""),
       sucessfulServerResponse: ref(""),
       serverError: ref(""),
@@ -290,6 +291,11 @@ export default {
       maxDateValue,
       dateValueStr: ref(""),
     };
+  },
+  watch: {
+    "$route.params.city"(value) {
+      this.city = value;
+    },
   },
   methods: {
     // helper to get a displayable message to the user
@@ -369,7 +375,7 @@ export default {
         return;
       }
 
-      this.city = opt.value;
+      this.$router.push({ path: `${opt.value}` });
     },
     changeFilters(opt = null) {
       if (opt) {
