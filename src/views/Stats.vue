@@ -293,7 +293,7 @@ export default {
     };
   },
   watch: {
-    "$route.params.city"(value) {
+    "$route.params.city": function(value) {
       this.city = value;
     },
   },
