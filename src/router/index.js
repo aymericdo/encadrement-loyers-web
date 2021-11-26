@@ -59,7 +59,16 @@ const routes = [
       },
       {
         path: "stats-abbe-pierre",
-        name: "tats-abbe-pierre",
+        name: "stats-abbe-pierre",
+        redirect: "observatoire",
+        component: () =>
+          import(
+            /* webpackChunkName: "stats" */ "../views/StatsAbbePierre.vue"
+          ),
+      },
+      {
+        path: "observatoire",
+        name: "observatoire",
         component: () =>
           import(
             /* webpackChunkName: "stats" */ "../views/StatsAbbePierre.vue"

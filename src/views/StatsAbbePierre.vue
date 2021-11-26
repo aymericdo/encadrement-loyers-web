@@ -3,8 +3,8 @@
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
         <SectionTitle class="title"
-          >Stats pour la fondation Abbé Pierre (sur les {{ monthsNb }} derniers
-          mois)</SectionTitle
+          >Observatoire de l'encadrement des loyers (sur les
+          {{ monthsNb }} derniers mois)</SectionTitle
         >
         <div v-if="status !== 'ok'" class="entire-page-centered">
           <GoogleRecaptcha
