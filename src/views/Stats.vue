@@ -47,7 +47,7 @@
                     à
                     <span class="yellow">
                       &nbsp;{{
-                        DEFAULT_CITY_OPTIONS.find((c) => c === city).label
+                        cityDropdownOptions.find((c) => c.value === city).label
                       }}</span
                     >
                   </template>
