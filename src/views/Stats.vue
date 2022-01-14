@@ -27,28 +27,50 @@
         <div class="welcome-section" v-if="welcomeData">
           <div class="row">
             <div class="welcome">
-              <div>
-                <span>Sur les</span>
-                <span class="yellow"
-                  >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
-                >
-                <span>annonces étudiées au total,</span>
-                <span class="yellow">
-                  &nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;
-                </span>
-                <span>sont non conformes.</span>
+              <div class="welcome-spinner">
+                <half-circle-spinner
+                  :animation-duration="1000"
+                  color="#fdcd56"
+                  :size="60"
+                  v-if="!isWelcomeTextLoaded"
+                  class="spinner"
+                />
               </div>
-              <div>
-                <span>Pour les annonces d'une surface inférieure à</span>
-                <span class="yellow">
-                  &nbsp;{{ welcomeData.pivotSurface }}m²
-                </span>
-                <span>, il y a</span>
-                <span class="yellow">
-                  &nbsp;{{ welcomeData.isSmallSurfaceIllegalPercentage }}%&nbsp;
-                </span>
-                <span>d'annonces non conformes.</span>
-              </div>
+              <template v-if="isWelcomeTextLoaded">
+                <div>
+                  <span>Sur les</span>
+                  <span class="yellow"
+                    >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
+                  >
+                  <span>annonces étudiées au total</span>
+                  <template v-if="city !== 'all'">
+                    à
+                    <span class="yellow">
+                      &nbsp;{{
+                        city.charAt(0).toUpperCase() + city.slice(1)
+                      }}</span
+                    >
+                  </template>
+                  <span>,</span>
+                  <span class="yellow">
+                    &nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;
+                  </span>
+                  <span>sont non conformes.</span>
+                </div>
+                <div>
+                  <span>Pour les annonces d'une surface inférieure à</span>
+                  <span class="yellow">
+                    &nbsp;{{ welcomeData.pivotSurface }}m²
+                  </span>
+                  <span>, il y a</span>
+                  <span class="yellow">
+                    &nbsp;{{
+                      welcomeData.isSmallSurfaceIllegalPercentage
+                    }}%&nbsp;
+                  </span>
+                  <span>d'annonces non conformes.</span>
+                </div>
+              </template>
             </div>
 
             <div class="city-dropdown">
@@ -93,7 +115,7 @@
             </div>
           </div>
 
-          <div class="stats-section-row">
+          <div class="stats-section-row" v-if="city !== 'all'">
             <div class="stats-section">
               <Graph
                 :id="'chloropleth-map'"
@@ -174,6 +196,10 @@ import { domain } from "@/helper/config";
 import "@vueform/slider/themes/default.css";
 
 const DEFAULT_CITY_OPTIONS = [
+  {
+    value: "all",
+    label: "Tout",
+  },
   {
     value: "paris",
     label: "Paris",
@@ -282,6 +308,7 @@ export default {
       sucessfulServerResponse: ref(""),
       serverError: ref(""),
       welcomeData: ref(null),
+      isWelcomeTextLoaded: ref(false),
       cityDropdownOptions: DEFAULT_CITY_OPTIONS,
       initialLegalPercentageOptions,
       legalPercentageOptions,
@@ -295,6 +322,8 @@ export default {
   watch: {
     "$route.params.city": function(value) {
       this.city = value;
+      this.onFetchWelcome(null);
+      this.isWelcomeTextLoaded = false;
     },
   },
   methods: {
@@ -341,9 +370,12 @@ export default {
         });
     },
     onFetchWelcome: function(recaptchaToken) {
-      fetch(`${domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
-        signal: this.controller.signal,
-      })
+      fetch(
+        `${domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
+        {
+          signal: this.controller.signal,
+        }
+      )
         .then((res) => res.json())
         .then((res) => {
           if (res.message === "token expired") {
@@ -355,6 +387,7 @@ export default {
         .then((res) => {
           this.status = "ok";
           this.welcomeData = res;
+          this.isWelcomeTextLoaded = true;
         })
         .catch((err) => {
           this.serverError = this.getErrorMessage(err);
@@ -472,7 +505,7 @@ export default {
   width: 100%;
 }
 
-.spinner {
+.entire-page-centered > .spinner {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -532,6 +565,12 @@ export default {
   & div > span.yellow {
     color: $yellow;
   }
+}
+
+.welcome > .welcome-spinner {
+  min-width: 250px;
+  display: flex;
+  justify-content: center;
 }
 
 .is-legal-variation-dropdown {
