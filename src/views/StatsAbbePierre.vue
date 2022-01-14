@@ -3,7 +3,8 @@
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
         <SectionTitle class="title"
-          >Observatoire de l'encadrement des loyers (sur les
+          >Observatoire de l'encadrement des loyers à
+          {{ city.charAt(0).toUpperCase() + city.slice(1) }} (sur les
           {{ monthsNb }} derniers mois)</SectionTitle
         >
         <div v-if="status !== 'ok'" class="entire-page-centered">
@@ -221,9 +222,12 @@ export default {
         });
     },
     onFetchWelcome: function(recaptchaToken) {
-      fetch(`${domain}stats/welcome?recaptchaToken=${recaptchaToken}`, {
-        signal: this.controller.signal,
-      })
+      fetch(
+        `${domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
+        {
+          signal: this.controller.signal,
+        }
+      )
         .then((res) => res.json())
         .then((res) => {
           if (res.message === "token expired") {
