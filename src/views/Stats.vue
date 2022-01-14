@@ -47,7 +47,7 @@
                     à
                     <span class="yellow">
                       &nbsp;{{
-                        city.charAt(0).toUpperCase() + city.slice(1)
+                        DEFAULT_CITY_OPTIONS.find((c) => c === city).label
                       }}</span
                     >
                   </template>
