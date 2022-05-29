@@ -4,8 +4,7 @@
       <Page2Wrapper v-if="isMounted">
         <SectionTitle class="title"
           >Observatoire de l'encadrement des loyers à
-          {{ city.charAt(0).toUpperCase() + city.slice(1) }} (sur les
-          {{ monthsNb }} derniers mois)</SectionTitle
+          {{ city.charAt(0).toUpperCase() + city.slice(1) }}</SectionTitle
         >
         <div v-if="status !== 'ok'" class="entire-page-centered">
           <GoogleRecaptcha
@@ -28,7 +27,17 @@
           />
         </div>
         <div class="graph-list" v-if="status === 'ok'">
+          <div class="row -paragraph">
+            <p>Pour le premier baromètre de l’Observatoire de l’Encadrement des Loyers à Paris, la Fondation Abbé Pierre nous a contactés pour leur fournir les données que nous avons collectées.</p>
+            <p>Ce fut avec plaisir que nous leur avons partagé nos informations, ainsi que les graphiques que nous pouvons vous présenter ci-dessous.</p>
+            <p>En complément, <a href="https://encadrement-loyers.fr/stats"> cette page</a> résume plus globalement l'état de l'encadrement sur plusieurs des villes où il est en application.</p>
+          </div>
+
           <div class="row">
+            <a href="https://www.fondation-abbe-pierre.fr/actualites/parution-du-1er-barometre-de-lobservatoire-de-lencadrement-des-loyers-paris">Article</a>
+          </div>
+
+          <div class="row slider-section">
             <Slider
               class="slider"
               v-model="monthValue"
@@ -38,7 +47,11 @@
             />
           </div>
 
-          <Section class="stats-section -large">
+          <div class="row">
+            <span>(sur les {{ monthsNb }} derniers mois)</span>
+          </div>
+
+          <Section class="stats-section -large -first">
             <Graph
               :id="'is-legal-per-website'"
               :city="city"
@@ -299,7 +312,8 @@ export default {
 }
 
 .graph-list > .row > .slider {
-  width: 100px;
+  width: 300px;
+  max-width: 100%;
   margin-top: 36px;
 }
 
@@ -421,6 +435,23 @@ export default {
 
 .stats-section.-large {
   width: 100%;
+}
+
+.section.stats-section.-large.-first {
+  margin-top: 1rem;
+}
+
+.row.-paragraph {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.slider-section {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media screen and (max-width: $mobileSize) {
