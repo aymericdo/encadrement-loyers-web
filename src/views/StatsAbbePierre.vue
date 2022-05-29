@@ -34,7 +34,7 @@
           </div>
 
           <div class="row">
-            <a href="https://www.fondation-abbe-pierre.fr/actualites/parution-du-1er-barometre-de-lobservatoire-de-lencadrement-des-loyers-paris">Article</a>
+            <a target="_blank" href="https://www.fondation-abbe-pierre.fr/actualites/parution-du-1er-barometre-de-lobservatoire-de-lencadrement-des-loyers-paris">L'Observatoire</a>
           </div>
 
           <div class="row slider-section">
