@@ -445,6 +445,11 @@ export default {
   display: flex;
   flex-direction: column;
   margin: 1rem 0;
+  align-items: center;
+
+  > p {
+    width: 50%;
+  }
 }
 
 .slider-section {
@@ -470,5 +475,10 @@ export default {
   .stats-section-row {
     flex-wrap: wrap;
   }
-}
+
+  .row.-paragraph {
+    > p {
+      width: 100%;
+    }
+  }
 </style>
