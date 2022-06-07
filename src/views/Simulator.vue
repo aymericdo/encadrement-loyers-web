@@ -284,6 +284,11 @@ export default {
         hasHouse: true,
       },
       {
+        value: "est_ensemble",
+        label: "Est Ensemble",
+        hasHouse: true,
+      },
+      {
         value: "lyon",
         label: "Lyon",
       },

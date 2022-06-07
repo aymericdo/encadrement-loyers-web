@@ -196,6 +196,10 @@ export default defineComponent({
           label: "Plaine Commune",
         },
         {
+          value: "est_ensemble",
+          label: "Est Ensemble",
+        },
+        {
           value: "lyon",
           label: "Lyon",
         },

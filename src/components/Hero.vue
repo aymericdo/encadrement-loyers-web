@@ -52,6 +52,7 @@ export default {
         { id: "paris", text: "Paris." },
         { id: "lille", text: "Lille." },
         { id: "plaine_commune", text: "Plaine Commune." },
+        { id: "est_ensemble", text: "Est Ensemble." },
         { id: "lyon", text: "Lyon." },
       ],
       city: "",
@@ -131,31 +132,26 @@ export default {
 .city-word .typing.paris {
   > span.uno {
     color: #26a1ff;
-    display: inline-block;
   }
 
   > span.tres {
     color: #ffaca6;
-    display: inline-block;
   }
 }
 
 .city-word .typing.lille {
   > .uno {
     color: #e01e13;
-    display: inline-block;
   }
 
   > .tres {
     color: #e01e13;
-    display: inline-block;
   }
 }
 
 .city-word .typing.plaine_commune {
   > .uno {
     color: #71c828;
-    display: inline-block;
   }
 
   > .dos {
@@ -165,19 +161,31 @@ export default {
 
   > .tres {
     color: #71c828;
-    display: inline-block;
+  }
+}
+
+.city-word .typing.est_ensemble {
+  > .uno {
+    color: #d0033b;
+  }
+
+  > .dos {
+    -webkit-text-stroke: 2px white;
+    color: black;
+  }
+
+  > .tres {
+    color: #d0033b;
   }
 }
 
 .city-word .typing.lyon {
   > .uno {
     color: #2a56d8;
-    display: inline-block;
   }
 
   > .tres {
     color: #d82525;
-    display: inline-block;
   }
 }
 
