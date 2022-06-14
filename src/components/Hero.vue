@@ -54,6 +54,7 @@ export default {
         { id: "plaine_commune", text: "Plaine Commune." },
         { id: "est_ensemble", text: "Est Ensemble." },
         { id: "lyon", text: "Lyon." },
+        { id: "montpellier", text: "Montpellier." },
       ],
       city: "",
       interval: null,
@@ -176,6 +177,20 @@ export default {
 
   > .tres {
     color: #d0033b;
+  }
+}
+
+.city-word .typing.montpellier {
+  > .uno {
+    color: #eb590c;
+  }
+
+  > .dos {
+    color: #b2c909;
+  }
+
+  > .tres {
+    color: #973f93;
   }
 }
 

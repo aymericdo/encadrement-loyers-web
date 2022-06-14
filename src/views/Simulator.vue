@@ -292,6 +292,10 @@ export default {
         value: "lyon",
         label: "Lyon",
       },
+      {
+        value: "montpellier",
+        label: "Montpellier",
+      },
     ];
     const districtDropdownOptions = ref([]);
     const addressDropdownOptions = ref([]);

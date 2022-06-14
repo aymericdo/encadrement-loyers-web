@@ -203,6 +203,10 @@ export default defineComponent({
           value: "lyon",
           label: "Lyon",
         },
+        {
+          value: "montpellier",
+          label: "Montpellier",
+        },
       ],
       furnishedDropdownOptions: [
         {

@@ -220,6 +220,10 @@ const DEFAULT_CITY_OPTIONS = [
     value: "lyon",
     label: "Lyon",
   },
+  {
+    value: "montpellier",
+    label: "Montpellier",
+  },
 ];
 
 export default {
