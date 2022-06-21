@@ -279,12 +279,12 @@ export default {
         label: "Lille",
       },
       {
-        value: "plaine_commune",
+        value: "plaineCommune",
         label: "Plaine Commune",
         hasHouse: true,
       },
       {
-        value: "est_ensemble",
+        value: "estEnsemble",
         label: "Est Ensemble",
         hasHouse: true,
       },

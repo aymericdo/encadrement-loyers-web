@@ -192,11 +192,11 @@ export default defineComponent({
           label: "Lille",
         },
         {
-          value: "plaine_commune",
+          value: "plaineCommune",
           label: "Plaine Commune",
         },
         {
-          value: "est_ensemble",
+          value: "estEnsemble",
           label: "Est Ensemble",
         },
         {

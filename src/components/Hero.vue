@@ -51,8 +51,8 @@ export default {
       cities: [
         { id: "paris", text: "Paris." },
         { id: "lille", text: "Lille." },
-        { id: "plaine_commune", text: "Plaine Commune." },
-        { id: "est_ensemble", text: "Est Ensemble." },
+        { id: "plaineCommune", text: "Plaine Commune." },
+        { id: "estEnsemble", text: "Est Ensemble." },
         { id: "lyon", text: "Lyon." },
         { id: "montpellier", text: "Montpellier." },
       ],
@@ -150,7 +150,7 @@ export default {
   }
 }
 
-.city-word .typing.plaine_commune {
+.city-word .typing.plaineCommune {
   > .uno {
     color: #71c828;
   }
@@ -165,7 +165,7 @@ export default {
   }
 }
 
-.city-word .typing.est_ensemble {
+.city-word .typing.estEnsemble {
   > .uno {
     color: #d0033b;
   }
