@@ -179,13 +179,9 @@
               v-if="simulationResultsLoading || simulationResults !== null"
               class="row result"
             >
-              <half-circle-spinner
-                :animation-duration="1000"
-                color="#fdcd56"
-                :size="20"
-                v-if="simulationResultsLoading"
-                class="spinner"
-              />
+              <template v-if="simulationResultsLoading">
+                <bounce-loader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'"></bounce-loader>
+              </template>
               <template v-else>
                 {{
                   simulationResults.some((r) => r.isLegal)
@@ -225,7 +221,7 @@ import ArrowIcon from "@/icons/ArrowIcon.vue";
 import Slider from "@vueform/slider";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import FixedButton from "@/shared/FixedButton.vue";
-import { HalfCircleSpinner } from "epic-spinners";
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { domain } from "@/helper/config";
 
 import "@vueform/slider/themes/default.css";
@@ -240,7 +236,7 @@ export default {
     Input,
     StrokeIcon,
     ArrowIcon,
-    HalfCircleSpinner,
+    BounceLoader,
   },
   setup() {
     let controller = new AbortController();

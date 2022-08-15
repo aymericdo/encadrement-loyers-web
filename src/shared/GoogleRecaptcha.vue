@@ -1,23 +1,17 @@
 <template>
   <div>
     <div v-if="!loading" ref="recaptcha"></div>
-    <half-circle-spinner
-      :animation-duration="1000"
-      color="#fdcd56"
-      :size="120"
-      class="spinner"
-      v-if="loading"
-    />
+    <bounce-loader class="spinner" :loading="loading" color="#fdcd56" :size="'120px'"></bounce-loader>
   </div>
 </template>
 
 <script>
-import { HalfCircleSpinner } from "epic-spinners";
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 
 export default {
   name: "GoogleRecaptcha",
   components: {
-    HalfCircleSpinner,
+    BounceLoader,
   },
   data() {
     return {

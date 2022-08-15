@@ -13,22 +13,10 @@
           @expire="onCaptchaExpired"
           siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
         />
-        <half-circle-spinner
-          :animation-duration="1000"
-          color="#fdcd56"
-          :size="120"
-          v-if="status !== 'ok' && status === 'submitting'"
-          class="spinner"
-        />
+        <bounce-loader class="spinner" :loading="status !== 'ok' && status === 'submitting'" color="#fdcd56" :size="'120px'"></bounce-loader>
         <Section class="stats-section">
           <div v-if="status === 'ok'" class="container" ref="adoptionContainer">
-            <half-circle-spinner
-              :animation-duration="1000"
-              color="#fdcd56"
-              :size="60"
-              v-if="!isAdoptionLoaded"
-              class="spinner"
-            />
+            <bounce-loader class="spinner" :loading="!isAdoptionLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
             <div v-if="isAdoptionLoaded" id="adoption"></div>
           </div>
         </Section>
@@ -43,7 +31,7 @@
 </template>
 
 <script>
-import { HalfCircleSpinner } from "epic-spinners";
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import vegaEmbed from "vega-embed";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
@@ -55,7 +43,7 @@ import { domain } from "@/helper/config";
 export default {
   name: "Adoption",
   components: {
-    HalfCircleSpinner,
+    BounceLoader,
     GoogleRecaptcha,
     StrokeIcon,
     FixedButton,

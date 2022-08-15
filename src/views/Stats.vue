@@ -15,26 +15,14 @@
             @verify="onCaptchaVerified"
             @expire="onCaptchaExpired"
           />
-          <half-circle-spinner
-            :animation-duration="1000"
-            color="#fdcd56"
-            :size="120"
-            class="spinner"
-            v-if="status === 'submitting'"
-          />
+          <bounce-loader class="spinner" :loading="status === 'submitting'" color="#fdcd56" :size="'120px'"></bounce-loader>
         </div>
 
         <div class="welcome-section" v-if="welcomeData">
           <div class="row">
             <div class="welcome">
               <div class="welcome-spinner">
-                <half-circle-spinner
-                  :animation-duration="1000"
-                  color="#fdcd56"
-                  :size="60"
-                  v-if="!isWelcomeTextLoaded"
-                  class="spinner"
-                />
+                <bounce-loader class="spinner" :loading="!isWelcomeTextLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
               </div>
               <template v-if="isWelcomeTextLoaded">
                 <div>
@@ -180,7 +168,7 @@
 
 <script>
 import { ref, watchEffect } from "vue";
-import { HalfCircleSpinner } from "epic-spinners";
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { useRoute } from "vue-router";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
@@ -229,7 +217,7 @@ const DEFAULT_CITY_OPTIONS = [
 export default {
   name: "Stats",
   components: {
-    HalfCircleSpinner,
+    BounceLoader,
     GoogleRecaptcha,
     SectionTitle,
     Page2Wrapper,

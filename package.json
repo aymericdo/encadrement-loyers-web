@@ -15,7 +15,7 @@
     "@vue/cli-service-global": "^4.5.15",
     "@vueform/slider": "^1.0.3",
     "core-js": "^3.4.8",
-    "epic-spinners": "^1.1.0",
+    "vue-spinner": "^1.0.4",
     "swiper": "^6.5.0",
     "vega": "^5.20.2",
     "vega-embed": "^6.17.0",
