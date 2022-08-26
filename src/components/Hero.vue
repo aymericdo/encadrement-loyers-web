@@ -55,13 +55,14 @@ export default {
         { id: "estEnsemble", text: "Est Ensemble." },
         { id: "lyon", text: "Lyon." },
         { id: "montpellier", text: "Montpellier." },
+        { id: "bordeaux", text: "Bordeaux." },
       ],
       city: "",
       interval: null,
     };
   },
   mounted: function() {
-    this.writeCity(500);
+    this.writeCity(250);
   },
   beforeUnmount: function() {
     clearInterval(this.interval);
@@ -74,7 +75,7 @@ export default {
 
         if (this.currentLetter > 2) {
           clearInterval(this.interval);
-          this.writeCity(250);
+          this.writeCity(150);
         }
 
         if (this.cities[this.currentCity].text.length < this.currentLetter) {
@@ -83,7 +84,7 @@ export default {
             this.currentLetter = 0;
             this.currentCity = (this.currentCity + 1) % this.cities.length;
             this.city = "";
-            this.writeCity(500);
+            this.writeCity(400);
           }, 500);
         }
       }, speed);
@@ -191,6 +192,16 @@ export default {
 
   > .tres {
     color: #973f93;
+  }
+}
+
+.city-word .typing.bordeaux {
+  > .uno {
+    color: #d30039;
+  }
+
+  > .tres {
+    color: #004b9d;
   }
 }
 

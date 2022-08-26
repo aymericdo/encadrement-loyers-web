@@ -207,6 +207,10 @@ export default defineComponent({
           value: "montpellier",
           label: "Montpellier",
         },
+        {
+          value: "bordeaux",
+          label: "Bordeaux",
+        },
       ],
       furnishedDropdownOptions: [
         {

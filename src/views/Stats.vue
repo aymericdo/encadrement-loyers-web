@@ -212,6 +212,10 @@ const DEFAULT_CITY_OPTIONS = [
     value: "montpellier",
     label: "Montpellier",
   },
+  {
+    value: "bordeaux",
+    label: "Bordeaux",
+  },
 ];
 
 export default {

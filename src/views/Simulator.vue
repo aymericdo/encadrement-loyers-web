@@ -292,6 +292,10 @@ export default {
         value: "montpellier",
         label: "Montpellier",
       },
+      {
+        value: "bordeaux",
+        label: "Bordeaux",
+      },
     ];
     const districtDropdownOptions = ref([]);
     const addressDropdownOptions = ref([]);
