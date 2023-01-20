@@ -15,7 +15,7 @@ const routes = [
         // this generates a separate chunk (stats.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () =>
-          import(/* webpackChunkName: "video" */ "../views/Video.vue"),
+          import("../views/Video.vue"),
       },
       {
         name: "legal",
@@ -24,7 +24,13 @@ const routes = [
         // this generates a separate chunk (stats.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () =>
-          import(/* webpackChunkName: "video" */ "../views/Legal.vue"),
+          import("../views/Legal.vue"),
+      },
+      {
+        name: "justification",
+        path: "justification",
+        component: () =>
+          import("../views/Justification.vue"),
       },
       {
         path: "stats",

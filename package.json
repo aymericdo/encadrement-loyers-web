@@ -12,45 +12,28 @@
   },
   "dependencies": {
     "@babel/core": "^7.12.10",
-    "@vue/cli-service-global": "^4.5.15",
+    "@babel/eslint-parser": "^7.18.9",
     "@vueform/slider": "^1.0.3",
     "core-js": "^3.4.8",
-    "epic-spinners": "^1.1.0",
     "swiper": "^6.5.0",
     "vega": "^5.20.2",
     "vega-embed": "^6.17.0",
     "vega-lite": "^5.0.0",
-    "vue": "^3.0.0-beta.1",
-    "vue-eslint-parser": "^7.3.0",
-    "vue-router": "^4.0.0-alpha.6"
+    "vue": "^3.2.37",
+    "vue-eslint-parser": "^9.0.3",
+    "vue-router": "^4.0.0-alpha.6",
+    "vue-spinner": "^1.0.4"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.15",
-    "@vue/cli-plugin-eslint": "^4.5.15",
-    "@vue/cli-plugin-router": "^4.5.15",
-    "@vue/cli-service": "^4.5.15",
-    "@vue/compiler-sfc": "^3.0.0-beta.1",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-plugin-router": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
+    "@vue/compiler-sfc": "^3.2.37",
+    "eslint": "^8.22.0",
     "eslint-plugin-vue": "^7.0.0-alpha.0",
     "sass": "^1.32.8",
     "sass-loader": "^8.0.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "rules": {
-      "no-console": "off"
-    },
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
   },
   "postcss": {
     "plugins": {

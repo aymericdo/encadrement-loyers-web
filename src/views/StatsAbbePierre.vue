@@ -18,13 +18,7 @@
             @expire="onCaptchaExpired"
             siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
           />
-          <half-circle-spinner
-            :animation-duration="1000"
-            color="#fdcd56"
-            :size="120"
-            v-if="status === 'submitting'"
-            class="spinner"
-          />
+          <bounce-loader class="spinner" :loading="status === 'submitting'" color="#fdcd56" :size="'120px'"></bounce-loader>
         </div>
         <div class="graph-list" v-if="status === 'ok'">
           <div class="row -paragraph">
@@ -88,7 +82,7 @@
 
 <script>
 import { ref, watchEffect } from "vue";
-import { HalfCircleSpinner } from "epic-spinners";
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import SectionTitle from "@/shared/SectionTitle.vue";
 import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
@@ -104,7 +98,7 @@ import "@vueform/slider/themes/default.css";
 export default {
   name: "StatsAbbePierre",
   components: {
-    HalfCircleSpinner,
+    BounceLoader,
     StrokeIcon,
     SectionTitle,
     FixedButton,

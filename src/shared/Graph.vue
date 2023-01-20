@@ -1,18 +1,12 @@
 <template>
   <div class="container">
-    <half-circle-spinner
-      :animation-duration="1000"
-      color="#fdcd56"
-      :size="60"
-      v-if="!isGraphLoaded"
-      class="spinner"
-    />
+    <bounce-loader class="spinner" :loading="!isGraphLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
     <div v-if="isGraphLoaded" :id="id" class="graph"></div>
   </div>
 </template>
 
 <script>
-import { HalfCircleSpinner } from "epic-spinners";
+import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { timeFormatLocale, formatLocale } from "../tools/vegaFormatLocale";
 import vegaEmbed from "vega-embed";
 import { domain } from "@/helper/config";
@@ -47,7 +41,7 @@ export default {
     },
   },
   components: {
-    HalfCircleSpinner,
+    BounceLoader,
   },
   mounted: function() {
     this.onFetchGraph();
