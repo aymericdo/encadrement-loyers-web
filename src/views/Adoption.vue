@@ -199,6 +199,8 @@ export default {
   flex-direction: column;
   align-items: center;
   margin-top: 0;
+  flex: 1;
+  justify-content: center;
 
   &:last-child {
     margin-bottom: 20px;
