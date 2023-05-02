@@ -51,10 +51,9 @@ export default defineComponent({
           scrollIntoViewTimeout = setTimeout(() => {
             optionListRef.value.scrollIntoView({
               behavior: "smooth",
-              block: "end",
-              inline: "end",
+              block: "start",
             });
-          }, 800);
+          }, 250);
         }
       },
       {

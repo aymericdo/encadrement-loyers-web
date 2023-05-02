@@ -175,14 +175,6 @@ export default {
   transform: translateY(-50%);
 }
 
-.welcome {
-  max-width: 700px;
-
-  & > span.yellow {
-    color: $yellow;
-  }
-}
-
 .stats-section {
   flex-direction: column;
   align-items: center;

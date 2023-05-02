@@ -568,7 +568,7 @@ export default {
 }
 
 .welcome > .welcome-spinner {
-  min-width: 250px;
+  min-width: 500px;
   display: flex;
   justify-content: center;
 }

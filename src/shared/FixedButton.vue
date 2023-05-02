@@ -33,7 +33,7 @@ button {
   border-radius: 50%;
   border-color: transparent;
   cursor: pointer;
-  z-index: 1;
+  z-index: 2;
   transition: background-color ease 0.3s;
 
   &.-blink {

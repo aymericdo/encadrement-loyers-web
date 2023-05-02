@@ -31,27 +31,26 @@
               </div>
               <div class="row">
                 <span class="label">Prix (hors charges)</span>
-                <span class="slider">
-                  <Slider
-                    :modelValue="optionValues.priceValue"
-                    :min="200"
-                    :max="3000"
-                    :step="5"
-                    :format="{ suffix: '€', decimals: 0 }"
-                    @change="optionValues.priceValue = $event"
-                  />
+                <span>
+                  <Dropdown
+                    class="dropdown"
+                    :options="priceValueDropdownOptions"
+                    :currentValue="optionValues.priceValue"
+                    @onSelect="optionValues.priceValue = $event.value"
+                  >
+                  </Dropdown>
                 </span>
               </div>
               <div class="row">
                 <span class="label">Surface</span>
-                <span class="slider">
-                  <Slider
-                    :modelValue="optionValues.surfaceValue"
-                    :min="9"
-                    :max="100"
-                    :format="{ suffix: 'm²', decimals: 0 }"
-                    @change="optionValues.surfaceValue = $event"
-                  />
+                <span>
+                  <Dropdown
+                    class="dropdown"
+                    :options="surfaceValueDropdownOptions"
+                    :currentValue="optionValues.surfaceValue"
+                    @onSelect="optionValues.surfaceValue = $event.value"
+                  >
+                  </Dropdown>
                 </span>
               </div>
               <div class="row">
@@ -80,14 +79,14 @@
               </div>
               <div class="row">
                 <span class="label">Date de construction</span>
-                <span class="slider">
-                  <Slider
-                    :modelValue="optionValues.dateBuiltValue"
-                    :min="-1"
-                    :max="possibleDateYearsCount"
-                    :format="getDateBuiltValue"
-                    @change="setDateBuiltValue"
-                  />
+                <span>
+                  <Dropdown
+                    class="dropdown"
+                    :options="dateBuiltValueDropdownOptions"
+                    :currentValue="optionValues.dateBuiltValue"
+                    @onSelect="optionValues.dateBuiltValue = $event.value"
+                  >
+                  </Dropdown>
                 </span>
               </div>
               <div class="row" v-if="districtDropdownOptions.length">
@@ -118,7 +117,7 @@
             <div v-if="displayMoreInfo">
               <div
                 key="2"
-                class="grid global-content"
+                class="grid global-content result"
                 v-bind:style="{
                   'grid-template-columns': `repeat(${simulationResults.length +
                     1}, 2fr)`,
@@ -244,7 +243,6 @@ export default {
 
     const olderYear = 1700;
     const currentYear = +new Date().getFullYear();
-    const possibleDateYearsCount = currentYear - olderYear;
     const idkId = -1;
 
     const initialOptionValues = {
@@ -252,7 +250,6 @@ export default {
       priceValue: 1000,
       roomValue: 2,
       dateBuiltValue: idkId,
-      dateBuiltValueStr: idkId,
       furnishedValue: "furnished",
       addressValue: "",
       isHouseValue: 0,
@@ -264,6 +261,36 @@ export default {
     const optionValues = reactive({
       ...initialOptionValues,
     });
+
+    const dateBuiltValueDropdownOptions = [{
+        value: idkId,
+        label: "Je ne sais pas",
+      }].concat([...Array(currentYear - olderYear + 1).keys()]
+      .map(x => {
+        const val = x + olderYear;
+        return {
+          value: val,
+          label: val,
+        }
+      }));
+
+    const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
+      .map(x => {
+        const val = x + 9;
+        return {
+          value: val,
+          label: `${val}m²`,
+        }
+      });
+
+    const priceValueDropdownOptions = [...Array((3000 - 200) / 5 + 1).keys()]
+      .map(x => {
+        const val = x * 5 + 200;
+        return {
+          value: val,
+          label: `${val}€`,
+        }
+      });
 
     const cityDropdownOptions = [
       {
@@ -360,7 +387,7 @@ export default {
         optionValues.roomValue,
         optionValues.furnishedValue,
         optionValues.districtValue,
-        optionValues.dateBuiltValueStr,
+        optionValues.dateBuiltValue,
         optionValues.cityValue,
         optionValues.isHouseValue,
       ],
@@ -371,7 +398,7 @@ export default {
           optionValues.roomValue &&
           optionValues.furnishedValue &&
           optionValues.districtValue &&
-          optionValues.dateBuiltValueStr &&
+          optionValues.dateBuiltValue &&
           optionValues.cityValue
         ) {
           simulationResultsLoading.value = true;
@@ -389,7 +416,7 @@ export default {
               priceValue: optionValues.priceValue,
               roomValue: optionValues.roomValue,
               furnishedValue: optionValues.furnishedValue,
-              dateBuiltValueStr: optionValues.dateBuiltValueStr,
+              dateBuiltValueStr: optionValues.dateBuiltValue,
               districtValue: optionValues.districtValue,
               isHouseValue: optionValues.isHouseValue,
             };
@@ -446,6 +473,9 @@ export default {
       optionValues,
       initialOptionValues,
       cityDropdownOptions,
+      dateBuiltValueDropdownOptions,
+      priceValueDropdownOptions,
+      surfaceValueDropdownOptions,
       furnishedDropdownOptions: [
         {
           value: "furnished",
@@ -472,8 +502,6 @@ export default {
       timeoutRef: null,
       displayMoreInfo: ref(false),
       simulationResultsLoading,
-      possibleDateYearsCount,
-      olderYear,
     };
   },
   methods: {
@@ -484,18 +512,6 @@ export default {
     },
     roomValueFct: function(value) {
       return `${value} pièce${value > 1 ? "s" : ""}`;
-    },
-    getDateBuiltValue: function(value) {
-      if (value === -1) {
-        return "Je ne sais pas";
-      } else {
-        return value + this.olderYear;
-      }
-    },
-    setDateBuiltValue: function(value) {
-      this.optionValues.dateBuiltValue = value;
-      this.optionValues.dateBuiltValueStr =
-        value === -1 ? value : this.getDateBuiltValue(value);
     },
     unmount: function() {
       this.isMounted = false;
@@ -599,9 +615,14 @@ export default {
 
 .option-list div.global-content {
   display: block;
-  padding: 8px 14px;
+  padding: 1rem;
   width: 100%;
   box-sizing: border-box;
+}
+
+.option-list div.global-content.result {
+  padding: 2rem 1rem;
+  overflow-x: auto;
 }
 
 .option-list div.global-content.grid {

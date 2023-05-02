@@ -97,10 +97,14 @@ export default defineComponent({
           scrollIntoViewTimeout = setTimeout(() => {
             optionListRef.value.scrollIntoView({
               behavior: "smooth",
-              block: "end",
-              inline: "end",
+              block: "start",
             });
-          }, 800);
+
+            optionListRef.value.querySelector('.option.-selected').scrollIntoView({
+              behavior: "instant",
+              block: "center",
+            })
+          }, 250);
         }
       },
       {
