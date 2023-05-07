@@ -241,8 +241,6 @@ export default {
     let controller = new AbortController();
     const isMounted = ref(false);
 
-    const olderYear = 1700;
-    const currentYear = +new Date().getFullYear();
     const idkId = -1;
 
     const initialOptionValues = {
@@ -262,17 +260,30 @@ export default {
       ...initialOptionValues,
     });
 
-    const dateBuiltValueDropdownOptions = [{
+    const defaultValueDropdownOptions = [
+      {
         value: idkId,
         label: "Je ne sais pas",
-      }].concat([...Array(currentYear - olderYear + 1).keys()]
-      .map(x => {
-        const val = x + olderYear;
-        return {
-          value: val,
-          label: val,
-        }
-      }));
+      },
+      {
+        value: '<1946',
+        label: 'Avant 1946',
+      },
+      {
+        value: '1946-1970',
+        label: '1946 - 1970',
+      },
+      {
+        value: '1971-1990',
+        label: '1971 - 1990',
+      },
+      {
+        value: '>1990',
+        label: 'Après 1990',
+      },
+    ]
+
+    const dateBuiltValueDropdownOptions = ref(defaultValueDropdownOptions);
 
     const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
       .map(x => {
@@ -318,6 +329,32 @@ export default {
       {
         value: "montpellier",
         label: "Montpellier",
+        customYearsBuilt: [
+          {
+            value: idkId,
+            label: "Je ne sais pas",
+          },
+          {
+            value: '<1946',
+            label: 'Avant 1946',
+          },
+          {
+            value: '1946-1970',
+            label: '1946 - 1970',
+          },
+          {
+            value: '1971-1990',
+            label: '1971 - 1990',
+          },
+          {
+            value: '1991-2005',
+            label: '1991 - 2005',
+          },
+          {
+            value: '>2005',
+            label: 'Après 2005',
+          }
+        ]
       },
       {
         value: "bordeaux",
@@ -362,11 +399,16 @@ export default {
     watch(
       () => optionValues.cityValue,
       (newCity, prevCity) => {
-        hasHouse.value = !!cityDropdownOptions.find((c) => c.value === newCity)
-          ?.hasHouse;
-
+        const currentCityOption = cityDropdownOptions.find((c) => c.value === newCity);
+        hasHouse.value = !!currentCityOption?.hasHouse;
         if (!hasHouse.value) {
           optionValues.isHouseValue = 0;
+        }
+
+        if (currentCityOption.customYearsBuilt) {
+          dateBuiltValueDropdownOptions.value = [...currentCityOption.customYearsBuilt];
+        } else {
+          dateBuiltValueDropdownOptions.value = [...defaultValueDropdownOptions];
         }
 
         if (newCity !== prevCity) {
@@ -376,6 +418,7 @@ export default {
           optionValues.districtValue = "";
           optionValues.addressValue = "";
           optionValues.addressTyped = "";
+          optionValues.dateBuiltValue = idkId;
         }
       }
     );
