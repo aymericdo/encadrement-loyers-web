@@ -11,8 +11,30 @@
                   <Dropdown
                     class="dropdown"
                     :options="cityDropdownOptions"
-                    :currentValue="optionValues.cityValue"
-                    @onSelect="optionValues.cityValue = $event.value"
+                    :currentValue="citySelected"
+                    @onSelect="onCitySelect($event.value)"
+                  >
+                  </Dropdown>
+                </span>
+              </div>
+              <div class="row" v-if="districtDropdownOptions.length">
+                <span class="label">Localisation</span>
+                <span>
+                  <Input
+                    class="dropdown input"
+                    :placeholder="'Entre ton adresse...'"
+                    :options="addressDropdownOptions"
+                    :currentValue="optionValues.addressValue"
+                    :textTyped="optionValues.addressTyped"
+                    @onTyping="handleSearchingAddress"
+                    @onSelect="handleAddressSelect($event)"
+                  >
+                  </Input>
+                  <Dropdown
+                    class="dropdown"
+                    :options="districtDropdownOptions"
+                    :currentValue="optionValues.districtValue"
+                    @onSelect="optionValues.districtValue = $event.value"
                   >
                   </Dropdown>
                 </span>
@@ -85,28 +107,6 @@
                     :options="dateBuiltValueDropdownOptions"
                     :currentValue="optionValues.dateBuiltValue"
                     @onSelect="optionValues.dateBuiltValue = $event.value"
-                  >
-                  </Dropdown>
-                </span>
-              </div>
-              <div class="row" v-if="districtDropdownOptions.length">
-                <span class="label">Localisation</span>
-                <span>
-                  <Input
-                    class="dropdown input"
-                    :placeholder="'Entre ton adresse...'"
-                    :options="addressDropdownOptions"
-                    :currentValue="optionValues.addressValue"
-                    :textTyped="optionValues.addressTyped"
-                    @onTyping="handleSearchingAddress"
-                    @onSelect="handleAddressSelect($event)"
-                  >
-                  </Input>
-                  <Dropdown
-                    class="dropdown"
-                    :options="districtDropdownOptions"
-                    :currentValue="optionValues.districtValue"
-                    @onSelect="optionValues.districtValue = $event.value"
                   >
                   </Dropdown>
                 </span>
@@ -240,6 +240,8 @@ export default {
   setup() {
     let controller = new AbortController();
     const isMounted = ref(false);
+    
+    const citySelected = ref('paris');
 
     const idkId = -1;
 
@@ -253,7 +255,7 @@ export default {
       isHouseValue: 0,
       addressTyped: "",
       districtValue: "",
-      cityValue: "paris",
+      cityValue: citySelected.value,
     };
 
     const optionValues = reactive({
@@ -303,7 +305,7 @@ export default {
         }
       });
 
-    const cityDropdownOptions = [
+    const cityInformation = [
       {
         value: "paris",
         label: "Paris",
@@ -316,11 +318,33 @@ export default {
         value: "plaineCommune",
         label: "Plaine Commune",
         hasHouse: true,
+        cities: [
+          'Aubervilliers',
+          'Epinay-sur-seine',
+          'Ile-saint-denis',
+          'Courneuve',
+          'Pierrefitte',
+          'Saint-denis',
+          'Saint-ouen',
+          'Stains',
+          'Villetaneuse',
+        ]
       },
       {
         value: "estEnsemble",
         label: "Est Ensemble",
         hasHouse: true,
+        cities: [
+          'Bagnolet',
+          'Bobigny',
+          'Bondy',
+          'Le pré-saint-gervais',
+          'Les lilas',
+          'Montreuil',
+          'Noisy-le-sec',
+          'Pantin',
+          'Romainville',
+        ]
       },
       {
         value: "lyon",
@@ -361,6 +385,21 @@ export default {
         label: "Bordeaux",
       },
     ];
+
+    const cityDropdownOptions = cityInformation.reduce((prev, currentValue) => {
+      if (currentValue.cities) {
+        currentValue.cities.forEach((city) => {
+          prev.push({
+            value: city,
+            label: city,
+          })
+        })
+      } else {
+        prev.push(currentValue)
+      }
+      return prev;
+    }, []);
+
     const districtDropdownOptions = ref([]);
     const addressDropdownOptions = ref([]);
     const simulationResults = ref(null);
@@ -368,6 +407,16 @@ export default {
     let simulationTimeoutRef = null;
 
     const hasHouse = ref(false);
+
+    const onCitySelect = (city) => {
+      citySelected.value = city;
+      const groupedCity = cityInformation.find((c) => c.cities?.includes(city))
+      if (groupedCity) {
+        optionValues.cityValue = groupedCity.value
+      } else {
+        optionValues.cityValue = city
+      }
+    }
 
     const fetchDistricts = () => {
       controller.abort();
@@ -399,7 +448,7 @@ export default {
     watch(
       () => optionValues.cityValue,
       (newCity, prevCity) => {
-        const currentCityOption = cityDropdownOptions.find((c) => c.value === newCity);
+        const currentCityOption = cityInformation.find((c) => c.value === newCity);
         hasHouse.value = !!currentCityOption?.hasHouse;
         if (!hasHouse.value) {
           optionValues.isHouseValue = 0;
@@ -545,6 +594,8 @@ export default {
       timeoutRef: null,
       displayMoreInfo: ref(false),
       simulationResultsLoading,
+      citySelected,
+      onCitySelect,
     };
   },
   methods: {
