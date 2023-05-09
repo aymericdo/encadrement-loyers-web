@@ -52,7 +52,10 @@
                 </span>
               </div>
               <div class="row">
-                <span class="label">Prix (hors charges)</span>
+                <span class="label">Prix (hors charges)
+                  <button @click="infoVisible = !infoVisible" class="info-btn">i</button>
+                  <div v-if="infoVisible" class="info-section">Si vous ne connaissez pas votre loyer hors charges, vous pouvez enlever 10% à votre loyer total.</div> 
+                </span>
                 <span>
                   <Dropdown
                     class="dropdown"
@@ -241,6 +244,7 @@ export default {
     let controller = new AbortController();
     const isMounted = ref(false);
     
+    const infoVisible = ref(false);
     const citySelected = ref('paris');
 
     const idkId = -1;
@@ -595,6 +599,7 @@ export default {
       displayMoreInfo: ref(false),
       simulationResultsLoading,
       citySelected,
+      infoVisible,
       onCitySelect,
     };
   },
@@ -753,11 +758,11 @@ export default {
 }
 
 .option-list div > .row > span:first-child {
-  width: 30%;
+  width: 35%;
 }
 
 .option-list div > .row > span:last-child {
-  width: 70%;
+  width: 65%;
 }
 
 .option-list div > .row .dropdown {
@@ -777,6 +782,35 @@ export default {
   background: $yellow;
 }
 
+.option-list div > .row .info-btn {
+  position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 1rem;
+    background: white;
+    color: black;
+    border: solid 1px white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+}
+
+.option-list .info-section {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(90%, -90%);
+  z-index: 1;
+  background: white;
+  color: black;
+  box-shadow: 0 0 10px 1px black;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.875rem;
+  text-align: left;
+  line-height: 1.25rem;
+}
+
 .option-list div > .row :deep(.slider-target .slider-tooltip) {
   background: $deepblack;
   color: white;
@@ -789,6 +823,11 @@ export default {
 .option-list div > .row :deep(.slider-target .slider-tooltip::before) {
   top: -10px;
   transform: translate(-50%) rotate(180deg);
+}
+
+.option-list div > .row span.label {
+  font-weight: 500;
+  position: relative;
 }
 
 .row.actions-btn {
@@ -909,10 +948,6 @@ export default {
 
   .option-list div > .row:not(.actions-btn) {
     flex-direction: column;
-  }
-
-  .option-list div > .row > span.label {
-    font-weight: 500;
   }
 
   .option-list div > .row > span:first-child {
