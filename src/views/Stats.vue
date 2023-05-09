@@ -516,7 +516,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   max-width: 700px;
 
   :deep(h3) {
@@ -629,7 +629,7 @@ export default {
   }
 
   .welcome > .welcome-spinner {
-  min-width: 100vw;
+  min-width: inherit;
 }
 
   .stats-section,
