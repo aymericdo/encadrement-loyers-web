@@ -628,6 +628,10 @@ export default {
     margin-top: 50px;
   }
 
+  .welcome > .welcome-spinner {
+  min-width: 100vw;
+}
+
   .stats-section,
   .stats-section.-large,
   .stats-section.-high {
