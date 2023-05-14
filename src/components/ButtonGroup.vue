@@ -1,18 +1,27 @@
 <template>
-  <div class="button-group" v-bind:class="{ '-firefox': isFirefox }">
-    <a
-      href="https://chrome.google.com/webstore/detail/encadrement/nkmghhgmpbngkbjnhpomddeglkpkkfeo?hl=fr"
-      target="_blank"
-    >
-      <button id="chrome">
-        <ChromeIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#fff' : '#050505'" />Installer sur Chrome
-      </button>
-    </a>
-    <a href="https://addons.mozilla.org/fr/firefox/addon/encadrement/" target="_blank">
-      <button id="firefox">
-        <FirefoxIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#050505' : '#fff'" />Installer sur Firefox
-      </button>
-    </a>
+  <div class="button-row">
+    <div class="button-group -only-laptop" v-bind:class="{ '-firefox': isFirefox }">
+      <a
+        href="https://chrome.google.com/webstore/detail/encadrement/nkmghhgmpbngkbjnhpomddeglkpkkfeo?hl=fr"
+        target="_blank"
+      >
+        <button id="chrome">
+          <ChromeIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#fff' : '#050505'" />Installez sur Chrome
+        </button>
+      </a>
+      <a href="https://addons.mozilla.org/fr/firefox/addon/encadrement/" target="_blank">
+        <button id="firefox">
+          <FirefoxIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#050505' : '#fff'" />Installez sur Firefox
+        </button>
+      </a>
+    </div>
+    <div class="button-group simulator">
+      <router-link to="/simulator">
+        <button id="simulator">
+          Vérifiez votre loyer
+        </button>
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -43,15 +52,30 @@ export default {
   margin-top: 88px;
 }
 
+.button-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.button-group.simulator {
+  position: relative;
+  margin-left: 2rem;
+
+  &::after {
+    content: '';
+    width: 0;
+    height: 80%;
+    position: absolute;
+    border: 1px solid $lightgrey;
+    top: 50%;
+    left: -1rem;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .button-group.-firefox {
   justify-content: left;
   flex-direction: row-reverse;
-}
-
-@media screen and (max-width: $mobileSize) {
-  .button-group {
-    display: none;
-  }
 }
 
 .button-group a {
@@ -92,8 +116,23 @@ export default {
 }
 
 @media screen and (max-width: $mobileSize) {
-  .button-group button {
-    height: inherit;
+  .button-group {
+    margin-top: 12px;
+
+  }
+  
+  .button-group.simulator {
+    margin-left: 0;
+    &::after {
+      display: none;
+    }
+  }
+  .button-group.-only-laptop {
+    display: none;
+
+    button {
+      height: inherit;
+    }
   }
 }
 
