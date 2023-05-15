@@ -53,7 +53,8 @@
               </div>
               <div class="row">
                 <span class="label">Prix (hors charges)
-                  <button @click="infoVisible = !infoVisible" class="info-btn">i</button>
+                  <div class="overlay" v-if="infoVisible" @click="infoVisible = false"></div>
+                  <button @click="infoVisible = true" class="info-btn">i</button>
                   <div v-if="infoVisible" class="info-section">Si vous ne connaissez pas votre loyer hors charges, vous pouvez enlever 10% à votre loyer total.</div> 
                 </span>
                 <span>
@@ -685,6 +686,18 @@ export default {
   z-index: 2;
 }
 
+.overlay {
+  background: rgba(19, 15, 64, 0.4);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 3;
+  overflow: hidden;
+}
+
 :deep(.center-wrapper) {
   align-items: flex-start;
   text-align: justify;
@@ -787,6 +800,7 @@ export default {
     top: 50%;
     transform: translateY(-50%);
     right: 1rem;
+    z-index: 4;
     background: white;
     color: black;
     border: solid 1px white;
@@ -800,7 +814,7 @@ export default {
   top: 0;
   right: 0;
   transform: translate(90%, -90%);
-  z-index: 1;
+  z-index: 4;
   background: white;
   color: black;
   box-shadow: 0 0 10px 1px black;
@@ -961,6 +975,10 @@ export default {
   .option-list div > .row > span:first-child,
   .option-list div > .row > span:last-child {
     width: 100%;
+  }
+
+  .option-list .info-section {
+    transform: translate(0, -90%);
   }
 }
 
