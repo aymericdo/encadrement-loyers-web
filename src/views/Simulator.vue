@@ -370,6 +370,10 @@ export default {
       {
         value: "lyon",
         label: "Lyon",
+        cities: [
+          'Lyon',
+          'Villeurbanne',
+        ]
       },
       {
         value: "montpellier",
