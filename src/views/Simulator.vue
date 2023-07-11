@@ -152,7 +152,7 @@
                     v-for="simulationResult in simulationResults"
                     class="exceeding"
                     v-bind:key="simulationResult.yearBuilt"
-                    >+{{ optionValues.priceValue - simulationResult.maxTotalPrice }}€
+                    >+{{ +(optionValues.priceValue - simulationResult.maxTotalPrice).toFixed(2) }}€
                   </span>
                 </template>
               </div>
