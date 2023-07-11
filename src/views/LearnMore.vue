@@ -3,32 +3,41 @@
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
         <p>
-          Nous calculons le prix maximum du loyer en fonction de ces éléments tirés de l'annonce :
+          Nous calculons <b>le montant maximum du loyer</b> en fonction des éléments ci-dessous tirés de l'annonce :
         </p>
         <ul>
+          <li>Adresse</li>
           <li>Nombre de pièce(s)</li>
           <li>Meublé ou non</li>
           <li>Année de construction</li>
-          <li>Quartier</li>
           <li>Surface</li>
         </ul>
         <br>
+        <h4>Adresse</h4>
         <p>
-          Pour obtenir l'adresse, nous utilisons les données présentes dans l'annonce pour
-          déterminer si possible l'adresse exacte (numéro + nom de rue). Sinon, nous 
-          cherchons l'estimation la plus précise possible (code postal, stations de métro, quartier).
-          L'année de construction, si elle n'est pas précisée dans l'annonce, peut être estimée 
+          Pour obtenir <b>l'adresse</b>, nous utilisons les données présentes dans l'annonce pour
+          déterminer <b>si possible l'adresse exacte</b> (numéro + nom de rue).
+        </p>
+        <p>
+          Si ce n'est pas possible, nous faisons l'estimation la plus précise possible (code postal, stations de métro, quartier).
+        </p>
+        <h4>Année de construction</h4>
+        <p>
+          L'année de construction, si elle n'est pas précisée dans l'annonce, peut être determinée 
           si nous avons l'adresse exacte.
         </p>
         <br>
+        <h4>Méthodologie</h4>
         <p>
-          Dans tous les cas, toutes nos estimations sont calculées en arrondissant au plus haut, de façon à fournir les chiffres les plus justes possibles.
+          Dans tous les cas, toutes nos estimations sont calculées en <b>arrondissant au plus haut</b>, de façon à fournir les chiffres les plus justes possibles.
         </p>
-        <br>
         <p>
-          Exemple : Si nous n'avons que le code postal, alors nous basons notre calcul sur
-          le quartier le plus cher de l'arrondissement.
-          De cette façon, nos estimations de loyers peuvent être revues, toujours à la baisse,
+          (Toujours à l'avantage du bailleur donc.)
+        </p>
+        <p>
+          Si nous avons que le code postal, alors nous basons notre calcul sur
+          le quartier <b>le plus cher de l'arrondissement.</b>
+          De cette façon, nos estimations de loyers peuvent être revues, <b>toujours à la baisse</b>,
           une fois en possession de l'adresse précise du logement.
         </p>
       </Page2Wrapper>
@@ -94,7 +103,7 @@ export default {
   padding: 124px;
 
   @media screen and (max-width: $mobileSize) {
-    padding: 124px 16px;
+    padding: 124px 1.25rem;
   }
 
   ul li {

@@ -146,31 +146,47 @@
                   v-bind:key="simulationResult.yearBuilt"
                   >{{ simulationResult.maxTotalPrice }}€
                 </span>
+                <template v-if="!isLegal">
+                  <span class="label">Dépassement</span>
+                  <span
+                    v-for="simulationResult in simulationResults"
+                    class="exceeding"
+                    v-bind:key="simulationResult.yearBuilt"
+                    >+{{ optionValues.priceValue - simulationResult.maxTotalPrice }}€
+                  </span>
+                </template>
               </div>
               <div
-                class="pushy-text"
-                v-if="
-                  simulationResults?.length &&
-                    !simulationResults.some((r) => r.isLegal)
-                "
+              class="pushy-text"
+                v-if="!isLegal"
               >
+                <h4>Et maintenant ?</h4>
                 <p>
-                  Une fois le bail signé, s'il est non-conforme et qu'aucune
-                  mention justificative n'apparait dans les documents, vous
-                  pouvez vous renseigner afin de faire valoir vos droits.
+                  Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et qu'aucune
+                  <b>mention justificative</b> n'apparait dans les documents, vous
+                  pouvez vous renseigner afin de <b>faire valoir vos droits.</b>
                 </p>
+
+                <br>
+
+                <h4>Votre mairie</h4>
+                <p>Rapprochez-vous de votre <b><a :href="simulationResults[0].moreInfo" target="_blank">mairie</a></b> pour <b>plus d'information</b></p>
+                
+                <br>
+                
+                <h4>Articles intéressants</h4>
                 <div class="reference-links">
                   <a
                     href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
                     target="_blank"
                   >
-                    Lien 1
+                    Le Parisien
                   </a>
                   <a
                     href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
                     target="_blank"
                   >
-                    Lien 2
+                    Le Figaro Immo
                   </a>
                 </div>
               </div>
@@ -187,7 +203,7 @@
               </template>
               <template v-else>
                 {{
-                  simulationResults.some((r) => r.isLegal)
+                  isLegal
                     ? "Conforme"
                     : "Non conforme"
                 }}
@@ -408,6 +424,7 @@ export default {
     const districtDropdownOptions = ref([]);
     const addressDropdownOptions = ref([]);
     const simulationResults = ref(null);
+    const isLegal = ref(null);
     const simulationResultsLoading = ref(false);
     let simulationTimeoutRef = null;
 
@@ -469,6 +486,7 @@ export default {
           fetchDistricts();
           addressDropdownOptions.value = [];
           simulationResults.value = null;
+          isLegal.value = null;
           optionValues.districtValue = "";
           optionValues.addressValue = "";
           optionValues.addressTyped = "";
@@ -544,6 +562,7 @@ export default {
               })
               .then((res) => {
                 simulationResults.value = res;
+                isLegal.value = res.length && res.some((r) => r.isLegal);
                 simulationResultsLoading.value = false;
               })
               .catch((err) => {
@@ -600,6 +619,7 @@ export default {
       displayMoreInfo: ref(false),
       simulationResultsLoading,
       citySelected,
+      isLegal,
       infoVisible,
       onCitySelect,
     };
@@ -706,7 +726,7 @@ export default {
   align-items: center;
 
   @media screen and (max-width: $mobileSize) {
-    padding: 124px 16px;
+    padding: 124px 1.25rem;
   }
 
   ul li {
@@ -733,7 +753,7 @@ export default {
 }
 
 .option-list div.global-content.result {
-  padding: 2rem 1rem;
+  padding: 4rem 1rem;
   overflow-x: auto;
 }
 
@@ -742,7 +762,7 @@ export default {
 }
 
 .option-list .pushy-text {
-  padding: 8px 22px;
+  padding: 1rem 2rem;
 }
 
 .option-list .pushy-text .reference-links {
@@ -755,12 +775,18 @@ export default {
   justify-content: center;
   align-items: center;
   display: flex;
+  border: solid 1px;
 }
 
 .option-list div.global-content.grid > .label {
   font-weight: bold;
   text-align: left;
   line-height: normal;
+}
+
+.option-list div.global-content.grid > span.exceeding {
+  font-weight: 500;
+  color: red;
 }
 
 .option-list div > .row {
@@ -951,7 +977,7 @@ export default {
     width: 100vw;
     height: 100vh;
     position: fixed;
-    padding: 2rem;
+    padding: 2rem 0;
     top: 0;
     left: 0;
     z-index: 2;
