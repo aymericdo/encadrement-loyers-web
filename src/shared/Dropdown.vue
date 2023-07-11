@@ -224,7 +224,7 @@ export default defineComponent({
   background-color: $deepblack;
   border-radius: 4px;
   border: 1px solid white;
-  z-index: 2;
+  z-index: 5;
 }
 
 .option {
