@@ -16,6 +16,10 @@
       </a>
     </div>
     <div class="button-group simulator">
+      <h3 class="-only-mobile">
+        Revenez sur votre ordinateur pour télécharger l'extension 😉,
+        et en attendant...
+      </h3>
       <router-link to="/simulator">
         <button id="simulator">
           Vérifiez votre loyer
@@ -60,6 +64,13 @@ export default {
 .button-group.simulator {
   position: relative;
   margin-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  > h3 {
+    text-align: center;
+  }
 
   &::after {
     content: '';
@@ -115,6 +126,10 @@ export default {
   }
 }
 
+.-only-mobile {
+  display: none;
+}
+
 @media screen and (max-width: $mobileSize) {
   .button-group {
     margin-top: 12px;
@@ -127,12 +142,17 @@ export default {
       display: none;
     }
   }
-  .button-group.-only-laptop {
+
+  .-only-laptop {
     display: none;
 
     button {
       height: inherit;
     }
+  }
+
+  .-only-mobile {
+    display: block;
   }
 }
 
