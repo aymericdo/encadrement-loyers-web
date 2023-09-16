@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app-component">
     <router-view />
     <audio ref="asymetrie">
       <source src="@/assets/sounds/asymetrie.mp3" type="audio/mp3" />
@@ -61,7 +61,7 @@ export default {
 @import "@/assets/scss/garnett.scss";
 @import "@/assets/scss/variables.scss";
 
-#app {
+#app-component {
   font-family: "Garnett", "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -79,10 +79,7 @@ export default {
 
 html,
 body {
-  background-color: $deepblack;
   margin: 0;
-  height: 100vh;
-  overflow: hidden;
 }
 
 ul li {
