@@ -15,13 +15,13 @@ export default {
   max-width: 100%;
   display: flex;
   flex-direction: row;
-  margin: 160px 0 0 0;
+  padding: 160px 0 0 0;
 }
 
 @media screen and (max-width: $mobileSize) {
   .section {
     flex-direction: column;
-    margin: 88px 0 0 0;
+    padding: 88px 0 0 0;
   }
 }
 </style>
