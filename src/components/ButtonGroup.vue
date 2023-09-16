@@ -133,9 +133,14 @@ export default {
 @media screen and (max-width: $mobileSize) {
   .button-group {
     margin-top: 12px;
-
   }
-  
+
+  .button-row {
+    border-radius: 8px;
+    background: white;
+    padding-bottom: 1rem;
+  }
+    
   .button-group.simulator {
     margin-left: 0;
     &::after {
@@ -149,6 +154,10 @@ export default {
     button {
       height: inherit;
     }
+  }
+
+  h3.-only-mobile {
+    color: black;
   }
 
   .-only-mobile {
