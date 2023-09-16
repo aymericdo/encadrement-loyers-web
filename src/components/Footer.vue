@@ -47,7 +47,7 @@ export default {
 
 .footer {
   flex-direction: column;
-  padding-bottom: 4rem;
+  padding-bottom: 10rem;
 }
 
 p {

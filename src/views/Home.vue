@@ -120,6 +120,7 @@ export default {
 
 .inactivable {
   transition: filter ease 400ms;
+  pointer-events: auto;
 
   &.inactive {
     filter: blur(4px);
