@@ -117,7 +117,7 @@ export default {
   flex-wrap: wrap;
 
   & > * {
-    margin-bottom: 50px !important;
+    padding-bottom: 2rem;
     max-width: 100%;
   }
 

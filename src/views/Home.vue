@@ -75,8 +75,9 @@ export default {
 .center-wrapper {
   display: flex;
   justify-content: center;
-  width: calc(100% - 48px);
+  width: 100%;
   padding: 8% 24px 0;
+  box-sizing: border-box;
 }
 
 .center-wrapper > div {
@@ -119,6 +120,7 @@ export default {
 
 .inactivable {
   transition: filter ease 400ms;
+  pointer-events: auto;
 
   &.inactive {
     filter: blur(4px);

@@ -21,6 +21,9 @@
       Aucune donnée utilisateur n'est collectée.&nbsp;
       <router-link to="legal">Mentions légales</router-link>
     </p>
+    <p>
+      Pour contribuer à faire connaitre l'encadrement, et notre démarche, voici un <a href="https://docs.google.com/document/d/1292FRvLPtRvQTLSeVnN1WO_BdrkqVCTzaQo9d02p2FY/edit?usp=sharing" target="_blank">flyer</a> à imprimer et distribuer.
+    </p>
   </Section>
 </template>
 <script>
@@ -44,7 +47,7 @@ export default {
 
 .footer {
   flex-direction: column;
-  margin-bottom: 20px;
+  padding-bottom: 4rem;
 }
 
 p {
