@@ -128,10 +128,12 @@ export default defineComponent({
               block: "start",
             });
 
-            optionListRef.value.querySelector('.option.-selected').scrollIntoView({
-              behavior: "instant",
-              block: "center",
-            })
+            if (optionListRef.value.querySelector('.option.-selected')) {
+              optionListRef.value.querySelector('.option.-selected').scrollIntoView({
+                behavior: "instant",
+                block: "center",
+              })
+            }
           }, 250);
         }
       },
