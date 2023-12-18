@@ -123,16 +123,16 @@ export default defineComponent({
 
         if (optionListRef.value && isOpen) {
           scrollIntoViewTimeout = setTimeout(() => {
-            optionListRef.value.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-
             if (optionListRef.value.querySelector('.option.-selected')) {
               optionListRef.value.querySelector('.option.-selected').scrollIntoView({
-                behavior: "instant",
+                behavior: "smooth",
                 block: "center",
               })
+            } else {
+              optionListRef.value.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
             }
           }, 250);
         }
