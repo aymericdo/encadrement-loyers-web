@@ -750,7 +750,7 @@ export default {
   max-width: 800px;
   border-radius: 4px;
   border: 1px solid white;
-  z-index: 1;
+  z-index: 5;
 }
 
 .option-list div.global-content {

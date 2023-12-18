@@ -199,7 +199,7 @@ export default defineComponent({
 }
 
 .arrow-icon.-is-open {
-  transform: rotate(180deg);
+  transform: rotate(-180deg);
 }
 
 .overlay {
