@@ -81,14 +81,14 @@
               </div>
               <div class="row">
                 <span class="label">Nombre de pièce(s)</span>
-                <span class="slider">
-                  <Slider
-                    :modelValue="optionValues.roomValue"
-                    :min="1"
-                    :max="6"
-                    :format="roomValueFct"
-                    @change="optionValues.roomValue = $event"
-                  />
+                <span>
+                  <Dropdown
+                    class="dropdown"
+                    :options="roomValueDropdownOptions"
+                    :currentValue="optionValues.roomValue"
+                    @onSelect="optionValues.roomValue = $event.value"
+                  >
+                  </Dropdown>
                 </span>
               </div>
               <div class="row">
@@ -237,13 +237,10 @@ import Dropdown from "@/shared/Dropdown.vue";
 import Input from "@/shared/Input.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
-import Slider from "@vueform/slider";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { domain } from "@/helper/config";
-
-import "@vueform/slider/themes/default.css";
 
 export default {
   name: "Simulator",
@@ -251,7 +248,6 @@ export default {
     Dropdown,
     FixedButton,
     Page2Wrapper,
-    Slider,
     Input,
     StrokeIcon,
     ArrowIcon,
@@ -307,6 +303,16 @@ export default {
     ]
 
     const dateBuiltValueDropdownOptions = ref(defaultValueDropdownOptions);
+
+    const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()]
+      .map(x => {
+        x += 1;
+
+        return {
+          value: x,
+          label: `${x} pièce${x > 1 ? "s" : ""}`,
+        }
+      });
 
     const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
       .map(x => {
@@ -596,6 +602,7 @@ export default {
       dateBuiltValueDropdownOptions,
       priceValueDropdownOptions,
       surfaceValueDropdownOptions,
+      roomValueDropdownOptions,
       furnishedDropdownOptions: [
         {
           value: "furnished",
@@ -633,9 +640,6 @@ export default {
       setTimeout(() => {
         this.$router.push({ path: "/" });
       }, 400);
-    },
-    roomValueFct: function(value) {
-      return `${value} pièce${value > 1 ? "s" : ""}`;
     },
     unmount: function() {
       this.isMounted = false;
@@ -746,7 +750,7 @@ export default {
   max-width: 800px;
   border-radius: 4px;
   border: 1px solid white;
-  z-index: 1;
+  z-index: 5;
 }
 
 .option-list div.global-content {
@@ -821,10 +825,6 @@ export default {
   width: 100%;
 }
 
-.option-list div > .row :deep(.slider-target .slider-connect) {
-  background: $yellow;
-}
-
 .option-list div > .row .info-btn {
   position: absolute;
     top: 50%;
@@ -853,20 +853,6 @@ export default {
   font-size: 0.875rem;
   text-align: left;
   line-height: 1.25rem;
-}
-
-.option-list div > .row :deep(.slider-target .slider-tooltip) {
-  background: $deepblack;
-  color: white;
-  border-color: $yellow;
-  line-height: 16px;
-  top: 24px;
-  bottom: inherit;
-}
-
-.option-list div > .row :deep(.slider-target .slider-tooltip::before) {
-  top: -10px;
-  transform: translate(-50%) rotate(180deg);
 }
 
 .option-list div > .row span.label {
@@ -996,10 +982,6 @@ export default {
 
   .option-list div > .row > span:first-child {
     margin-bottom: 0.5rem;
-  }
-
-  .option-list div > .row > span.slider {
-    margin-bottom: 1.5rem;
   }
 
   .option-list div > .row > span:first-child,

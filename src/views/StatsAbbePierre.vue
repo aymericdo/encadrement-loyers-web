@@ -28,7 +28,7 @@
           </div>
 
           <div class="row">
-            <a target="_blank" href="https://www.fondation-abbe-pierre.fr/actualites/parution-du-1er-barometre-de-lobservatoire-de-lencadrement-des-loyers-paris">L'Observatoire</a>
+            <a target="_blank" href="https://www.fondation-abbe-pierre.fr/nos-publications/communiques-de-presse/3e-barometre-de-lencadrement-des-loyers-le-dispositif">L'Observatoire 2023</a>
           </div>
 
           <div class="row slider-section">

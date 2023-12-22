@@ -123,15 +123,17 @@ export default defineComponent({
 
         if (optionListRef.value && isOpen) {
           scrollIntoViewTimeout = setTimeout(() => {
-            optionListRef.value.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-
-            optionListRef.value.querySelector('.option.-selected').scrollIntoView({
-              behavior: "instant",
-              block: "center",
-            })
+            if (optionListRef.value.querySelector('.option.-selected')) {
+              optionListRef.value.querySelector('.option.-selected').scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              })
+            } else {
+              optionListRef.value.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
           }, 250);
         }
       },
@@ -220,7 +222,7 @@ export default defineComponent({
 }
 
 .arrow-icon.-is-open {
-  transform: rotate(180deg);
+  transform: rotate(-180deg);
 }
 
 .overlay {
