@@ -121,7 +121,8 @@ ul.sidebar-panel-nav > li a:not(.router-link-exact-active)::after {
   content: "";
   width: 100%;
   height: 3px;
-  background: #fff;
+  border-radius: 10px;
+  background: $yellow;
   transition: all 200ms ease;
   transition-property: opacity, transform;
   opacity: 0;
