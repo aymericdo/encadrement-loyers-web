@@ -1,2 +1,2 @@
-export const domain = "https://encadrement-loyers.herokuapp.com/";
+export const domain = "https://backend.aymericdo.ovh/encadrement-back/";
 // export const domain = "http://localhost:3000/";
