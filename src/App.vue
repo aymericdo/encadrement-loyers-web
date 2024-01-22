@@ -41,7 +41,6 @@ export default {
         this.hits[4].date - this.hits[0].date < 600
       ) {
         if (eventCode === "g") {
-          console.log(this.$route.name);
           this.$route.name === "statsCity" &&
             sounds[eventCode] &&
             sounds[eventCode].play();
