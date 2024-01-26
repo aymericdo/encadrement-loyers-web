@@ -12,8 +12,8 @@
           </p>
    
           <ul>
-            <li>Tribunal judiciaire de Paris, <b>n° 11-20-004058 du 2 décembre 2020 et n° 11-20-010096 du 15 février 2021</b> : la location doit présenter une particularité telle que l'on pourrait considérer qu'elle se situe dans un cadre d'exception (vue remarquable) et/ou avec des équipements très spécifiques ou de grand standing la distinguant de tous les appartements de la même catégorie dans le même secteur</li>
-            <li>Tribunal judiciaire de Paris, <b>RG n° 11-21-001291 du 7 mai 2021</b> :</li>
+            <li>Tribunal judiciaire de Paris, <b>n°11-20-004058 du 2 décembre 2020 et n°11-20-010096 du 15 février 2021</b> : la location doit présenter une particularité telle que l'on pourrait considérer qu'elle se situe dans un cadre d'exception (vue remarquable) et/ou avec des équipements très spécifiques ou de grand standing la distinguant de tous les appartements de la même catégorie dans le même secteur</li>
+            <li>Tribunal judiciaire de Paris, <b>RG n°11-21-001291 du 7 mai 2021</b> :</li>
           </ul>
 
           <div class="indent">
@@ -39,7 +39,7 @@
           <br>
           <br>
   
-          <p>Par ailleurs, selon la <b>loi du 16/08/2022</b> portant mesure d’urgence pour la protection du pouvoir d’achat, apporte des précisions via <b>son article 13 amendant l’article 140 de la loi Elan.</b></p>
+          <p>Par ailleurs, selon la <b>loi n°2022-1158 du 16 août 2022</b> portant mesure d’urgence pour la protection du pouvoir d’achat, apporte des précisions via <b>son article 13 amendant l’article 140 de la loi Elan.</b></p>
           <p>L’article indique que le complément de loyer n’est pas applicable si le logement présente l’un des caractéristiques suivantes :</p>
           <ul>
             <li>des sanitaires sur le palier</li>
@@ -52,11 +52,16 @@
             <li>une installation électrique dégradée</li>
             <li>une mauvaise exposition de la pièce principale</li>
           </ul>
+          <p>
+            <span>Source : </span>
+            <a href="https://www.legifrance.gouv.fr/jorf/article_jo/JORFARTI000046186753#:~:text=Article%2013%20%2D%20LOI%20n%C2%B0,'achat%20(1)%20%2D%20L%C3%A9gifrance" target="_blank">legifrance.gouv.fr</a>
+          </p>
           <p><b>Certains de ces critères nécessiteront probablement de la jurisprudence qui viendra préciser leur degré d’appréciation.</b></p>
 
           <br>
+          <br>
 
-          <div><a href="https://immobilier.lefigaro.fr/article/la-loi-se-durcit-autour-de-l-encadrement-des-loyers_f53afd86-0c23-11ed-b3fc-252e8fc48bdd/">Article intéressant</a></div> 
+          <div><a href="https://immobilier.lefigaro.fr/article/la-loi-se-durcit-autour-de-l-encadrement-des-loyers_f53afd86-0c23-11ed-b3fc-252e8fc48bdd/" target="_blank">Article intéressant</a></div> 
         </div>
       </Page2Wrapper>
     </transition>
