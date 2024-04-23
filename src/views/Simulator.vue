@@ -435,10 +435,37 @@ export default {
     const addressDropdownOptions = ref([]);
     const simulationResults = ref(null);
     const isLegal = ref(null);
+    const prevCity = ref(null);
     const simulationResultsLoading = ref(false);
     let simulationTimeoutRef = null;
 
     const hasHouse = ref(false);
+
+    const cityChanged = (newCity) => {
+      const currentCityOption = cityInformation.find((c) => c.value === newCity);
+      hasHouse.value = !!currentCityOption?.hasHouse;
+      if (!hasHouse.value) {
+        optionValues.isHouseValue = 0;
+      }
+
+      if (currentCityOption.customYearsBuilt) {
+        dateBuiltValueDropdownOptions.value = [...currentCityOption.customYearsBuilt];
+      } else {
+        dateBuiltValueDropdownOptions.value = [...defaultValueDropdownOptions];
+      }
+
+      if (citySelected.value !== prevCity.value) {
+        prevCity.value = citySelected.value
+        fetchDistricts();
+        addressDropdownOptions.value = [];
+        simulationResults.value = null;
+        isLegal.value = null;
+        optionValues.districtValue = "";
+        optionValues.addressValue = "";
+        optionValues.addressTyped = "";
+        optionValues.dateBuiltValue = idkId;
+      }
+    }
 
     const onCitySelect = (city) => {
       citySelected.value = city;
@@ -448,13 +475,14 @@ export default {
       } else {
         optionValues.cityValue = city
       }
+      cityChanged(optionValues.cityValue)
     }
 
     const fetchDistricts = () => {
       controller.abort();
       controller = new AbortController();
 
-      fetch(`${domain}districts/list/${optionValues.cityValue}`, {
+      fetch(`${domain}districts/list/${optionValues.cityValue}?city=${citySelected.value.toLowerCase()}`, {
         signal: controller.signal,
       })
         .then((res) => res.json())
@@ -476,34 +504,6 @@ export default {
           console.error(err);
         });
     };
-
-    watch(
-      () => optionValues.cityValue,
-      (newCity, prevCity) => {
-        const currentCityOption = cityInformation.find((c) => c.value === newCity);
-        hasHouse.value = !!currentCityOption?.hasHouse;
-        if (!hasHouse.value) {
-          optionValues.isHouseValue = 0;
-        }
-
-        if (currentCityOption.customYearsBuilt) {
-          dateBuiltValueDropdownOptions.value = [...currentCityOption.customYearsBuilt];
-        } else {
-          dateBuiltValueDropdownOptions.value = [...defaultValueDropdownOptions];
-        }
-
-        if (newCity !== prevCity) {
-          fetchDistricts();
-          addressDropdownOptions.value = [];
-          simulationResults.value = null;
-          isLegal.value = null;
-          optionValues.districtValue = "";
-          optionValues.addressValue = "";
-          optionValues.addressTyped = "";
-          optionValues.dateBuiltValue = idkId;
-        }
-      }
-    );
 
     watch(
       () => [
@@ -658,7 +658,7 @@ export default {
 
       this.timeoutRef = setTimeout(() => {
         fetch(
-          `${domain}districts/address/${this.optionValues.cityValue}?q=${address}`,
+          `${domain}districts/address/${this.optionValues.cityValue}?q=${address}&city=${this.citySelected.toLowerCase()}`,
           {
             signal: this.controller.signal,
           }
