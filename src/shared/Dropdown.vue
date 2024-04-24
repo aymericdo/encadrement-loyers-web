@@ -178,7 +178,7 @@ export default defineComponent({
   font-size: 20px;
   padding: 6px 12px;
   border-color: transparent;
-  transition: background-color ease 0.3s;
+  transition: all ease 0.3s;
 }
 
 .dropdown > button.-is-open {

@@ -79,7 +79,7 @@
           </span>
         </div>
         <div class="row actions-btn">
-          <button class="reset-btn" @click="onReset">Reset</button>
+          <button class="reset-btn" @click="onReset">Réinitialiser</button>
           <button class="submit-btn" @click="onSubmit">Go</button>
         </div>
       </div>
@@ -448,7 +448,7 @@ export default defineComponent({
   font-size: 14px;
   padding: 6px 12px;
   border-color: transparent;
-  transition: background-color ease 0.3s;
+  transition: all ease 0.3s;
   margin-right: 0.875rem;
 
   @media (hover: hover) and (pointer: fine) {
@@ -472,7 +472,7 @@ export default defineComponent({
   font-size: 14px;
   padding: 6px 12px;
   border-color: transparent;
-  transition: background-color ease 0.3s;
+  transition: all ease 0.3s;
   float: right;
 
   @media (hover: hover) and (pointer: fine) {
@@ -491,7 +491,6 @@ export default defineComponent({
 .slide-down-enter-active,
 .slide-down-leave-active {
   transition: all ease 400ms;
-  transition-property: opacity, transform;
 }
 
 @media screen and (max-width: $mobileSize) {

@@ -4,6 +4,7 @@
     <div class="button" @click="onOpen" :class="{ '-is-open': isOpen }">
       <input
         class="main-input"
+        :class="{ '-text-selected': currentValueDisplay }"
         ref="myinput"
         @focus="onFocusing"
         @input="onTyping"
@@ -11,7 +12,7 @@
         :placeholder="placeholder"
         :value="currentValueDisplay || textTyped"
       />
-      <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
+      <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen && options.length }"></ArrowIcon>
     </div>
     <transition name="slide-down">
       <div class="option-list" v-if="isOpen && options.length" ref="optionListRef">
@@ -155,6 +156,10 @@ export default defineComponent({
   font-weight: 500;
   font-size: 1rem;
 
+  &.-text-selected {
+    font-weight: bold;
+  }
+
   &:focus {
     outline: none;
   }
@@ -205,7 +210,6 @@ export default defineComponent({
   cursor: pointer;
   transition: all ease 0.3s;
   color: white;
-  transition-property: background-color, color;
   border-bottom: solid 1px white;
 
   &:last-child {
@@ -232,7 +236,6 @@ export default defineComponent({
 .slide-down-enter-active,
 .slide-down-leave-active {
   transition: all ease 400ms;
-  transition-property: opacity, transform;
 }
 
 @media (hover: hover) and (pointer: fine) {

@@ -21,7 +21,7 @@
                 <span class="label">Localisation</span>
                 <span>
                   <Input
-                    class="dropdown input"
+                    class="dropdown"
                     :placeholder="'Entre ton adresse...'"
                     :options="addressDropdownOptions"
                     :currentValue="optionValues.addressValue"
@@ -218,7 +218,7 @@
             </div>
           </transition>
           <div class="row actions-btn">
-            <button class="reset-btn" @click="onReset">Reset</button>
+            <button class="reset-btn" @click="onReset">Réinitialiser</button>
           </div>
         </div>
       </Page2Wrapper>
@@ -901,7 +901,7 @@ export default {
   font-size: 14px;
   padding: 6px 12px;
   border-color: transparent;
-  transition: background-color ease 0.3s;
+  transition: all ease 0.3s;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -944,7 +944,7 @@ export default {
   font-size: 14px;
   padding: 6px 12px;
   border-color: transparent;
-  transition: background-color ease 0.3s;
+  transition: all ease 0.3s;
   float: right;
 
   @media (hover: hover) and (pointer: fine) {

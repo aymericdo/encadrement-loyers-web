@@ -34,7 +34,7 @@ button {
   border-color: transparent;
   cursor: pointer;
   z-index: 2;
-  transition: background-color ease 0.3s;
+  transition: all ease 0.3s;
 
   &.-blink {
     animation: blink 1s linear infinite;
