@@ -250,6 +250,7 @@ export default defineComponent({
 .option.grouped {
   border-bottom: solid 4px white;
   cursor: default;
+  pointer-events: none;
 }
 
 .option:not(.grouped):not(.classic) {

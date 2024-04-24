@@ -14,7 +14,7 @@
       <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
     </div>
     <transition name="slide-down">
-      <div class="option-list" v-if="isOpen" ref="optionListRef">
+      <div class="option-list" v-if="isOpen && options.length" ref="optionListRef">
         <div
           class="option"
           v-for="option in options"
