@@ -48,7 +48,7 @@ button:focus {
 
 .burger-button {
   position: relative;
-  height: 30px;
+  height: 34px;
   width: 32px;
   display: block;
   z-index: 999;
@@ -130,7 +130,7 @@ button:focus {
 .logo {
   align-self: center;
   font-weight: bold;
-  font-size: 1.25em;
+  font-size: 1.5em;
   padding: 0 6px;
   z-index: 999;
   color: white;

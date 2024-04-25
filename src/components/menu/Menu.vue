@@ -115,12 +115,22 @@ ul.sidebar-panel-nav > li a {
   font-weight: 500;
 }
 
-ul.sidebar-panel-nav > li a:not(.router-link-exact-active)::after {
+ul.sidebar-panel-nav > li a:not(.router-link-exact-active)::before {
   position: absolute;
-  bottom: -2px;
+  top: -0.625rem;
   content: "";
   width: 100%;
-  height: 3px;
+  height: 1px;
+  border-radius: 10px;
+  background: $yellow;
+}
+
+ul.sidebar-panel-nav > li a:not(.router-link-exact-active)::after {
+  position: absolute;
+  bottom: -0.625rem;
+  content: "";
+  width: 100%;
+  height: 4px;
   border-radius: 10px;
   background: $yellow;
   transition: all 200ms ease;
