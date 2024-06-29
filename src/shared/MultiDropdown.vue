@@ -128,11 +128,6 @@ export default defineComponent({
                 behavior: "smooth",
                 block: "center",
               })
-            } else {
-              optionListRef.value.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
             }
           }, 250);
         }

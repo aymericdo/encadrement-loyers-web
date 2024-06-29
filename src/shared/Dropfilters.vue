@@ -54,7 +54,7 @@
             </Dropdown>
           </span>
         </div>
-        <div class="row">
+        <div v-if="city !== 'all'" class="row">
           <span class="label">Localisation</span>
           <span>
             <MultiDropdown
@@ -171,7 +171,9 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      fetchDistricts();
+      if (city.value !== "all") {
+        fetchDistricts();
+      }
     });
 
     return {
