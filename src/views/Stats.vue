@@ -562,6 +562,11 @@ export default {
 
 .welcome {
   padding-right: 1rem;
+  min-height: 8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   & div > span.yellow {
     color: $yellow;
   }
