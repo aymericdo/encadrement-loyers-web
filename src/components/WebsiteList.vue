@@ -2,34 +2,12 @@
   <ul class="website-list">
     <li class="website-item">
       <a
-        href="https://www.facebook.com/marketplace/paris/propertyrentals/?sort=BEST_MATCH"
-        target="_blank"
-      >
-        <div class="item-content">
-          <img src="@/assets/images/logo-facebook.png" alt="logo-facebook" />
-          <p>Marketplace</p>
-        </div>
-      </a>
-    </li>
-    <li class="website-item">
-      <a
         href="https://www.leboncoin.fr/recherche/?category=10&locations=Paris__48.85790400439863_2.358842071208555_10000&real_estate_type=2"
         target="_blank"
       >
         <div class="item-content">
           <img src="@/assets/images/logo-leboncoin.png" alt="logo-leboncoin" />
           <p>LeBoncoin</p>
-        </div>
-      </a>
-    </li>
-    <li class="website-item">
-      <a
-        href="https://www.loueragile.fr/alert?token=9c61de8a9f85f36f7f54338bf2ef52c1"
-        target="_blank"
-      >
-        <div class="item-content">
-          <img src="@/assets/images/logo-jinka.png" alt="logo-jinka" />
-          <p>Jinka</p>
         </div>
       </a>
     </li>
@@ -71,6 +49,17 @@
         <div class="item-content">
           <img src="@/assets/images/logo-orpi.png" alt="logo-orpi" />
           <p>Orpi</p>
+        </div>
+      </a>
+    </li>
+    <li class="website-item">
+      <a
+        href="https://www.superimmo.com/"
+        target="_blank"
+      >
+        <div class="item-content">
+          <img src="@/assets/images/logo-superimmo.png" alt="logo-superimmo" />
+          <p>SuperImmo</p>
         </div>
       </a>
     </li>

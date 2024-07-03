@@ -2,7 +2,6 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper class="page2-wrapper" v-if="isMounted">
-        <SectionTitle class="title">Stats</SectionTitle>
         <div v-if="status !== 'ok'" class="entire-page-centered">
           <GoogleRecaptcha
             siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
@@ -19,9 +18,11 @@
         </div>
 
         <div class="welcome-section" v-if="welcomeData">
+          <SectionTitle class="title">Stats</SectionTitle>
+
           <div class="row">
             <div class="welcome">
-              <div class="welcome-spinner">
+              <div v-if="!isWelcomeTextLoaded" class="welcome-spinner">
                 <bounce-loader class="spinner" :loading="!isWelcomeTextLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
               </div>
               <template v-if="isWelcomeTextLoaded">
@@ -53,7 +54,7 @@
                   <span>, il y a</span>
                   <span class="yellow">
                     &nbsp;{{
-                      welcomeData.isSmallSurfaceIllegalPercentage
+                      welcomeData.isIllegalPercentageUnderPivot
                     }}%&nbsp;
                   </span>
                   <span>d'annonces non conformes.</span>
@@ -322,6 +323,7 @@ export default {
   watch: {
     "$route.params.city": function(value) {
       this.city = value;
+      this.changeFilters()
       this.onFetchWelcome(null);
       this.isWelcomeTextLoaded = false;
     },
@@ -516,7 +518,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: left;
+  align-items: flex-start;
   max-width: 700px;
 
   :deep(h3) {
@@ -529,15 +531,14 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  padding: 24px;
-  max-width: 700px;
-  margin-bottom: 24px;
+  padding: 1.25rem;
+  width: 90%;
+  margin-bottom: 1.25rem;
 }
 
 .welcome-section .city-dropdown {
-  width: 200px;
   min-width: 200px;
+  flex: 1;
 }
 
 .welcome-section > .row {
@@ -561,8 +562,8 @@ export default {
 }
 
 .welcome {
+  flex: 2;
   padding-right: 1rem;
-  min-height: 8rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -573,7 +574,7 @@ export default {
 }
 
 .welcome > .welcome-spinner {
-  min-width: 500px;
+  min-height: 5rem;
   display: flex;
   justify-content: center;
 }
@@ -633,9 +634,9 @@ export default {
     margin-top: 50px;
   }
 
-  .welcome > .welcome-spinner {
-  min-width: inherit;
-}
+  .welcome {
+    padding-right: 0;
+  }
 
   .stats-section,
   .stats-section.-large,

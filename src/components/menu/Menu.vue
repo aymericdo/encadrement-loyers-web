@@ -85,6 +85,7 @@ export default defineComponent({
 }
 
 ul.sidebar-panel-nav {
+  padding-left: 0;
   list-style-type: none;
 }
 

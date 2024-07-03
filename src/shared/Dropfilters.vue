@@ -1,5 +1,6 @@
 <template>
   <div class="dropfilters">
+    <div class="overlay" v-if="isOpen" @click="onOpen()"></div>
     <button
       class="dropdown-btn"
       @click="onOpen()"
@@ -145,7 +146,7 @@ export default defineComponent({
           districtDropdownOptions.value = res.map((district) => ({
             groupBy: district.groupBy,
             value: district.value,
-            label: district.value,
+            label: district.label,
           }));
         })
         .catch((err) => {
@@ -318,6 +319,18 @@ export default defineComponent({
   width: 100%;
 }
 
+.overlay {
+  background: rgba(19, 15, 64, 0.4);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 2;
+  overflow: hidden;
+}
+
 .dropfilters > button {
   cursor: pointer;
   display: flex;
@@ -352,6 +365,11 @@ export default defineComponent({
   color: $deepblack;
   width: 24px;
   height: 24px;
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid $lightgrey 1px;
 }
 
 .dropfilters > button.-is-open {
