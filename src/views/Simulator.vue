@@ -223,7 +223,7 @@
         </div>
       </Page2Wrapper>
     </transition>
-    <div @click="unmount">
+    <div @click="handleClose">
       <FixedButton>
         <StrokeIcon :width="'20px'" :height="'20px'" />
       </FixedButton>
@@ -232,7 +232,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import Dropdown from "@/shared/Dropdown.vue";
 import Input from "@/shared/Input.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
@@ -241,6 +241,7 @@ import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { domain } from "@/helper/config";
+import router from "@/router";
 
 const idkId = -1;
 
@@ -542,7 +543,7 @@ const fetchSimulatorResult = async () => {
 
 const onLeaving = () => {
   setTimeout(() => {
-    this.$router.push({ path: "/" });
+    router.push({ path: "/" });
   }, 400);
 }
 
@@ -592,13 +593,13 @@ const onClickMoreInfo = () => {
   displayMoreInfo.value = !displayMoreInfo.value;
 }
 
+const handleClose = () => {
+  isMounted.value = false;
+};
+
 onMounted(async () => {
   await fetchCities();
   isMounted.value = true;
-});
-
-onUnmounted(() => {
-  isMounted.value = false;
 });
 </script>
 

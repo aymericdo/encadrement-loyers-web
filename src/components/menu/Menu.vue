@@ -116,22 +116,12 @@ ul.sidebar-panel-nav > li a {
   font-weight: 500;
 }
 
-ul.sidebar-panel-nav > li a:not(.router-link-exact-active)::before {
-  position: absolute;
-  top: -0.625rem;
-  content: "";
-  width: 100%;
-  height: 1px;
-  border-radius: 10px;
-  background: $yellow;
-}
-
 ul.sidebar-panel-nav > li a:not(.router-link-exact-active)::after {
   position: absolute;
   bottom: -0.625rem;
   content: "";
   width: 100%;
-  height: 4px;
+  height: 2px;
   border-radius: 10px;
   background: $yellow;
   transition: all 200ms ease;
