@@ -133,7 +133,16 @@
             ></Graph>
           </div>
 
-          <div class="stats-section-row">
+          <div v-if="city === 'all'" class="stats-section -large">
+            <Graph
+              :id="'price-variation'"
+              :date="getDatesFromValues"
+              :city="city"
+              @errorOutput="getErrorMessage($event)"
+            ></Graph>
+          </div>
+
+          <div v-if="city !== 'all'" class="stats-section-row">
             <div class="stats-section">
               <Graph
                 :id="'price-difference'"
@@ -168,7 +177,7 @@
 </template>
 
 <script>
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, onMounted } from "vue";
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { useRoute } from "vue-router";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
@@ -183,41 +192,6 @@ import Slider from "@vueform/slider";
 import { domain } from "@/helper/config";
 
 import "@vueform/slider/themes/default.css";
-
-const DEFAULT_CITY_OPTIONS = [
-  {
-    value: "all",
-    label: "Tout",
-  },
-  {
-    value: "paris",
-    label: "Paris",
-  },
-  {
-    value: "lille",
-    label: "Lille",
-  },
-  {
-    value: "plaineCommune",
-    label: "Plaine Commune",
-  },
-  {
-    value: "estEnsemble",
-    label: "Est Ensemble",
-  },
-  {
-    value: "lyon",
-    label: "Lyon",
-  },
-  {
-    value: "montpellier",
-    label: "Montpellier",
-  },
-  {
-    value: "bordeaux",
-    label: "Bordeaux",
-  },
-];
 
 export default {
   name: "Stats",
@@ -251,6 +225,7 @@ export default {
     const showCloseButton = ref(true);
     const isLegalVariation = ref(null);
     const legalPercentageFiltersCount = ref(0);
+    const cityDropdownOptions = ref([]);
 
     // Date of the first ad in the db
     const realStartDate = new Date("2019-10-22");
@@ -299,6 +274,37 @@ export default {
       }
     );
 
+    const fetchCities = async () => {
+      try {
+        const rawResult = await fetch(`${domain}cities/list`)
+        const res = await rawResult.json()
+        if (res.message === "token expired") throw res
+
+        cityDropdownOptions.value = Object.keys(res).reduce((prev, city, index) => {
+          if (index === 0) {
+            prev.push({
+              value: "all",
+              label: "Tout",
+            })
+          }
+
+          if (prev.some((value) => value.value === res[city].mainCity)) return prev
+
+          prev.push({
+            value: res[city].mainCity,
+            label: res[city].displayName.mainCity,
+          })
+          return prev
+        }, []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    onMounted(async () => {
+      await fetchCities();
+    });
+
     return {
       showCloseButton,
       isLegalVariation,
@@ -310,7 +316,7 @@ export default {
       serverError: ref(""),
       welcomeData: ref(null),
       isWelcomeTextLoaded: ref(false),
-      cityDropdownOptions: DEFAULT_CITY_OPTIONS,
+      cityDropdownOptions,
       initialLegalPercentageOptions,
       legalPercentageOptions,
       legalPercentageFiltersCount,

@@ -424,10 +424,10 @@ const setCityInformation = async (res) => {
 
     prev.push({
       value: mainCity,
-      label: currentCity.displayNameMainCity,
+      label: currentCity.displayName.mainCity,
       cities: cities.reduce((cityList, c) => {
         if (mainCity === res[c].mainCity) {
-          cityList.push({ label: res[c].displayName, value: c })
+          cityList.push({ label: res[c].displayName.city, value: c })
         }
         return cityList
       }, []),
