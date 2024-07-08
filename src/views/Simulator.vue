@@ -34,7 +34,7 @@
                     class="dropdown"
                     :options="districtDropdownOptions"
                     :currentValue="optionValues.districtValue"
-                    @onSelect="setOptionValues({ districtValue: $event.value })"
+                    @onSelect="setOptionValues({ districtValue: $event.value, addressValue: '' })"
                   >
                   </Dropdown>
                 </span>
@@ -572,10 +572,12 @@ const handleSearchingAddress = async (address) => {
 }
 
 const handleAddressSelect = (event) => {
-  setOptionValues({
-    addressValue: event.value,
-    districtValue: event.district,
-  })
+  if (event.district) {
+    setOptionValues({
+      addressValue: event.value,
+      districtValue: event.district,
+    })
+  }
 }
 
 const onReset = () => {
