@@ -101,6 +101,7 @@ ul.sidebar-panel-nav > li > .annexe-list {
   padding-left: 1.25em;
 }
 
+
 ul.sidebar-panel-nav > li > .annexe-list > a {
   padding-top: 0.25em;
 }
