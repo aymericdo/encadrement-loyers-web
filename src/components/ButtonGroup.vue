@@ -29,22 +29,12 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import FirefoxIcon from "@/icons/FirefoxIcon.vue";
 import ChromeIcon from "@/icons/ChromeIcon.vue";
 
-export default {
-  name: "ButtonGroup",
-  components: {
-    FirefoxIcon,
-    ChromeIcon
-  },
-  data: function() {
-    return {
-      isFirefox: typeof InstallTrigger !== "undefined"
-    };
-  }
-};
+const isFirefox = ref(typeof InstallTrigger !== "undefined")
 </script>
 
 <style lang="scss" scoped>

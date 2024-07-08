@@ -1,8 +1,8 @@
 <template>
   <div id="simulator">
-    <transition name="slide-fade" v-on:leave="leave">
+    <transition name="slide-fade" v-on:leave="onLeaving">
       <Page2Wrapper v-if="isMounted">
-        <div class="option-list">
+        <div class="option-list" ref="optionListRef">
           <transition name="slide-side-r2l">
             <div key="1" v-if="!displayMoreInfo" class="global-content">
               <div class="row">
@@ -34,7 +34,7 @@
                     class="dropdown"
                     :options="districtDropdownOptions"
                     :currentValue="optionValues.districtValue"
-                    @onSelect="optionValues.districtValue = $event.value"
+                    @onSelect="setOptionValues({ districtValue: $event.value })"
                   >
                   </Dropdown>
                 </span>
@@ -46,7 +46,7 @@
                     class="dropdown"
                     :options="isHouseValueDropdownOptions"
                     :currentValue="optionValues.isHouseValue"
-                    @onSelect="optionValues.isHouseValue = $event.value"
+                    @onSelect="setOptionValues({ isHouseValue: $event.value })"
                   >
                   </Dropdown>
                 </span>
@@ -62,7 +62,7 @@
                     class="dropdown"
                     :options="priceValueDropdownOptions"
                     :currentValue="optionValues.priceValue"
-                    @onSelect="optionValues.priceValue = $event.value"
+                    @onSelect="setOptionValues({ priceValue: $event.value })"
                   >
                   </Dropdown>
                 </span>
@@ -74,7 +74,7 @@
                     class="dropdown"
                     :options="surfaceValueDropdownOptions"
                     :currentValue="optionValues.surfaceValue"
-                    @onSelect="optionValues.surfaceValue = $event.value"
+                    @onSelect="setOptionValues({ surfaceValue: $event.value })"
                   >
                   </Dropdown>
                 </span>
@@ -86,7 +86,7 @@
                     class="dropdown"
                     :options="roomValueDropdownOptions"
                     :currentValue="optionValues.roomValue"
-                    @onSelect="optionValues.roomValue = $event.value"
+                    @onSelect="setOptionValues({ roomValue: $event.value })"
                   >
                   </Dropdown>
                 </span>
@@ -98,7 +98,7 @@
                     class="dropdown"
                     :options="furnishedDropdownOptions"
                     :currentValue="optionValues.furnishedValue"
-                    @onSelect="optionValues.furnishedValue = $event.value"
+                    @onSelect="setOptionValues({ furnishedValue: $event.value })"
                   >
                   </Dropdown>
                 </span>
@@ -110,7 +110,7 @@
                     class="dropdown"
                     :options="dateBuiltValueDropdownOptions"
                     :currentValue="optionValues.dateBuiltValue"
-                    @onSelect="optionValues.dateBuiltValue = $event.value"
+                    @onSelect="setOptionValues({ dateBuiltValue: $event.value })"
                   >
                   </Dropdown>
                 </span>
@@ -231,8 +231,8 @@
   </div>
 </template>
 
-<script>
-import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue";
+<script setup>
+import { ref, onMounted, onUnmounted } from "vue";
 import Dropdown from "@/shared/Dropdown.vue";
 import Input from "@/shared/Input.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
@@ -242,462 +242,364 @@ import FixedButton from "@/shared/FixedButton.vue";
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { domain } from "@/helper/config";
 
-export default {
-  name: "Simulator",
-  components: {
-    Dropdown,
-    FixedButton,
-    Page2Wrapper,
-    Input,
-    StrokeIcon,
-    ArrowIcon,
-    BounceLoader,
+const idkId = -1;
+
+const optionListRef = ref(null);
+
+const isMounted = ref(false);
+const loading = ref(true)
+const timeoutRef = ref(null)
+
+const infoVisible = ref(false);
+const citySelected = ref('');
+const cityDropdownOptions = ref([])
+const dateBuiltValueDropdownOptions = ref([])
+
+const optionValues = ref({});
+const displayMoreInfo = ref(false);
+
+const districtDropdownOptions = ref([]);
+const addressDropdownOptions = ref([]);
+const simulationResults = ref(null);
+const isLegal = ref(null);
+const prevCity = ref(null);
+const simulationResultsLoading = ref(false);
+
+let simulationTimeoutRef = null;
+
+const hasHouse = ref(false);
+let cityInformation = []
+
+const initialOptionValues = {
+  surfaceValue: 20,
+  priceValue: 1000,
+  roomValue: 2,
+  dateBuiltValue: idkId,
+  furnishedValue: "furnished",
+  addressValue: "",
+  isHouseValue: 0,
+  addressTyped: "",
+  districtValue: "",
+  cityValue: citySelected.value,
+};
+
+const furnishedDropdownOptions = [
+  {
+    value: "furnished",
+    label: "Meublé",
   },
-  setup() {
-    let controller = new AbortController();
-    const isMounted = ref(false);
-    
-    const infoVisible = ref(false);
-    const citySelected = ref('paris');
+  {
+    value: "nonFurnished",
+    label: "Non meublé",
+  },
+]
+      
+const isHouseValueDropdownOptions = [
+  {
+    value: 1,
+    label: "Maison",
+  },
+  {
+    value: 0,
+    label: "Appartement",
+  },
+]
 
-    const idkId = -1;
-
-    const initialOptionValues = {
-      surfaceValue: 20,
-      priceValue: 1000,
-      roomValue: 2,
-      dateBuiltValue: idkId,
-      furnishedValue: "furnished",
-      addressValue: "",
-      isHouseValue: 0,
-      addressTyped: "",
-      districtValue: "",
-      cityValue: citySelected.value,
-    };
-
-    const optionValues = reactive({
-      ...initialOptionValues,
-    });
-
-    const defaultValueDropdownOptions = [
-      {
-        value: idkId,
-        label: "Je ne sais pas",
-      },
-      {
-        value: '<1946',
-        label: 'Avant 1946',
-      },
-      {
-        value: '1946-1970',
-        label: '1946 - 1970',
-      },
-      {
-        value: '1971-1990',
-        label: '1971 - 1990',
-      },
-      {
-        value: '>1990',
-        label: 'Après 1990',
-      },
-    ]
-
-    const dateBuiltValueDropdownOptions = ref(defaultValueDropdownOptions);
-
-    const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()]
-      .map(x => {
-        x += 1;
-
-        return {
-          value: x,
-          label: `${x} pièce${x > 1 ? "s" : ""}`,
-        }
-      });
-
-    const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
-      .map(x => {
-        const val = x + 9;
-        return {
-          value: val,
-          label: `${val}m²`,
-        }
-      });
-
-    const priceValueDropdownOptions = [...Array((3000 - 200) / 5 + 1).keys()]
-      .map(x => {
-        const val = x * 5 + 200;
-        return {
-          value: val,
-          label: `${val}€`,
-        }
-      });
-
-    const cityInformation = [
-      {
-        value: "paris",
-        label: "Paris",
-      },
-      {
-        value: "lille",
-        label: "Lille",
-      },
-      {
-        value: "plaineCommune",
-        label: "Plaine Commune",
-        hasHouse: true,
-        cities: [
-          'Aubervilliers',
-          'Epinay-sur-seine',
-          'Ile-saint-denis',
-          'Courneuve',
-          'Pierrefitte',
-          'Saint-denis',
-          'Saint-ouen',
-          'Stains',
-          'Villetaneuse',
-        ]
-      },
-      {
-        value: "estEnsemble",
-        label: "Est Ensemble",
-        hasHouse: true,
-        cities: [
-          'Bagnolet',
-          'Bobigny',
-          'Bondy',
-          'Le pré-saint-gervais',
-          'Les lilas',
-          'Montreuil',
-          'Noisy-le-sec',
-          'Pantin',
-          'Romainville',
-        ]
-      },
-      {
-        value: "lyon",
-        label: "Lyon",
-        cities: [
-          'Lyon',
-          'Villeurbanne',
-        ]
-      },
-      {
-        value: "montpellier",
-        label: "Montpellier",
-        customYearsBuilt: [
-          {
-            value: idkId,
-            label: "Je ne sais pas",
-          },
-          {
-            value: '<1946',
-            label: 'Avant 1946',
-          },
-          {
-            value: '1946-1970',
-            label: '1946 - 1970',
-          },
-          {
-            value: '1971-1990',
-            label: '1971 - 1990',
-          },
-          {
-            value: '1991-2005',
-            label: '1991 - 2005',
-          },
-          {
-            value: '>2005',
-            label: 'Après 2005',
-          }
-        ]
-      },
-      {
-        value: "bordeaux",
-        label: "Bordeaux",
-      },
-    ];
-
-    const cityDropdownOptions = cityInformation.reduce((prev, currentValue) => {
-      if (currentValue.cities) {
-        currentValue.cities.forEach((city) => {
-          prev.push({
-            value: city,
-            label: city,
-          })
-        })
-      } else {
-        prev.push(currentValue)
-      }
-      return prev;
-    }, []);
-
-    const districtDropdownOptions = ref([]);
-    const addressDropdownOptions = ref([]);
-    const simulationResults = ref(null);
-    const isLegal = ref(null);
-    const prevCity = ref(null);
-    const simulationResultsLoading = ref(false);
-    let simulationTimeoutRef = null;
-
-    const hasHouse = ref(false);
-
-    const cityChanged = (newCity) => {
-      const currentCityOption = cityInformation.find((c) => c.value === newCity);
-      hasHouse.value = !!currentCityOption?.hasHouse;
-      if (!hasHouse.value) {
-        optionValues.isHouseValue = 0;
-      }
-
-      if (currentCityOption.customYearsBuilt) {
-        dateBuiltValueDropdownOptions.value = [...currentCityOption.customYearsBuilt];
-      } else {
-        dateBuiltValueDropdownOptions.value = [...defaultValueDropdownOptions];
-      }
-
-      if (citySelected.value !== prevCity.value) {
-        prevCity.value = citySelected.value
-        fetchDistricts();
-        addressDropdownOptions.value = [];
-        simulationResults.value = null;
-        isLegal.value = null;
-        optionValues.districtValue = "";
-        optionValues.addressValue = "";
-        optionValues.addressTyped = "";
-        optionValues.dateBuiltValue = idkId;
-      }
-    }
-
-    const onCitySelect = (city) => {
-      citySelected.value = city;
-      const groupedCity = cityInformation.find((c) => c.cities?.includes(city))
-      if (groupedCity) {
-        optionValues.cityValue = groupedCity.value
-      } else {
-        optionValues.cityValue = city
-      }
-      cityChanged(optionValues.cityValue)
-    }
-
-    const fetchDistricts = () => {
-      controller.abort();
-      controller = new AbortController();
-
-      fetch(`${domain}districts/list/${optionValues.cityValue}?city=${citySelected.value.toLowerCase()}`, {
-        signal: controller.signal,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          districtDropdownOptions.value = res.map((district) => ({
-            groupBy: district.groupBy,
-            value: district.value,
-            label: district.value,
-          }));
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    };
-
-    watch(
-      () => [
-        optionValues.surfaceValue,
-        optionValues.priceValue,
-        optionValues.roomValue,
-        optionValues.furnishedValue,
-        optionValues.districtValue,
-        optionValues.dateBuiltValue,
-        optionValues.cityValue,
-        optionValues.isHouseValue,
-      ],
-      () => {
-        if (
-          optionValues.surfaceValue &&
-          optionValues.priceValue &&
-          optionValues.roomValue &&
-          optionValues.furnishedValue &&
-          optionValues.districtValue &&
-          optionValues.dateBuiltValue &&
-          optionValues.cityValue
-        ) {
-          simulationResultsLoading.value = true;
-
-          if (simulationTimeoutRef !== null) {
-            clearTimeout(simulationTimeoutRef);
-          }
-
-          controller.abort();
-          controller = new AbortController();
-
-          simulationTimeoutRef = setTimeout(() => {
-            const optionParams = {
-              surfaceValue: optionValues.surfaceValue,
-              priceValue: optionValues.priceValue,
-              roomValue: optionValues.roomValue,
-              furnishedValue: optionValues.furnishedValue,
-              dateBuiltValueStr: optionValues.dateBuiltValue,
-              districtValue: optionValues.districtValue,
-              isHouseValue: optionValues.isHouseValue,
-            };
-
-            const strOptions = optionParams
-              ? Object.keys(optionParams)
-                  .map((key) => {
-                    return key + "=" + optionParams[key];
-                  })
-                  .join("&")
-              : null;
-
-            fetch(
-              `${domain}simulator/${optionValues.cityValue}${
-                strOptions ? "?" + strOptions : ""
-              }`,
-              {
-                signal: controller.signal,
-              }
-            )
-              .then((res) => res.json())
-              .then((res) => {
-                if (res.message === "token expired") {
-                  throw res;
-                } else {
-                  return res;
-                }
-              })
-              .then((res) => {
-                simulationResults.value = res;
-                isLegal.value = res.length && res.some((r) => r.isLegal);
-                simulationResultsLoading.value = false;
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          }, 1000);
-        }
-      }
-    );
-
-    onMounted(() => {
-      fetchDistricts();
-      isMounted.value = true;
-    });
-
-    onBeforeUnmount(() => {
-      controller.abort();
-    });
+const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()]
+  .map(x => {
+    x += 1;
 
     return {
-      controller,
-      simulationResults,
-      isMounted,
-      optionValues,
-      initialOptionValues,
-      cityDropdownOptions,
-      dateBuiltValueDropdownOptions,
-      priceValueDropdownOptions,
-      surfaceValueDropdownOptions,
-      roomValueDropdownOptions,
-      furnishedDropdownOptions: [
-        {
-          value: "furnished",
-          label: "Meublé",
-        },
-        {
-          value: "nonFurnished",
-          label: "Non meublé",
-        },
-      ],
-      isHouseValueDropdownOptions: [
-        {
-          value: 1,
-          label: "Maison",
-        },
-        {
-          value: 0,
-          label: "Appartement",
-        },
-      ],
-      districtDropdownOptions,
-      addressDropdownOptions,
-      hasHouse,
-      timeoutRef: null,
-      displayMoreInfo: ref(false),
-      simulationResultsLoading,
-      citySelected,
-      isLegal,
-      infoVisible,
-      onCitySelect,
-    };
-  },
-  methods: {
-    leave: function() {
-      setTimeout(() => {
-        this.$router.push({ path: "/" });
-      }, 400);
-    },
-    unmount: function() {
-      this.isMounted = false;
-    },
-    handleSearchingAddress: function(address) {
-      this.optionValues.districtValue = "";
-      this.optionValues.addressValue = "";
-      this.optionValues.addressTyped = address;
+      value: x,
+      label: `${x} pièce${x > 1 ? "s" : ""}`,
+    }
+  });
 
-      if (this.timeoutRef !== null) {
-        clearTimeout(this.timeoutRef);
-      }
+const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
+  .map(x => {
+    const val = x + 9;
+    return {
+      value: val,
+      label: `${val}m²`,
+    }
+  });
 
-      this.controller.abort();
-      this.controller = new AbortController();
+const priceValueDropdownOptions = [...Array((3000 - 200) / 5 + 1).keys()]
+  .map(x => {
+    const val = x * 5 + 200;
+    return {
+      value: val,
+      label: `${val}€`,
+    }
+  });
 
-      this.timeoutRef = setTimeout(() => {
-        fetch(
-          `${domain}districts/address/${this.optionValues.cityValue}?q=${address}&city=${this.citySelected.toLowerCase()}`,
-          {
-            signal: this.controller.signal,
-          }
-        )
-          .then((res) => res.json())
-          .then((res) => {
-            if (res.message === "token expired") {
-              throw res;
-            } else {
-              return res;
-            }
-          })
-          .then((res) => {
-            this.addressDropdownOptions = res.map((a) => ({
-              value: a.fields.l_adr,
-              label: a.fields.l_adr,
-              district: a.districtName,
-            }));
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      }, 500);
-    },
-    handleAddressSelect: function(event) {
-      this.optionValues.addressValue = event.value;
-      this.optionValues.districtValue = event.district;
-    },
-    onReset: function() {
-      Object.assign(this.optionValues, this.initialOptionValues);
-      this.addressDropdownOptions = [];
-      this.simulationResults = null;
-      this.displayMoreInfo = false;
-    },
-    onClickMoreInfo: function() {
-      this.displayMoreInfo = !this.displayMoreInfo;
-    },
-  },
+const setDateBuiltRangeDropdownOptions = (datesRange) => {
+  dateBuiltValueDropdownOptions.value = datesRange.reduce((prev, dates, index) => {
+    if (index === 0) {
+      prev.push({
+        value: idkId,
+        label: "Je ne sais pas",
+      })
+    }
+
+    if (dates[0] === null) {
+      prev.push({
+        value: dates,
+        label: `Avant ${dates[1]}`,
+      })
+    } else if (dates[1] === null) {
+      prev.push({
+        value: dates,
+        label: `Après ${dates[0]}`,
+      })
+    } else {
+      prev.push({
+        value: dates,
+        label: `${dates[0]}-${dates[1]}`,
+      })
+    }
+
+    return prev
+  }, [])
+}
+
+const setCityDropdownOptions = () => {
+  cityDropdownOptions.value = cityInformation.reduce((prev, currentValue) => {
+    currentValue.cities.forEach(({ value, label }) => {
+      prev.push({ value, label })
+    })
+    return prev;
+  }, []);
+}
+
+const setDistrictDropdownOptions = (res) => {
+  districtDropdownOptions.value = res.map((district) => ({
+    groupBy: district.groupBy,
+    value: district.value,
+    label: district.label,
+  }));
+}
+
+const setAddressDropdownOptions = (res) => {
+  addressDropdownOptions.value = res.map((a) => ({
+    value: a.fields.l_adr,
+    label: a.fields.l_adr,
+    district: a.districtName,
+  }));
+}
+
+const setDefaultCity = (city) => {
+  citySelected.value = city.value;
+  initialOptionValues.cityValue = city.value
+}
+
+const setDefaultOptionValues = () => {
+  optionValues.value = {
+    ...initialOptionValues,
+  }
+}
+
+const setOptionValues = (newOptionValues) => {
+  optionValues.value = {
+    ...optionValues.value,
+    ...newOptionValues,
+  }
+
+  fetchSimulatorResult()
+}
+
+const setDefaultValues = async () => {
+  setDefaultCity(cityInformation[0])
+  setDefaultOptionValues()
+  await cityChanged(optionValues.value.cityValue)
+}
+
+const setCityInformation = async (res) => {
+  const cities = Object.keys(res)
+  cityInformation = cities.reduce((prev, city) => {
+    const currentCity = res[city]
+    const mainCity = currentCity.mainCity
+    if (prev.some(({ value }) => value === mainCity)) return prev
+
+    prev.push({
+      value: mainCity,
+      label: currentCity.displayNameMainCity,
+      cities: cities.reduce((cityList, c) => {
+        if (mainCity === res[c].mainCity) {
+          cityList.push({ label: res[c].displayName, value: c })
+        }
+        return cityList
+      }, []),
+      dateBuiltRange: currentCity.dateBuiltRange,
+      hasHouse: currentCity.hasHouse,
+    })
+    return prev;
+  }, [])
+
+  setCityDropdownOptions()
+  await setDefaultValues()
+}
+
+const cityChanged = async (newMainCity) => {
+  const currentCityOption = cityInformation.find((c) => c.value === newMainCity);
+  hasHouse.value = !!currentCityOption?.hasHouse;
+  if (!hasHouse.value) {
+    optionValues.value.isHouseValue = 0;
+  }
+
+  setDateBuiltRangeDropdownOptions([...currentCityOption.dateBuiltRange])
+
+  if (citySelected.value !== prevCity.value) {
+    prevCity.value = citySelected.value
+    await fetchDistricts();
+    addressDropdownOptions.value = [];
+    simulationResults.value = null;
+    isLegal.value = null;
+    optionValues.value.districtValue = "";
+    optionValues.value.addressValue = "";
+    optionValues.value.addressTyped = "";
+    optionValues.value.dateBuiltValue = idkId;
+  }
+}
+
+const onCitySelect = (city) => {
+  citySelected.value = city;
+  const mainCity = cityInformation.find((cityInfo) => cityInfo.cities.map((c) => c.value).includes(city)).value
+  optionValues.value.cityValue = mainCity
+
+  cityChanged(mainCity)
+}
+
+const fetchDistricts = async () => {
+  try {
+    const rawResult = await fetch(`${domain}districts/list/${optionValues.value.cityValue}?city=${citySelected.value.toLowerCase()}`)
+    const res = await rawResult.json()
+    if (res.message === "token expired") throw res
+
+    setDistrictDropdownOptions(res)
+  } catch (err) {
+    console.error(err);
+  }
 };
+
+const fetchCities = async () => {
+  try {
+    const rawResult = await fetch(`${domain}cities/list`)
+    const res = await rawResult.json()
+    if (res.message === "token expired") throw res
+
+    await setCityInformation(res)
+
+    loading.value = false
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const fetchSimulatorResult = async () => {
+  simulationResultsLoading.value = true;
+
+  if (simulationTimeoutRef !== null) {
+    clearTimeout(simulationTimeoutRef);
+  }
+
+  simulationTimeoutRef = setTimeout(async () => {
+    const optionParams = {
+      surfaceValue: optionValues.value.surfaceValue,
+      priceValue: optionValues.value.priceValue,
+      roomValue: optionValues.value.roomValue,
+      furnishedValue: optionValues.value.furnishedValue,
+      dateBuiltValueStr: optionValues.value.dateBuiltValue,
+      districtValue: optionValues.value.districtValue,
+      isHouseValue: optionValues.value.isHouseValue,
+    };
+
+    const strOptions = optionParams
+      ? Object.keys(optionParams)
+          .map((key) => {
+            return key + "=" + optionParams[key];
+          })
+          .join("&")
+      : null;
+
+    try {
+      const rawResult = await fetch(
+        `${domain}simulator/${optionValues.value.cityValue}${
+          strOptions ? "?" + strOptions : ""
+        }`
+      )
+      const res = await rawResult.json()
+      if (res.message === "token expired") throw res
+
+      simulationResults.value = res;
+      isLegal.value = res.length && res.some((r) => r.isLegal);
+      simulationResultsLoading.value = false;
+    } catch (err) {
+      console.error(err);
+    }
+  }, 1000);
+}
+
+const onLeaving = () => {
+  setTimeout(() => {
+    this.$router.push({ path: "/" });
+  }, 400);
+}
+
+const handleSearchingAddress = async (address) => {
+  optionValues.value = {
+    ...optionValues.value,
+    districtValue: '',
+    addressValue: '',
+    addressTyped: address,
+  }
+
+  if (timeoutRef.value !== null) clearTimeout(timeoutRef.value)
+
+  timeoutRef.value = setTimeout(async () => {
+    try {
+      const rawResult = await fetch(
+        `${domain}districts/address/${optionValues.value.cityValue}?q=${address}&city=${citySelected.value.toLowerCase()}`,
+      )
+      const res = await rawResult.json()
+      if (res.message === "token expired") throw res
+      setAddressDropdownOptions(res)
+    } catch (err) {
+      console.error(err);
+    }
+  }, 500);
+}
+
+const handleAddressSelect = (event) => {
+  setOptionValues({
+    addressValue: event.value,
+    districtValue: event.district,
+  })
+}
+
+const onReset = () => {
+  optionValues.value = {
+    ...optionValues.value,
+    ...initialOptionValues,
+  }
+  addressDropdownOptions.value = [];
+  simulationResults.value = null;
+  displayMoreInfo.value = false;
+}
+
+const onClickMoreInfo = () => {
+  optionListRef.value.querySelector('div').scrollIntoView(true)
+  displayMoreInfo.value = !displayMoreInfo.value;
+}
+
+onMounted(async () => {
+  await fetchCities();
+  isMounted.value = true;
+});
+
+onUnmounted(() => {
+  isMounted.value = false;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -751,6 +653,7 @@ export default {
   border-radius: 4px;
   border: 1px solid white;
   z-index: 5;
+  overflow-y: auto;
 }
 
 .option-list div.global-content {

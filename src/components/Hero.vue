@@ -37,60 +37,54 @@
   </div>
 </template>
 
-<script>
-import ButtonGroup from "./ButtonGroup";
-export default {
-  name: "Hero",
-  components: {
-    ButtonGroup,
-  },
-  data: function() {
-    return {
-      currentCity: 0,
-      currentLetter: 0,
-      cities: [
-        { id: "paris", text: "Paris." },
-        { id: "lille", text: "Lille." },
-        { id: "plaineCommune", text: "Plaine Commune." },
-        { id: "estEnsemble", text: "Est Ensemble." },
-        { id: "lyon", text: "Lyon." },
-        { id: "montpellier", text: "Montpellier." },
-        { id: "bordeaux", text: "Bordeaux." },
-      ],
-      city: "",
-      interval: null,
-    };
-  },
-  mounted: function() {
-    this.writeCity(250);
-  },
-  beforeUnmount: function() {
-    clearInterval(this.interval);
-  },
-  methods: {
-    writeCity: function(speed) {
-      this.interval = setInterval(() => {
-        this.city += this.cities[this.currentCity].text[this.currentLetter];
-        this.currentLetter += 1;
+<script setup>
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import ButtonGroup from '@/components/ButtonGroup.vue'
 
-        if (this.currentLetter > 2) {
-          clearInterval(this.interval);
-          this.writeCity(150);
-        }
+const currentCity = ref(0);
+const currentLetter = ref(0);
+const cities = ref([
+  { id: "paris", text: "Paris." },
+  { id: "lille", text: "Lille." },
+  { id: "plaineCommune", text: "Plaine Commune." },
+  { id: "estEnsemble", text: "Est Ensemble." },
+  { id: "lyon", text: "Lyon." },
+  { id: "montpellier", text: "Montpellier." },
+  { id: "bordeaux", text: "Bordeaux." },
+]);
 
-        if (this.cities[this.currentCity].text.length < this.currentLetter) {
-          clearInterval(this.interval);
-          setTimeout(() => {
-            this.currentLetter = 0;
-            this.currentCity = (this.currentCity + 1) % this.cities.length;
-            this.city = "";
-            this.writeCity(400);
-          }, 500);
-        }
-      }, speed);
-    },
-  },
-};
+let interval = null;
+const city = ref('');
+
+const writeCity = (speed) => {
+  interval = setInterval(() => {
+    city.value += cities.value[currentCity.value].text[currentLetter.value];
+    currentLetter.value += 1;
+
+    if (currentLetter.value > 2) {
+      if (interval) clearInterval(interval);
+      writeCity(150);
+    }
+
+    if (cities.value[currentCity.value].text.length < currentLetter.value) {
+      if (interval) clearInterval(interval);
+      setTimeout(() => {
+        currentLetter.value = 0;
+        currentCity.value = (currentCity.value + 1) % cities.value.length;
+        city.value = "";
+        writeCity(400);
+      }, 500);
+    }
+  }, speed);
+}
+
+onMounted(() => {
+  writeCity(250);
+});
+
+onBeforeUnmount(() => {
+  if (interval) clearInterval(interval);
+});
 </script>
 
 <style lang="scss" scoped>

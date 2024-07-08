@@ -181,40 +181,6 @@ export default defineComponent({
       controller,
       isOpen: ref(false),
       optionValues,
-      cityDropdownOptions: [
-        {
-          value: "all",
-          label: "Tout",
-        },
-        {
-          value: "paris",
-          label: "Paris",
-        },
-        {
-          value: "lille",
-          label: "Lille",
-        },
-        {
-          value: "plaineCommune",
-          label: "Plaine Commune",
-        },
-        {
-          value: "estEnsemble",
-          label: "Est Ensemble",
-        },
-        {
-          value: "lyon",
-          label: "Lyon",
-        },
-        {
-          value: "montpellier",
-          label: "Montpellier",
-        },
-        {
-          value: "bordeaux",
-          label: "Bordeaux",
-        },
-      ],
       furnishedDropdownOptions: [
         {
           value: "all",
