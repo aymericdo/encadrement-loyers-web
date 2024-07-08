@@ -8,7 +8,7 @@
           </router-link>
         </div>
         est une extension pour vous aider dans votre recherche de location à
-        <div class="city-word">
+        <div v-if="cities.length" class="city-word">
           <span :class="`typing ${cities[currentCity].id}`">
             <span class="uno">{{
               city.slice(0, cities[currentCity].text.length / 3)
@@ -39,19 +39,12 @@
 
 <script setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { domain } from "@/helper/config";
 import ButtonGroup from '@/components/ButtonGroup.vue'
 
 const currentCity = ref(0);
 const currentLetter = ref(0);
-const cities = ref([
-  { id: "paris", text: "Paris." },
-  { id: "lille", text: "Lille." },
-  { id: "plaineCommune", text: "Plaine Commune." },
-  { id: "estEnsemble", text: "Est Ensemble." },
-  { id: "lyon", text: "Lyon." },
-  { id: "montpellier", text: "Montpellier." },
-  { id: "bordeaux", text: "Bordeaux." },
-]);
+const cities = ref([]);
 
 let interval = null;
 const city = ref('');
@@ -78,7 +71,28 @@ const writeCity = (speed) => {
   }, speed);
 }
 
-onMounted(() => {
+const fetchCities = async () => {
+  try {
+    const rawResult = await fetch(`${domain}cities/list`)
+    const res = await rawResult.json()
+    if (res.message === "token expired") throw res
+
+    cities.value = Object.keys(res).reduce((prev, city) => {
+      if (prev.some((value) => value.id === res[city].mainCity)) return prev
+
+      prev.push({
+        id: res[city].mainCity,
+        text: `${res[city].displayName.city}.`,
+      })
+      return prev
+    }, []);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+onMounted(async () => {
+  await fetchCities();
   writeCity(250);
 });
 
