@@ -50,6 +50,7 @@ let interval = null;
 const city = ref('');
 
 const writeCity = (speed) => {
+  if (!cities.value.length) return
   interval = setInterval(() => {
     city.value += cities.value[currentCity.value].text[currentLetter.value];
     currentLetter.value += 1;

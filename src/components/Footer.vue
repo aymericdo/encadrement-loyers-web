@@ -7,13 +7,13 @@
         href="https://www.facebook.com/encadrementloyers"
         target="_blank"
       >
-        <FacebookIcon :width="'25px'" :height="'25px'" />
+        <FacebookIcon :width="'32px'" :height="'32px'" />
       </a>
       <a class="twitter" href="https://twitter.com/_encadrement" target="_blank">
-        <TwitterIcon :width="'25px'" :height="'25px'" />
+        <TwitterIcon :width="'32px'" :height="'32px'" />
       </a>
       <a class="instagram" href="https://www.instagram.com/encadrementloyers/" target="_blank">
-        <InstagramIcon :width="'25px'" :height="'25px'" />
+        <InstagramIcon :width="'32px'" :height="'32px'" />
       </a>
     </p>
     <p>Aucune donnée n'est collectée par l'extension, hormis celle nécessaire au calcul et à la réalisation de quelques statistiques.</p>
@@ -66,5 +66,6 @@ p.social {
 .twitter {
   display: flex;
   margin-left: 8px;
+  width: 2.5rem;
 }
 </style>
