@@ -118,10 +118,10 @@
             </div>
           </transition>
           <transition name="slide-side-l2r">
-            <div v-if="displayMoreInfo">
+            <div v-if="displayMoreInfo" class="global-content result">
               <div
                 key="2"
-                class="grid global-content result"
+                class="grid"
                 v-bind:style="{
                   'grid-template-columns': `repeat(${simulationResults.length +
                     1}, 2fr)`,
@@ -656,7 +656,9 @@ onMounted(async () => {
   border-radius: 4px;
   border: 1px solid white;
   z-index: 5;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
 }
 
 .option-list div.global-content {
@@ -664,19 +666,21 @@ onMounted(async () => {
   padding: 1rem;
   width: 100%;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .option-list div.global-content.result {
-  padding: 4rem 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 8px #fdcd5a57;
+}
+
+.option-list div.global-content.result .grid {
   overflow-x: auto;
 }
 
-.option-list div.global-content.grid {
+.option-list div.global-content .grid {
   display: grid;
-}
-
-.option-list .pushy-text {
-  padding: 1rem 2rem;
 }
 
 .option-list .pushy-text .reference-links {
@@ -684,7 +688,7 @@ onMounted(async () => {
   justify-content: space-evenly;
 }
 
-.option-list div.global-content.grid > span {
+.option-list div.global-content .grid > span {
   padding: 8px;
   justify-content: center;
   align-items: center;
@@ -692,13 +696,13 @@ onMounted(async () => {
   border: solid 1px;
 }
 
-.option-list div.global-content.grid > .label {
+.option-list div.global-content .grid > .label {
   font-weight: bold;
   text-align: left;
   line-height: normal;
 }
 
-.option-list div.global-content.grid > span.exceeding {
+.option-list div.global-content .grid > span.exceeding {
   font-weight: 500;
   color: red;
 }
