@@ -383,8 +383,8 @@ const setDistrictDropdownOptions = (res) => {
 
 const setAddressDropdownOptions = (res) => {
   addressDropdownOptions.value = res.map((a) => ({
-    value: a.fields.l_adr,
-    label: a.fields.l_adr,
+    value: a.properties.label,
+    label: a.properties.label,
     district: a.districtName,
   }));
 }
@@ -555,12 +555,14 @@ const handleSearchingAddress = async (address) => {
     addressTyped: address,
   }
 
+  if (address.trim().length < 4) return
+
   if (timeoutRef.value !== null) clearTimeout(timeoutRef.value)
 
   timeoutRef.value = setTimeout(async () => {
     try {
       const rawResult = await fetch(
-        `${domain}districts/address/${optionValues.value.cityValue}?q=${address}&city=${citySelected.value.toLowerCase()}`,
+        `${domain}districts/address/${optionValues.value.cityValue}?q=${address.trim()}&city=${citySelected.value.toLowerCase()}`,
       )
       const res = await rawResult.json()
       if (res.message === "token expired") throw res
