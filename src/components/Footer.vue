@@ -12,7 +12,7 @@
       <a class="twitter" href="https://twitter.com/_encadrement" target="_blank">
         <TwitterIcon :width="'32px'" :height="'32px'" />
       </a>
-      <a class="instagram" href="https://www.instagram.com/encadrementloyers/" target="_blank">
+      <a class="instagram" href="https://www.instagram.com/encadrement_loyers/" target="_blank">
         <InstagramIcon :width="'32px'" :height="'32px'" />
       </a>
     </p>
