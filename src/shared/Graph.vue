@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <bounce-loader class="spinner" :loading="!isGraphLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
-    <div v-if="isGraphLoaded" :id="id" class="graph"></div>
+    <div v-if="isGraphLoaded && !errorMessage.length" :id="id" class="graph"></div>
+    <div class="error-message" v-if="isGraphLoaded && errorMessage.length">
+      <span v-if="errorMessage === 'not enough data'">
+        Pas assez de données
+      </span>
+    </div>
   </div>
 </template>
 
@@ -64,6 +69,7 @@ export default {
     return {
       controller: new AbortController(),
       isGraphLoaded: false,
+      errorMessage: '',
     };
   },
   methods: {
@@ -100,6 +106,8 @@ export default {
         .then((res) => {
           if (res.message === "token expired") {
             throw res;
+          } else if (res.message === 'not enough data') {
+            this.errorMessage = res.message
           } else {
             return res;
           }
@@ -145,6 +153,11 @@ export default {
   max-width: 100%;
   width: 100%;
   height: 100%;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
 }
 
 .spinner {
