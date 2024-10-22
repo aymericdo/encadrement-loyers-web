@@ -74,6 +74,7 @@ export default {
   },
   methods: {
     onFetchGraph: function() {
+      this.errorMessage = '';
       this.isGraphLoaded = false;
       this.controller.abort();
       this.controller = new AbortController();
@@ -107,6 +108,7 @@ export default {
           if (res.message === "token expired") {
             throw res;
           } else if (res.message === 'not_enough_data') {
+            console.log(res)
             this.errorMessage = res.message
           } else {
             return res;
