@@ -3,7 +3,7 @@
     <bounce-loader class="spinner" :loading="!isGraphLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
     <div v-if="isGraphLoaded && !errorMessage.length" :id="id" class="graph"></div>
     <div class="error-message" v-if="isGraphLoaded && errorMessage.length">
-      <span v-if="errorMessage === 'not enough data'">
+      <span v-if="errorMessage === 'not_enough_data'">
         Pas assez de données
       </span>
     </div>
@@ -106,7 +106,7 @@ export default {
         .then((res) => {
           if (res.message === "token expired") {
             throw res;
-          } else if (res.message === 'not enough data') {
+          } else if (res.message === 'not_enough_data') {
             this.errorMessage = res.message
           } else {
             return res;
