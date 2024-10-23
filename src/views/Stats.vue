@@ -349,7 +349,7 @@ export default {
   },
   watch: {
     "$route.params.city": function(value) {
-      this.city = camelize(value);
+      this.city = value && camelize(value);
       this.changeFilters()
       this.onFetchWelcome(null);
       this.isWelcomeTextLoaded = false;
