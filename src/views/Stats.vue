@@ -570,7 +570,7 @@ export default {
 
 .welcome-section > .row {
   display: flex;
-  width: 100%;
+  width: 90%;
 }
 
 .welcome-section > .row > .slider {
