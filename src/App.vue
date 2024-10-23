@@ -4,9 +4,6 @@
     <audio ref="asymetrie">
       <source src="@/assets/sounds/asymetrie.mp3" type="audio/mp3" />
     </audio>
-    <audio ref="hommepresse">
-      <source src="@/assets/sounds/hommepresse.mp3" type="audio/mp3" />
-    </audio>
     <audio ref="gstaad">
       <source src="@/assets/sounds/gstaad.mp3" type="audio/mp3" />
     </audio>
@@ -24,7 +21,6 @@ export default {
   mounted: function() {
     const sounds = {
       a: this.$refs.asymetrie,
-      h: this.$refs.hommepresse,
       g: this.$refs.gstaad,
     };
 

@@ -124,6 +124,15 @@
             </div>
           </div>
 
+          <div class="stats-section -large" v-if="city !== 'all' && cityDropdownOptions.find((value) => value.value === city)?.multipleCities">
+            <Graph
+              :id="'chloropleth-cities-map'"
+              :date="getDatesFromValues"
+              :city="city"
+              @errorOutput="getErrorMessage($event)"
+            ></Graph>
+          </div>
+
           <div class="stats-section -large">
             <Graph
               :id="'is-legal-per-surface'"
@@ -190,6 +199,8 @@ import Dropfilters from "@/shared/Dropfilters.vue";
 import Graph from "@/shared/Graph.vue";
 import Slider from "@vueform/slider";
 import { domain } from "@/helper/config";
+
+import { kebabize, camelize } from "../tools/kebabier";
 
 import "@vueform/slider/themes/default.css";
 
@@ -288,11 +299,21 @@ export default {
             })
           }
 
-          if (prev.some((value) => value.value === res[city].mainCity)) return prev
+          if (prev.some((value) => value.value === res[city].mainCity)) {
+            return prev.map((data) => {
+              return (data.value === res[city].mainCity) ? {
+                ...data,
+                multipleCities: true,
+              } : {
+                ...data,
+              }
+            })
+          }
 
           prev.push({
             value: res[city].mainCity,
             label: res[city].displayName.mainCity,
+            multipleCities: false,
           })
           return prev
         }, []);
@@ -310,7 +331,7 @@ export default {
       isLegalVariation,
       controller: new AbortController(),
       isMounted: ref(false),
-      city: ref(route.params.city || "paris"),
+      city: ref(camelize(route.params.city) || "paris"),
       status: ref(""),
       sucessfulServerResponse: ref(""),
       serverError: ref(""),
@@ -328,7 +349,7 @@ export default {
   },
   watch: {
     "$route.params.city": function(value) {
-      this.city = value;
+      this.city = camelize(value);
       this.changeFilters()
       this.onFetchWelcome(null);
       this.isWelcomeTextLoaded = false;
@@ -416,7 +437,7 @@ export default {
         return;
       }
 
-      this.$router.push({ path: `${opt.value}` });
+      this.$router.push({ path: kebabize(opt.value) });
     },
     changeFilters(opt = null) {
       if (opt) {
