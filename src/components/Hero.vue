@@ -79,14 +79,12 @@ const fetchCities = async () => {
     if (res.message === "token expired") throw res
 
     cities.value = Object.keys(res).reduce((prev, city) => {
-      if (prev.some((value) => value.id === res[city].mainCity)) return prev
-
       prev.push({
         id: res[city].mainCity,
         text: `${res[city].displayName.city}.`,
       })
       return prev
-    }, []);
+    }, []).sort(() => 0.5 - Math.random());
   } catch (err) {
     console.error(err);
   }
@@ -221,6 +219,16 @@ onBeforeUnmount(() => {
 
   > .tres {
     color: #d82525;
+  }
+}
+
+.city-word .typing.paysBasque {
+  > .uno {
+    color: #D52B1E;
+  }
+
+  > .tres {
+    color: #009B48;
   }
 }
 
