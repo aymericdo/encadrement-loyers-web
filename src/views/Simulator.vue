@@ -214,11 +214,12 @@
                 <bounce-loader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'"></bounce-loader>
               </template>
               <template v-else>
-                {{
+                <span>{{
                   isLegal
                     ? "Conforme"
                     : "Non conforme"
                 }}
+                </span>
                 <button
                   class="more-info-btn"
                   @click="onClickMoreInfo"
@@ -898,15 +899,20 @@ onMounted(async () => {
 
 .row.result {
   display: flex;
-  justify-content: center;
-  padding: 16px;
-  height: 50px;
+  justify-content: space-around;
+  padding: 0.625rem;
+  min-height: 50px;
   box-sizing: border-box;
   border: 1px solid white;
   position: relative;
   align-items: center;
   border-radius: 2px;
-  margin: 16px;
+  margin: 1rem;
+  line-height: 1.25rem;
+
+  > span {
+    font-weight: bold;
+  }
 }
 
 .row.result .spinner {
@@ -939,8 +945,6 @@ onMounted(async () => {
 }
 
 .more-info-btn {
-  position: absolute;
-  right: 14px;
   display: flex;
   align-items: center;
   border: 2px solid $yellow;
@@ -951,6 +955,7 @@ onMounted(async () => {
   font-weight: bold;
   padding: 0 1rem;
   transition: all ease 0.3s;
+  margin-left: 0.5rem;
 
   &:hover {
     border: solid white 2px;
