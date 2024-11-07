@@ -98,7 +98,6 @@ export default {
 
 :deep(.center-wrapper) {
   align-items: flex-start;
-  text-align: justify;
   box-sizing: border-box;
   padding: 124px;
 

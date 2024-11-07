@@ -385,7 +385,6 @@ export default {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    text-align: justify;
     align-content: center;
     flex-direction: column;
   }

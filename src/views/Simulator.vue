@@ -175,12 +175,16 @@
                   pouvez vous renseigner afin de <b>faire valoir vos droits.</b>
                 </p>
 
-                <br>
-
-                <h4>Votre mairie</h4>
-                <p>Rapprochez-vous de votre <b><a :href="simulationResults[0].moreInfo" target="_blank">mairie</a></b> pour <b>plus d'information</b></p>
+                <p>
+                  Pour plus d’informations, voir le site de votre 
+                  <b><a :href="simulationResults[0].moreInfo" target="_blank">
+                    {{ isMultipleCities ? 'agglomération' : 'ville' }}
+                  </a></b>.
+                </p>
                 
-                <br>
+                <p v-if="optionValues.cityValue === 'paysBasque'">
+                  Pour avoir de l'aide dans vos démarches, contactez l'<b><a :href="'https://www.alda.eus/contact/'" target="_blank">association de défense des locataires Alda</a></b>.
+                </p>
                 
                 <h4>Articles intéressants</h4>
                 <div class="reference-links">
@@ -287,6 +291,7 @@ let searchingCityTimeoutRef = null
 let simulationTimeoutRef = null;
 
 const hasHouse = ref(false);
+const isMultipleCities = ref(false);
 let cityInformation = []
 
 const initialOptionValues = {
@@ -493,6 +498,7 @@ const cityChanged = async (newMainCity) => {
   }
 
   const currentCityOption = cityInformation.find((c) => c.value === newMainCity);
+  isMultipleCities.value = currentCityOption.cities.length > 1
   hasHouse.value = !!currentCityOption?.hasHouse;
   if (!hasHouse.value) {
     optionValues.value.isHouseValue = 0;
@@ -743,7 +749,6 @@ onMounted(async () => {
 
 :deep(.center-wrapper) {
   align-items: flex-start;
-  text-align: justify;
   box-sizing: border-box;
   padding: 124px;
   align-items: center;
@@ -795,7 +800,10 @@ onMounted(async () => {
 
 .option-list .pushy-text .reference-links {
   display: flex;
-  justify-content: space-evenly;
+  
+  > a {
+    margin-right: 1rem;
+  }
 }
 
 .option-list div.global-content .grid > span {
