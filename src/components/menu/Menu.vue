@@ -25,7 +25,7 @@
           <router-link to="/observatoire">Observatoire</router-link>
         </li>
         <li>
-          <router-link to="/simulator">Simulateur</router-link>
+          <router-link to="/simulator">Vérifiez votre loyer</router-link>
         </li>
       </ul>
     </Sidebar>

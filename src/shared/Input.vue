@@ -16,15 +16,36 @@
     </div>
     <transition name="slide-down">
       <div class="option-list" v-if="isOpen && options.length" ref="optionListRef">
-        <div
-          class="option"
-          v-for="option in options"
-          :class="{ '-selected': currentValue === option.value }"
-          v-bind:key="option.value"
-          @click="onSelect(option)"
-        >
-          {{ option.label }}
-        </div>
+        <template v-if="isGroupBy">
+          <template
+            v-for="groupByKey in Object.keys(groupByList)"
+            v-bind:key="groupByKey"
+          >
+            <div class="option grouped">
+              {{ groupByKey }}
+            </div>
+            <div
+              class="option"
+              v-for="option in groupByList[groupByKey]"
+              :class="{ '-selected': currentValue === option.value }"
+              v-bind:key="option.value"
+              @click="onSelect(option)"
+            >
+              {{ option.label }}
+            </div>
+          </template>
+        </template>
+        <template v-else>
+          <div
+            class="option classic"
+            v-for="option in options"
+            :class="{ '-selected': currentValue === option.value }"
+            v-bind:key="option.value"
+            @click="onSelect(option)"
+          >
+            {{ option.label }}
+          </div>
+        </template>
       </div>
     </transition>
   </div>
@@ -32,7 +53,7 @@
 
 <script>
 import ArrowIcon from "@/icons/ArrowIcon.vue";
-import { defineComponent, ref, watchEffect, onMounted, onUnmounted } from "vue";
+import { defineComponent, ref, watch, watchEffect, onMounted, onUnmounted } from "vue";
 export default defineComponent({
   name: "Input",
   props: ["options", "currentValue", "textTyped", "placeholder"],
@@ -40,7 +61,30 @@ export default defineComponent({
     const optionListRef = ref(null);
     const isOpen = ref(false);
     const currentValueDisplay = ref("");
+    const groupByList = ref({});
+    const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
     let scrollIntoViewTimeout = null;
+
+    const setGroupByList = (currentOptions) => {
+      groupByList.value = currentOptions.reduce((prev, currentValue) => {
+        if (prev[currentValue.groupBy]) {
+          prev[currentValue.groupBy].push(currentValue);
+        } else {
+          prev[currentValue.groupBy] = [currentValue];
+        }
+        return prev;
+      }, {});
+    };
+
+    watch(
+      () => props.options,
+      (newValue) => {
+        isGroupBy.value = newValue.length && !!newValue[0].groupBy;
+        if (isGroupBy.value) {
+          setGroupByList(newValue);
+        }
+      }
+    );
 
     watchEffect(
       () => {
@@ -63,6 +107,10 @@ export default defineComponent({
     );
 
     onMounted(() => {
+      if (isGroupBy.value) {
+        setGroupByList(props.options);
+      }
+
       currentValueDisplay.value = props.options.find(
         (opt) => opt.value === props.currentValue
       )?.label;
@@ -76,6 +124,8 @@ export default defineComponent({
       optionListRef,
       isOpen,
       currentValueDisplay,
+      isGroupBy,
+      groupByList,
     };
   },
   watch: {
@@ -95,6 +145,8 @@ export default defineComponent({
 
       if (this.isOpen) {
         this.$refs.myinput.focus();
+      } else {
+        this.$emit("onClose", "");
       }
     },
     onSelect: function(opt) {
@@ -133,7 +185,7 @@ export default defineComponent({
   height: 36px;
   width: 100%;
   border-radius: 4px;
-  font-size: 20px;
+  font-size: 1rem;
   padding: 6px 12px;
   border-color: transparent;
   transition: background-color ease 0.3s;
@@ -217,6 +269,16 @@ export default defineComponent({
   }
 }
 
+.option.grouped {
+  border-bottom: solid 4px white;
+  cursor: default;
+  pointer-events: none;
+}
+
+.option:not(.grouped):not(.classic) {
+  padding-left: 2rem;
+}
+
 .option.-selected,
 .option:active {
   background-color: $yellow;
@@ -245,6 +307,11 @@ export default defineComponent({
 
   .option:hover {
     background-color: $yellow;
+  }
+
+  .option:not(.grouped):hover {
+    background-color: $yellow;
+    color: $deepblack;
   }
 }
 </style>

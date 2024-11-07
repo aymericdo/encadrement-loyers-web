@@ -148,6 +148,9 @@ const isFirefox = ref(typeof InstallTrigger !== "undefined")
 
   h3.-only-mobile {
     color: black;
+    padding: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
   }
 
   .-only-mobile {

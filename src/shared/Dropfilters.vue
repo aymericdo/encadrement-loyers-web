@@ -306,7 +306,7 @@ export default defineComponent({
   font-weight: 600;
   height: 36px;
   border-radius: 4px;
-  font-size: 20px;
+  font-size: 1rem;
   padding: 6px 12px;
   border-color: transparent;
   transition: background-color ease 0.3s;

@@ -175,7 +175,7 @@ export default defineComponent({
   height: 36px;
   width: 100%;
   border-radius: 4px;
-  font-size: 20px;
+  font-size: 1rem;
   padding: 6px 12px;
   border-color: transparent;
   transition: all ease 0.3s;

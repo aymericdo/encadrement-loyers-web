@@ -8,20 +8,24 @@
               <div class="row">
                 <span class="label">Ville</span>
                 <span>
-                  <Dropdown
+                  <Input
                     class="dropdown"
+                    :placeholder="'Entre le nom de ta ville'"
                     :options="cityDropdownOptions"
                     :currentValue="citySelected"
-                    @onSelect="onCitySelect($event.value)"
+                    :textTyped="optionValues.cityTyped"
+                    @onTyping="handleSearchingCity"
+                    @onSelect="handleSelectCity($event)"
+                    @onClose="handleCloseCity()"
                   >
-                  </Dropdown>
+                  </Input>
                 </span>
               </div>
               <div class="row" v-if="districtDropdownOptions.length">
                 <span class="label">Localisation</span>
                 <span>
                   <Input
-                    class="dropdown"
+                    class="dropdown address"
                     :placeholder="'Entre ton adresse...'"
                     :options="addressDropdownOptions"
                     :currentValue="optionValues.addressValue"
@@ -58,13 +62,17 @@
                   <div v-if="infoVisible" class="info-section">Si vous ne connaissez pas votre loyer hors charges, vous pouvez enlever 10% à votre loyer total.</div> 
                 </span>
                 <span>
-                  <Dropdown
+                  <Input
                     class="dropdown"
+                    :placeholder="'Entre ton loyer'"
                     :options="priceValueDropdownOptions"
                     :currentValue="optionValues.priceValue"
-                    @onSelect="setOptionValues({ priceValue: $event.value })"
+                    :textTyped="optionValues.priceTyped"
+                    @onTyping="handleSearchingPrice"
+                    @onSelect="handleSelectPrice"
+                    @onClose="handleClosePrice"
                   >
-                  </Dropdown>
+                  </Input>
                 </span>
               </div>
               <div class="row">
@@ -208,11 +216,18 @@
                     : "Non conforme"
                 }}
                 <button
-                  class="arrow-icon"
+                  class="more-info-btn"
                   @click="onClickMoreInfo"
-                  :class="{ '-is-open': displayMoreInfo }"
                 >
-                  <ArrowIcon :iconColor="'white'"></ArrowIcon>
+                  <template v-if="displayMoreInfo">
+                    <span>Retour</span>
+                  </template>
+                  <template v-else>
+                    <span>Cliquez pour plus d'info</span>
+                  </template>
+                  <span class="arrow-icon" :class="{ '-is-open': displayMoreInfo }">
+                    <ArrowIcon :iconColor="'white'"></ArrowIcon>
+                  </span>
                 </button>
               </template>
             </div>
@@ -249,7 +264,6 @@ const optionListRef = ref(null);
 
 const isMounted = ref(false);
 const loading = ref(true)
-const timeoutRef = ref(null)
 
 const infoVisible = ref(false);
 const citySelected = ref('');
@@ -261,11 +275,15 @@ const displayMoreInfo = ref(false);
 
 const districtDropdownOptions = ref([]);
 const addressDropdownOptions = ref([]);
+const priceValueDropdownOptions = ref([]);
 const simulationResults = ref(null);
 const isLegal = ref(null);
 const prevCity = ref(null);
 const simulationResultsLoading = ref(false);
 
+let searchingAddressTimeoutRef = null
+let searchingPriceTimeoutRef = null
+let searchingCityTimeoutRef = null
 let simulationTimeoutRef = null;
 
 const hasHouse = ref(false);
@@ -279,7 +297,9 @@ const initialOptionValues = {
   furnishedValue: "furnished",
   addressValue: "",
   isHouseValue: 0,
+  cityTyped: "",
   addressTyped: "",
+  priceTyped: "",
   districtValue: "",
   cityValue: citySelected.value,
 };
@@ -325,14 +345,24 @@ const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
     }
   });
 
-const priceValueDropdownOptions = [...Array((3000 - 200) / 5 + 1).keys()]
-  .map(x => {
-    const val = x * 5 + 200;
-    return {
-      value: val,
-      label: `${val}€`,
-    }
-  });
+const setPriceValueDropdownOptions = () => {
+  priceValueDropdownOptions.value = [...Array((8000 - 100) / 1 + 1).keys()]
+    .reduce((prev, x) => {
+      const val = x * 1 + 100;
+
+      const currentPriceTyped = optionValues.value.priceTyped?.toLowerCase();
+      if (!currentPriceTyped?.length || val.toString().includes(currentPriceTyped.replace(/\D/g, "").toString())) {
+        prev.push({
+          value: val,
+          label: `${val}€`,
+        });
+      }
+
+      return prev;
+    }, [])
+}
+
+setPriceValueDropdownOptions();
 
 const setDateBuiltRangeDropdownOptions = (datesRange) => {
   dateBuiltValueDropdownOptions.value = datesRange.reduce((prev, dates, index) => {
@@ -367,7 +397,16 @@ const setDateBuiltRangeDropdownOptions = (datesRange) => {
 const setCityDropdownOptions = () => {
   cityDropdownOptions.value = cityInformation.reduce((prev, currentValue) => {
     currentValue.cities.forEach(({ value, label }) => {
-      prev.push({ value, label })
+      const currentCityTyped = optionValues.value.cityTyped?.toLowerCase();
+      if (currentCityTyped?.length) {
+        if (label.toLowerCase().includes(currentCityTyped)
+          || value.toLowerCase().includes(currentCityTyped)
+          || currentValue.label.toLowerCase().includes(currentCityTyped)) {
+          prev.push({ value, label, groupBy: currentValue.label })
+        }
+      } else {
+        prev.push({ value, label, groupBy: currentValue.label })
+      }
     })
     return prev;
   }, []);
@@ -391,7 +430,7 @@ const setAddressDropdownOptions = (res) => {
 
 const setDefaultCity = (city) => {
   citySelected.value = city.value;
-  initialOptionValues.cityValue = city.value
+  initialOptionValues.cityValue = city.value;
 }
 
 const setDefaultOptionValues = () => {
@@ -435,13 +474,24 @@ const setCityInformation = async (res) => {
       hasHouse: currentCity.hasHouse,
     })
     return prev;
-  }, [])
+  }, []).sort((a, b) => {
+    return a.value.localeCompare(b.value);
+  })
 
   setCityDropdownOptions()
   await setDefaultValues()
 }
 
 const cityChanged = async (newMainCity) => {
+  optionValues.value = {
+    ...optionValues.value,
+    districtValue: '',
+    addressValue: '',
+    cityTyped: '',
+    addressTyped: '',
+    dateBuiltValue: idkId,
+  }
+
   const currentCityOption = cityInformation.find((c) => c.value === newMainCity);
   hasHouse.value = !!currentCityOption?.hasHouse;
   if (!hasHouse.value) {
@@ -456,16 +506,46 @@ const cityChanged = async (newMainCity) => {
     addressDropdownOptions.value = [];
     simulationResults.value = null;
     isLegal.value = null;
-    optionValues.value.districtValue = "";
-    optionValues.value.addressValue = "";
-    optionValues.value.addressTyped = "";
-    optionValues.value.dateBuiltValue = idkId;
+
+    if (districtDropdownOptions.value.length === 1) {
+      setOptionValues({
+        districtValue: districtDropdownOptions.value[0].value,
+        addressValue: '',
+        cityTyped: '',
+        addressTyped: '',
+        dateBuiltValue: idkId,
+      });
+    }
   }
 }
 
-const onCitySelect = (city) => {
-  citySelected.value = city;
-  const mainCity = cityInformation.find((cityInfo) => cityInfo.cities.map((c) => c.value).includes(city)).value
+const handleSelectPrice = (price) => {
+  optionValues.value.priceValue = price.value;
+  if (!price) return;
+
+  initialOptionValues.priceValue = price.value;
+  setOptionValues({ priceValue: price.value })
+}
+
+const handleClosePrice = () => {
+  optionValues.value.priceTyped = '';
+  setPriceValueDropdownOptions();
+  optionValues.value.priceValue = initialOptionValues.priceValue;
+}
+
+const handleCloseCity = () => {
+  optionValues.value.cityTyped = '';
+  setCityDropdownOptions();
+  citySelected.value = initialOptionValues.cityValue;
+}
+
+const handleSelectCity = (city) => {
+  citySelected.value = city.value;
+
+  if (!city) return;
+  const mainCity = cityInformation.find((cityInfo) => cityInfo.cities.map((c) => c.value).includes(city.value))?.value
+
+  initialOptionValues.cityValue = citySelected.value;
   optionValues.value.cityValue = mainCity
 
   cityChanged(mainCity)
@@ -498,11 +578,13 @@ const fetchCities = async () => {
 };
 
 const fetchSimulatorResult = async () => {
+  if (!optionValues.value.cityValue
+    || !optionValues.value.districtValue
+    || !optionValues.value.priceValue) return;
+
   simulationResultsLoading.value = true;
 
-  if (simulationTimeoutRef !== null) {
-    clearTimeout(simulationTimeoutRef);
-  }
+  if (simulationTimeoutRef !== null) clearTimeout(simulationTimeoutRef);
 
   simulationTimeoutRef = setTimeout(async () => {
     const optionParams = {
@@ -547,6 +629,32 @@ const onLeaving = () => {
   }, 400);
 }
 
+const handleSearchingPrice = async (price) => {
+  if (searchingPriceTimeoutRef !== null) clearTimeout(searchingPriceTimeoutRef)
+
+  optionValues.value = {
+    ...optionValues.value,
+    priceTyped: price,
+  }
+  
+  searchingPriceTimeoutRef = setTimeout(async () => {
+    setPriceValueDropdownOptions();
+  }, 200);
+}
+
+const handleSearchingCity = async (city) => {
+  if (searchingCityTimeoutRef !== null) clearTimeout(searchingCityTimeoutRef)
+
+  optionValues.value = {
+    ...optionValues.value,
+    cityTyped: city,
+  }
+  
+  searchingCityTimeoutRef = setTimeout(async () => {
+    setCityDropdownOptions()
+  }, 200);
+}
+
 const handleSearchingAddress = async (address) => {
   optionValues.value = {
     ...optionValues.value,
@@ -557,9 +665,9 @@ const handleSearchingAddress = async (address) => {
 
   if (address.trim().length < 4) return
 
-  if (timeoutRef.value !== null) clearTimeout(timeoutRef.value)
+  if (searchingAddressTimeoutRef !== null) clearTimeout(searchingAddressTimeoutRef)
 
-  timeoutRef.value = setTimeout(async () => {
+  searchingAddressTimeoutRef = setTimeout(async () => {
     try {
       const rawResult = await fetch(
         `${domain}districts/address/${optionValues.value.cityValue}?q=${address.trim()}&city=${citySelected.value.toLowerCase()}`,
@@ -729,7 +837,7 @@ onMounted(async () => {
   justify-content: center;
 }
 
-.option-list div > .row .dropdown.input {
+.option-list div > .row .dropdown.input.address {
   margin-bottom: 0.625rem;
 }
 
@@ -822,20 +930,33 @@ onMounted(async () => {
   }
 }
 
-.arrow-icon {
+.more-info-btn {
   position: absolute;
-  transition: transform ease 0.3s;
   right: 14px;
+  display: flex;
+  align-items: center;
+  border: 2px solid $yellow;
+  border-radius: 2px;
+  background: transparent;
+  color: white;
+  font-size: 0.825rem;
+  font-weight: bold;
+  padding: 0 1rem;
+  transition: all ease 0.3s;
+
+  &:hover {
+    border: solid white 2px;
+  }
+}
+
+.arrow-icon {
+  transition: transform ease 0.3s;
   height: 30px;
   width: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid $yellow;
-  border-radius: 2px;
   transform: rotate(-90deg);
-  background: transparent;
-  padding: 4px;
 }
 
 .arrow-icon.-is-open {
