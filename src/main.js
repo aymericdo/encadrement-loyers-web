@@ -3,6 +3,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+const app = createApp(App);
 Sentry.init({
   app,
   project: "web",
@@ -10,5 +11,4 @@ Sentry.init({
   dsn: process.env.VUE_APP_SENTRY_DSN,
 });
 
-const app = createApp(App);
 app.use(router).mount("#app");
