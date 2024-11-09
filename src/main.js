@@ -7,9 +7,7 @@ const app = createApp(App);
 
 Sentry.init({
   app,
-  project: "web",
   dsn: "https://285198e42e2227ea3fe1615cb98b1e6c@o4507146908139520.ingest.de.sentry.io/4508270551171152",
-  environment: process.env.NODE_ENV,
   integrations: [
     Sentry.browserTracingIntegration({ router }),
     Sentry.replayIntegration(),
@@ -23,4 +21,5 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
 });
 
-app.use(router).mount("#app");
+app.use(router);
+app.mount("#app");
