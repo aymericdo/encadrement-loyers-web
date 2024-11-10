@@ -27,10 +27,10 @@
 </template>
 
 <script>
-import Section from "@/shared/Section";
-import SectionTitle from "@/shared/SectionTitle";
-import SectionRightPart from "@/shared/SectionRightPart";
-import Carousel from "./Carousel";
+import Section from "@/shared/Section.vue";
+import SectionRightPart from "@/shared/SectionRightPart.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
+import Carousel from "./Carousel.vue";
 
 export default {
   name: "SectionHow",

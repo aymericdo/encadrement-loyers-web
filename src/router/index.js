@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
 import FourOhFour from "../views/FourOhFour.vue";
+import Home from "../views/Home.vue";
 
 const routes = [
   {
@@ -14,8 +14,7 @@ const routes = [
         // route level code-splitting
         // this generates a separate chunk (stats.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () =>
-          import("../views/Video.vue"),
+        component: () => import("../views/Video.vue"),
       },
       {
         name: "legal",
@@ -23,14 +22,12 @@ const routes = [
         // route level code-splitting
         // this generates a separate chunk (stats.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () =>
-          import("../views/Legal.vue"),
+        component: () => import("../views/Legal.vue"),
       },
       {
         name: "justification",
         path: "justification",
-        component: () =>
-          import("../views/Justification.vue"),
+        component: () => import("../views/Justification.vue"),
       },
       {
         path: "stats",
@@ -89,7 +86,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 

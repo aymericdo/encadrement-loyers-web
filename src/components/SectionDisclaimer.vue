@@ -13,9 +13,9 @@
   </Section>
 </template>
 <script>
-import SectionRightPart from "@/shared/SectionRightPart";
-import SectionTitle from "@/shared/SectionTitle";
-import Section from "@/shared/Section";
+import Section from "@/shared/Section.vue";
+import SectionRightPart from "@/shared/SectionRightPart.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
 export default {
   name: "SectionDisclaimer",
   components: {

@@ -42,8 +42,8 @@
 </template>
 
 <script>
-import Section from "@/shared/Section";
-import SectionTitle from "@/shared/SectionTitle";
+import Section from "@/shared/Section.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
 
 export default {
   name: "SectionThanks",

@@ -7,30 +7,26 @@
     "npm": "9.x"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/eslint-parser": "^7.18.9",
     "@sentry/vue": "^8.37.1",
+    "@vitejs/plugin-vue": "^5.1.4",
     "@vueform/slider": "^1.0.3",
-    "core-js": "^3.4.8",
     "swiper": "^6.5.0",
     "vega": "^5.20.2",
     "vega-embed": "^6.17.0",
     "vega-lite": "^5.0.0",
+    "vite": "^5.4.10",
     "vue": "^3.2.37",
     "vue-eslint-parser": "^9.0.3",
     "vue-router": "^4.0.0-alpha.6",
     "vue-spinner": "^1.0.4"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-plugin-router": "~5.0.8",
-    "@vue/cli-service": "~5.0.8",
     "@vue/compiler-sfc": "^3.2.37",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^7.0.0-alpha.0",

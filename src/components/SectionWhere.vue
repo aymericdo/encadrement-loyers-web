@@ -7,9 +7,9 @@
   </Section>
 </template>
 <script>
-import Section from "@/shared/Section";
-import SectionTitle from "@/shared/SectionTitle";
-import SectionRightPart from "@/shared/SectionRightPart";
+import Section from "@/shared/Section.vue";
+import SectionRightPart from "@/shared/SectionRightPart.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
 import WebsiteList from "./WebsiteList.vue";
 
 export default {
@@ -18,8 +18,8 @@ export default {
     SectionTitle,
     SectionRightPart,
     Section,
-    WebsiteList
-  }
+    WebsiteList,
+  },
 };
 </script>
 
