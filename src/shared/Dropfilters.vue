@@ -1,100 +1,177 @@
 <template>
-  <div class="dropfilters">
-    <div class="overlay" v-if="isOpen" @click="onOpen()"></div>
-    <button
-      class="dropdown-btn"
-      @click="onOpen()"
-      :class="{ '-is-open': isOpen }"
-    >
-      <span>Filtres</span>
-      <span v-if="filtersCount > 0" class="badge-count">{{
-        filtersCount
-      }}</span>
-      <ArrowIcon class="arrow-icon" :class="{ '-is-open': isOpen }"></ArrowIcon>
-    </button>
-    <button
-      class="mobile-back-btn"
-      :class="{ '-is-open': isOpen }"
-      @click="onOpen()"
-    >
-      <StrokeIcon></StrokeIcon>
-    </button>
-    <transition name="slide-down">
-      <div class="option-list" v-if="isOpen">
-        <div class="row">
-          <span class="label">Surface</span>
-          <span class="slider">
-            <Slider
-              v-model="optionValues.surfaceValue"
-              :min="9"
-              :max="100"
-              :format="{ suffix: 'm²', decimals: 0 }"
-            />
-          </span>
-        </div>
-        <div class="row">
-          <span class="label">Nombre de pièce(s)</span>
-          <span class="slider">
-            <Slider
-              v-model="optionValues.roomValue"
-              :min="1"
-              :max="6"
-              :format="roomValueFct"
-            />
-          </span>
-        </div>
-        <div class="row">
-          <span class="label">Meublé</span>
-          <span>
-            <Dropdown
-              class="dropdown"
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="default">
+        Filtres
+        <span v-if="filtersCount > 0" class="badge-count">{{
+          filtersCount
+        }}</span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent class="w-80">
+      <form class="p-4 space-y-4" @submit.prevent="onSubmit">
+        <FormField v-slot="{ componentField }" name="surface">
+          <FormItem>
+            <FormLabel>Surface</FormLabel>
+            <FormControl>
+              <DualRangeSlider
+                v-model="optionValues.surfaceValue"
+                :label="(value) => `${value} m²`"
+                :min="9"
+                :max="100"
+                :step="1"
+                :defaultValue="[9, 100]"
+              />
+            </FormControl>
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ componentField }" name="rooms">
+          <FormItem>
+            <FormLabel>Nombre de pièce(s)</FormLabel>
+            <FormControl>
+              <DualRangeSlider
+                v-model="optionValues.roomValue"
+                :label="roomValueFct"
+                :min="1"
+                :max="6"
+                :step="1"
+                :defaultValue="[1, 6]"
+              />
+            </FormControl>
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ componentField }" name="furnished">
+          <FormItem>
+            <FormLabel>Meublé</FormLabel>
+            <Select
+              v-model="optionValues.furnishedValue"
               :options="furnishedDropdownOptions"
-              :currentValue="optionValues.furnishedValue"
-              @onSelect="optionValues.furnishedValue = $event.value"
             >
-            </Dropdown>
-          </span>
-        </div>
-        <div v-if="city !== 'all'" class="row">
-          <span class="label">Localisation</span>
-          <span>
-            <MultiDropdown
-              class="dropdown"
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in furnishedDropdownOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormItem>
+        </FormField>
+
+        <FormField
+          v-if="city !== 'all'"
+          v-slot="{ componentField }"
+          name="districts"
+        >
+          <FormItem>
+            <FormLabel>Localisation</FormLabel>
+            <Select
+              v-model="optionValues.districtValues"
+              :options="furnishedDropdownOptions"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup
+                  :key="group.groupBy"
+                  v-for="group in districtDropdownOptions"
+                >
+                  <SelectLabel>{{ group.groupBy }}</SelectLabel>
+                  <SelectItem
+                    :key="value"
+                    v-for="{ label, value } in group.options"
+                    :value="value"
+                  >
+                    {{ label }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <!-- <MultiSelect
+              v-model="optionValues.districtValues"
               :options="districtDropdownOptions"
-              :currentValues="optionValues.districtValues"
-              @onSelect="districtValuesChanged($event)"
-            >
-            </MultiDropdown>
-          </span>
-        </div>
-        <div class="row">
-          <span class="label">Particulier</span>
-          <span>
-            <Dropdown
-              class="dropdown"
+              @update:modelValue="districtValuesChanged"
+            /> -->
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ componentField }" name="particulier">
+          <FormItem>
+            <FormLabel>Particulier</FormLabel>
+            <Select
+              v-model="optionValues.isParticulierValue"
               :options="particulierDropdownOptions"
-              :currentValue="optionValues.isParticulierValue"
-              @onSelect="optionValues.isParticulierValue = $event.value"
             >
-            </Dropdown>
-          </span>
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in particulierDropdownOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormItem>
+        </FormField>
+
+        <div class="flex justify-between mt-4">
+          <Button type="button" variant="outline" @click="onReset">
+            Réinitialiser
+          </Button>
+          <Button type="submit">Appliquer</Button>
         </div>
-        <div class="row actions-btn">
-          <button class="reset-btn" @click="onReset">Réinitialiser</button>
-          <button class="submit-btn" @click="onSubmit">Go</button>
-        </div>
-      </div>
-    </transition>
-  </div>
+      </form>
+    </DropdownMenuContent>
+  </DropdownMenu>
 </template>
 
 <script>
+import { domain } from "@/helper/config";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
-import Slider from "@vueform/slider";
+import { Button } from "@/shadcn/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shadcn/ui/dropdown-menu";
+import { DualRangeSlider } from "@/shadcn/ui/dual-range-slider";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shadcn/ui/form";
+// import { MultiSelect } from "@/shadcn/ui/multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
+import { Slider } from "@/shadcn/ui/slider";
+
 import Dropdown from "@/shared/Dropdown.vue";
 import MultiDropdown from "@/shared/MultiDropdown.vue";
-import { domain } from "@/helper/config";
+// import Slider from "@vueform/slider";
 import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
 
 import "@vueform/slider/themes/default.css";
@@ -113,7 +190,7 @@ export default defineComponent({
       type: Number,
     },
   },
-  beforeUnmount: function() {
+  beforeUnmount: function () {
     this.controller.abort();
   },
   components: {
@@ -122,6 +199,26 @@ export default defineComponent({
     Slider,
     Dropdown,
     MultiDropdown,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    FormControl,
+    FormDescription,
+    DualRangeSlider,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Button,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    // MultiSelect,
   },
   setup(props) {
     const { options, city } = toRefs(props);
@@ -143,11 +240,23 @@ export default defineComponent({
           }
         })
         .then((res) => {
-          districtDropdownOptions.value = res.map((district) => ({
-            groupBy: district.groupBy,
-            value: district.value,
-            label: district.label,
-          }));
+          const groupedOptions = res.reduce((acc, district) => {
+            if (!acc[district.groupBy]) {
+              acc[district.groupBy] = [];
+            }
+            acc[district.groupBy].push({
+              value: district.value,
+              label: district.label,
+            });
+            return acc;
+          }, {});
+          // districtDropdownOptions.value = groupedOptions;
+          districtDropdownOptions.value = Object.keys(groupedOptions).map(
+            (groupBy) => ({
+              groupBy,
+              options: groupedOptions[groupBy],
+            })
+          );
         })
         .catch((err) => {
           console.error(err);
@@ -213,15 +322,15 @@ export default defineComponent({
     };
   },
   methods: {
-    onOpen: function() {
+    onOpen: function () {
       this.isOpen = !this.isOpen;
       this.$emit("onDropFilterOpeningChanged", this.isOpen);
     },
-    onReset: function() {
+    onReset: function () {
       this.isOpen = false;
       this.$emit("onReset");
     },
-    onSubmit: function() {
+    onSubmit: function () {
       this.isOpen = false;
       this.$emit("onSubmit", {
         districtValues: this.optionValues.districtValues,
@@ -231,18 +340,19 @@ export default defineComponent({
         isParticulierValue: this.optionValues.isParticulierValue,
       });
     },
-    roomValueFct: function(value) {
+    roomValueFct: function (value) {
       return `${value} pièce${value > 1 ? "s" : ""}`;
     },
-    districtValuesChanged: function(opts) {
+    districtValuesChanged: function (opts) {
       if (opts.length < 2) {
         const opt = opts[0];
         if (
           this.optionValues.districtValues.some((value) => value === opt.value)
         ) {
-          this.optionValues.districtValues = this.optionValues.districtValues.filter(
-            (value) => value !== opt.value
-          );
+          this.optionValues.districtValues =
+            this.optionValues.districtValues.filter(
+              (value) => value !== opt.value
+            );
         } else {
           this.optionValues.districtValues = [
             ...this.optionValues.districtValues,
@@ -257,9 +367,10 @@ export default defineComponent({
             )
           )
         ) {
-          this.optionValues.districtValues = this.optionValues.districtValues.filter(
-            (value) => !opts.map((o) => o.value).includes(value)
-          );
+          this.optionValues.districtValues =
+            this.optionValues.districtValues.filter(
+              (value) => !opts.map((o) => o.value).includes(value)
+            );
         } else {
           this.optionValues.districtValues = [
             ...this.optionValues.districtValues,
@@ -521,5 +632,9 @@ export default defineComponent({
   .option-list > .row > span:last-child {
     width: 100%;
   }
+}
+
+.badge-count {
+  @apply absolute -top-2 -left-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm font-medium text-black;
 }
 </style>

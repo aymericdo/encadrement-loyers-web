@@ -14,7 +14,12 @@
             @verify="onCaptchaVerified"
             @expire="onCaptchaExpired"
           />
-          <bounce-loader class="spinner" :loading="status === 'submitting'" color="#fdcd56" :size="'120px'"></bounce-loader>
+          <bounce-loader
+            class="spinner"
+            :loading="status === 'submitting'"
+            color="#fdcd56"
+            :size="'120px'"
+          ></bounce-loader>
         </div>
 
         <div class="welcome-section" v-if="welcomeData">
@@ -23,7 +28,12 @@
           <div class="row">
             <div class="welcome">
               <div v-if="!isWelcomeTextLoaded" class="welcome-spinner">
-                <bounce-loader class="spinner" :loading="!isWelcomeTextLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
+                <bounce-loader
+                  class="spinner"
+                  :loading="!isWelcomeTextLoaded"
+                  color="#fdcd56"
+                  :size="'60px'"
+                ></bounce-loader>
               </div>
               <template v-if="isWelcomeTextLoaded">
                 <div>
@@ -53,9 +63,7 @@
                   </span>
                   <span>, il y a</span>
                   <span class="yellow">
-                    &nbsp;{{
-                      welcomeData.isIllegalPercentageUnderPivot
-                    }}%&nbsp;
+                    &nbsp;{{ welcomeData.isIllegalPercentageUnderPivot }}%&nbsp;
                   </span>
                   <span>d'annonces non conformes.</span>
                 </div>
@@ -63,11 +71,22 @@
             </div>
 
             <div class="city-dropdown">
-              <Dropdown
-                :options="cityDropdownOptions"
-                :currentValue="city"
-                @onSelect="changeCity($event)"
-              ></Dropdown>
+              <Select v-model="city" @update:model-value="changeCity">
+                <SelectTrigger>
+                  <SelectValue placeholder="Choisir une ville..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      v-for="{ label, value } in cityDropdownOptions"
+                      :value="value"
+                      :key="value"
+                    >
+                      {{ label }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div class="row">
@@ -124,7 +143,14 @@
             </div>
           </div>
 
-          <div class="stats-section -large" v-if="city !== 'all' && cityDropdownOptions.find((value) => value.value === city)?.multipleCities">
+          <div
+            class="stats-section -large"
+            v-if="
+              city !== 'all' &&
+              cityDropdownOptions.find((value) => value.value === city)
+                ?.multipleCities
+            "
+          >
             <Graph
               :id="'chloropleth-cities-map'"
               :date="getDatesFromValues"
@@ -186,21 +212,28 @@
 </template>
 
 <script>
-import { ref, watchEffect, onMounted } from "vue";
-import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
-import { useRoute } from "vue-router";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
-import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import Dropdown from "@/shared/Dropdown.vue";
-import Dropfilters from "@/shared/Dropfilters.vue";
-import Graph from "@/shared/Graph.vue";
-import Slider from "@vueform/slider";
 import { domain } from "@/helper/config";
+import StrokeIcon from "@/icons/StrokeIcon.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
+import Dropfilters from "@/shared/Dropfilters.vue";
+import FixedButton from "@/shared/FixedButton.vue";
+import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
+import Graph from "@/shared/Graph.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
+import Slider from "@vueform/slider";
+import { onMounted, ref, watchEffect } from "vue";
+import { useRoute } from "vue-router";
+import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 
-import { kebabize, camelize } from "../tools/kebabier";
+import { camelize, kebabize } from "../tools/kebabier";
 
 import "@vueform/slider/themes/default.css";
 
@@ -213,17 +246,22 @@ export default {
     Page2Wrapper,
     StrokeIcon,
     FixedButton,
-    Dropdown,
     Dropfilters,
     Graph,
     Slider,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
   },
-  mounted: function() {
+  mounted: function () {
     this.isMounted = true;
     this.needCaptcha();
     this.setDateValueStr(this.dateValue);
   },
-  beforeUnmount: function() {
+  beforeUnmount: function () {
     this.controller.abort();
   },
   computed: {
@@ -287,36 +325,41 @@ export default {
 
     const fetchCities = async () => {
       try {
-        const rawResult = await fetch(`${domain}cities/list`)
-        const res = await rawResult.json()
-        if (res.message === "token expired") throw res
+        const rawResult = await fetch(`${domain}cities/list`);
+        const res = await rawResult.json();
+        if (res.message === "token expired") throw res;
 
-        cityDropdownOptions.value = Object.keys(res).reduce((prev, city, index) => {
-          if (index === 0) {
+        cityDropdownOptions.value = Object.keys(res).reduce(
+          (prev, city, index) => {
+            if (index === 0) {
+              prev.push({
+                value: "all",
+                label: "Tout",
+              });
+            }
+
+            if (prev.some((value) => value.value === res[city].mainCity)) {
+              return prev.map((data) => {
+                return data.value === res[city].mainCity
+                  ? {
+                      ...data,
+                      multipleCities: true,
+                    }
+                  : {
+                      ...data,
+                    };
+              });
+            }
+
             prev.push({
-              value: "all",
-              label: "Tout",
-            })
-          }
-
-          if (prev.some((value) => value.value === res[city].mainCity)) {
-            return prev.map((data) => {
-              return (data.value === res[city].mainCity) ? {
-                ...data,
-                multipleCities: true,
-              } : {
-                ...data,
-              }
-            })
-          }
-
-          prev.push({
-            value: res[city].mainCity,
-            label: res[city].displayName.mainCity,
-            multipleCities: false,
-          })
-          return prev
-        }, []);
+              value: res[city].mainCity,
+              label: res[city].displayName.mainCity,
+              multipleCities: false,
+            });
+            return prev;
+          },
+          []
+        );
       } catch (err) {
         console.error(err);
       }
@@ -348,9 +391,9 @@ export default {
     };
   },
   watch: {
-    "$route.params.city": function(value) {
+    "$route.params.city": function (value) {
       this.city = value && camelize(value);
-      this.changeFilters()
+      this.changeFilters();
       this.onFetchWelcome(null);
       this.isWelcomeTextLoaded = false;
     },
@@ -373,7 +416,7 @@ export default {
 
       return responseBody.message || JSON.stringify(responseBody);
     },
-    needCaptcha: function() {
+    needCaptcha: function () {
       this.status = "submitting";
       fetch(`${domain}stats/need-captcha`, {
         signal: this.controller.signal,
@@ -398,7 +441,7 @@ export default {
           this.status = "error";
         });
     },
-    onFetchWelcome: function(recaptchaToken) {
+    onFetchWelcome: function (recaptchaToken) {
       fetch(
         `${domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
         {
@@ -423,12 +466,12 @@ export default {
           this.status = "error";
         });
     },
-    onCaptchaVerified: function(recaptchaToken) {
+    onCaptchaVerified: function (recaptchaToken) {
       this.status = "submitting";
       this.$refs.vueRecaptcha.reset();
       this.onFetchWelcome(recaptchaToken);
     },
-    onCaptchaExpired: function() {
+    onCaptchaExpired: function () {
       this.status = "";
       this.$refs.vueRecaptcha.reset();
     },
@@ -446,23 +489,23 @@ export default {
         this.legalPercentageOptions = { ...this.initialLegalPercentageOptions };
       }
     },
-    leave: function() {
+    leave: function () {
       setTimeout(() => {
         this.$router.push({ path: "/" });
       }, 400);
     },
-    unmount: function() {
+    unmount: function () {
       this.isMounted = false;
     },
-    getDateFromValue: function(value) {
+    getDateFromValue: function (value) {
       const copy = new Date(Number(this.realStartDate));
       copy.setDate(this.realStartDate.getDate() + value);
       return copy;
     },
-    dateValueFct: function(value) {
+    dateValueFct: function (value) {
       return this.getDateFromValue(value).toLocaleDateString();
     },
-    getDateValueStr: function(dateValue) {
+    getDateValueStr: function (dateValue) {
       const date = [
         this.getDateFromValue(dateValue[0]),
         this.getDateFromValue(dateValue[1]),
@@ -478,7 +521,7 @@ export default {
 
       return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
     },
-    setDateValueStr: function(dateValue) {
+    setDateValueStr: function (dateValue) {
       this.dateValueStr = this.getDateValueStr(dateValue);
     },
   },
