@@ -16,6 +16,7 @@
     "@sentry/vue": "^8.37.1",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vueform/slider": "^1.0.3",
+    "autoprefixer": "^10.4.20",
     "swiper": "^6.5.0",
     "vega": "^5.20.2",
     "vega-embed": "^6.17.0",
