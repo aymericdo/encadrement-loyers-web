@@ -18,6 +18,8 @@
     "@vueform/slider": "^1.0.3",
     "@vue/cli-service": "~5.0.8",
     "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-plugin-router": "~5.0.8",
     "core-js": "^3.4.8",
     "swiper": "^6.5.0",
     "vega": "^5.20.2",
@@ -29,8 +31,6 @@
     "vue-spinner": "^1.0.4"
   },
   "devDependencies": {
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-plugin-router": "~5.0.8",
     "@vue/compiler-sfc": "^3.2.37",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^7.0.0-alpha.0",
