@@ -21,6 +21,7 @@
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-plugin-router": "~5.0.8",
     "core-js": "^3.4.8",
+    "eslint-plugin-vue": "^7.0.0-alpha.0",
     "swiper": "^6.5.0",
     "vega": "^5.20.2",
     "vega-embed": "^6.17.0",
@@ -33,7 +34,6 @@
   "devDependencies": {
     "@vue/compiler-sfc": "^3.2.37",
     "eslint": "^8.22.0",
-    "eslint-plugin-vue": "^7.0.0-alpha.0",
     "sass": "^1.32.8",
     "sass-loader": "^8.0.0"
   },
