@@ -62,17 +62,17 @@
                   <div v-if="infoVisible" class="info-section">Si vous ne connaissez pas votre loyer hors charges, vous pouvez enlever 10% à votre loyer total.</div> 
                 </span>
                 <span>
-                  <Input
+                  <ClassicInput
                     class="dropdown"
+                    :type="'number'"
                     :placeholder="'Entre ton loyer'"
-                    :options="priceValueDropdownOptions"
-                    :currentValue="optionValues.priceValue"
-                    :textTyped="optionValues.priceTyped"
-                    @onTyping="handleSearchingPrice"
-                    @onSelect="handleSelectPrice"
-                    @onClose="handleClosePrice"
+                    :min="0"
+                    :max="10000"
+                    :currentValue="+optionValues.priceValue"
+                    @onTyping="handleSelectPrice"
+                    :suffix="'€'"
                   >
-                  </Input>
+                  </ClassicInput>
                 </span>
               </div>
               <div class="row">
@@ -255,6 +255,7 @@
 import { ref, onMounted } from "vue";
 import Dropdown from "@/shared/Dropdown.vue";
 import Input from "@/shared/Input.vue";
+import ClassicInput from "@/shared/ClassicInput.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
@@ -280,14 +281,12 @@ const displayMoreInfo = ref(false);
 
 const districtDropdownOptions = ref([]);
 const addressDropdownOptions = ref([]);
-const priceValueDropdownOptions = ref([]);
 const simulationResults = ref(null);
 const isLegal = ref(null);
 const prevCity = ref(null);
 const simulationResultsLoading = ref(false);
 
 let searchingAddressTimeoutRef = null
-let searchingPriceTimeoutRef = null
 let searchingCityTimeoutRef = null
 let simulationTimeoutRef = null;
 
@@ -305,7 +304,6 @@ const initialOptionValues = {
   isHouseValue: 0,
   cityTyped: "",
   addressTyped: "",
-  priceTyped: "",
   districtValue: "",
   cityValue: citySelected.value,
 };
@@ -350,25 +348,6 @@ const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
       label: `${val}m²`,
     }
   });
-
-const setPriceValueDropdownOptions = () => {
-  priceValueDropdownOptions.value = [...Array((8000 - 100) / 1 + 1).keys()]
-    .reduce((prev, x) => {
-      const val = x * 1 + 100;
-
-      const currentPriceTyped = optionValues.value.priceTyped?.toLowerCase();
-      if (!currentPriceTyped?.length || val.toString().includes(currentPriceTyped.replace(/\D/g, "").toString())) {
-        prev.push({
-          value: val,
-          label: `${val}€`,
-        });
-      }
-
-      return prev;
-    }, [])
-}
-
-setPriceValueDropdownOptions();
 
 const setDateBuiltRangeDropdownOptions = (datesRange) => {
   dateBuiltValueDropdownOptions.value = datesRange.reduce((prev, dates, index) => {
@@ -445,13 +424,13 @@ const setDefaultOptionValues = () => {
   }
 }
 
-const setOptionValues = (newOptionValues) => {
+const setOptionValues = async (newOptionValues) => {
   optionValues.value = {
     ...optionValues.value,
     ...newOptionValues,
   }
 
-  fetchSimulatorResult()
+  await fetchSimulatorResult()
 }
 
 const setDefaultValues = async () => {
@@ -527,17 +506,12 @@ const cityChanged = async (newMainCity) => {
 }
 
 const handleSelectPrice = (price) => {
-  optionValues.value.priceValue = price.value;
+  console.log(price)
+  optionValues.value.priceValue = price;
   if (!price) return;
-
-  initialOptionValues.priceValue = price.value;
-  setOptionValues({ priceValue: price.value })
-}
-
-const handleClosePrice = () => {
-  optionValues.value.priceTyped = '';
-  setPriceValueDropdownOptions();
-  optionValues.value.priceValue = initialOptionValues.priceValue;
+  
+  initialOptionValues.priceValue = price;
+  setOptionValues({ priceValue: price })
 }
 
 const handleCloseCity = () => {
@@ -634,19 +608,6 @@ const onLeaving = () => {
   setTimeout(() => {
     router.push({ path: "/" });
   }, 400);
-}
-
-const handleSearchingPrice = async (price) => {
-  if (searchingPriceTimeoutRef !== null) clearTimeout(searchingPriceTimeoutRef)
-
-  optionValues.value = {
-    ...optionValues.value,
-    priceTyped: price,
-  }
-  
-  searchingPriceTimeoutRef = setTimeout(async () => {
-    setPriceValueDropdownOptions();
-  }, 200);
 }
 
 const handleSearchingCity = async (city) => {
