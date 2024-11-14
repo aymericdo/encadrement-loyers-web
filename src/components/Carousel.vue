@@ -1,7 +1,8 @@
 <template>
   <div class="carousel">
-    <Swiper
+    <swiper
       class="swiper"
+      :modules="modules"
       :slides-per-view="1"
       :space-between="50"
       :loop="true"
@@ -13,16 +14,16 @@
       }"
       @slideChange="onSlideChange"
     >
-      <SwiperSlide
-        class="slide"
-        v-for="(item, index) in items"
-        v-bind:key="index"
+      <swiper-slide
+        v-for="image in images"
+        :class="'slide'"
+        v-bind:key="image"
       >
         <img
-          :src="require(`@/assets/images/capture${index + 1}.jpg`)"
+          :src="image"
           :alt="`screenshot de l'extension`"
         />
-      </SwiperSlide>
+      </swiper-slide>
 
       <div class="button-group">
         <span class="carousel-title">
@@ -38,44 +39,36 @@
           </button>
         </div>
       </div>
-    </Swiper>
+    </swiper>
   </div>
 </template>
 
-<script>
-import SwiperCore, { Navigation, Pagination } from "swiper";
+<script setup>
+import { ref } from 'vue';
+import { Navigation, Pagination } from 'swiper/modules';
 
-import { Swiper, SwiperSlide } from "swiper/vue";
-import "swiper/swiper.scss";
-import "swiper/components/navigation/navigation.scss";
-import "swiper/components/pagination/pagination.scss";
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-SwiperCore.use([Navigation, Pagination]);
+const modules = [Navigation, Pagination];
 
-export default {
-  name: "Carousel",
-  components: {
-    Swiper,
-    SwiperSlide,
-  },
-  data: function() {
-    return {
-      currentSlide: 0,
-      items: [
-        "non conforme",
-        "non conforme",
-        "conforme",
-        "conforme",
-        "conforme",
-        "conforme",
-      ],
-    };
-  },
-  methods: {
-    onSlideChange(event) {
-      this.currentSlide = event.realIndex;
-    },
-  },
+const glob = import.meta.glob('@/assets/images/capture*.jpg', { eager: true })
+const images = Object.entries(glob).map(([, value]) => value.default)
+
+const currentSlide = ref(0);
+const items = [
+  "non conforme",
+  "non conforme",
+  "conforme",
+  "conforme",
+  "conforme",
+  "conforme",
+];
+
+const onSlideChange = (event) => {
+  currentSlide.value = event.realIndex;
 };
 </script>
 
