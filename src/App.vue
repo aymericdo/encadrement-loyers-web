@@ -54,8 +54,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/scss/garnett.scss";
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/garnett.scss" as *;
+@use "@/assets/scss/variables.scss" as *;
 
 #app-component {
   font-family: "Garnett", "Avenir", Helvetica, Arial, sans-serif;

@@ -43,7 +43,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 .footer {
   flex-direction: column;

@@ -10,7 +10,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 .section {
   max-width: 100%;
   display: flex;

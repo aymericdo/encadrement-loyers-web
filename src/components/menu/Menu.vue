@@ -62,7 +62,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 .menu {
   width: 0;

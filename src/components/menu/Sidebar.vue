@@ -43,7 +43,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 200ms ease;
