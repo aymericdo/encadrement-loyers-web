@@ -208,7 +208,7 @@
   import Page2Wrapper from "@/shared/Page2Wrapper.vue";
   import SectionTitle from "@/shared/SectionTitle.vue";
   import Slider from "@vueform/slider";
-  import { onMounted, onUnmounted, onBeforeUnmount, ref, watchEffect, watch } from "vue";
+  import { onMounted, onBeforeUnmount, ref, watchEffect, watch } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 
@@ -289,6 +289,10 @@
     }
   );
 
+  const unmount = () => {
+    isMounted.value = false;
+  };
+
   const fetchCities = async () => {
     try {
       const rawResult = await fetch(`${domain}cities/list`);
@@ -336,10 +340,6 @@
     isMounted.value = true;
     setDateValueStr(dateValue.value);
     onFetchWelcome();
-  });
-
-  onUnmounted(() => {
-    isMounted.value = false;
   });
 
   onBeforeUnmount(() => {
