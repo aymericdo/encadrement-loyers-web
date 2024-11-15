@@ -2,27 +2,7 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper class="page2-wrapper" v-if="isMounted">
-        <div v-if="status !== 'ok'" class="entire-page-centered">
-          <GoogleRecaptcha
-            siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
-            class="recaptcha"
-            ref="vueRecaptcha"
-            v-if="status !== 'submitting'"
-            size="normal"
-            theme="light"
-            :tabindex="0"
-            @verify="onCaptchaVerified"
-            @expire="onCaptchaExpired"
-          />
-          <bounce-loader
-            class="spinner"
-            :loading="status === 'submitting'"
-            color="#fdcd56"
-            :size="'120px'"
-          ></bounce-loader>
-        </div>
-
-        <div class="welcome-section" v-if="welcomeData">
+        <div class="welcome-section">
           <SectionTitle class="title">Stats</SectionTitle>
 
           <div class="row">
@@ -101,13 +81,13 @@
           </div>
         </div>
 
-        <div class="graph-list" v-if="status === 'ok'">
+        <div class="graph-list">
           <div class="stats-section -large">
             <Graph
               ref="isLegalVariation"
               :id="'is-legal-variation'"
               :city="city"
-              :date="getDatesFromValues"
+              :date="dateValueStr"
               :options="legalPercentageOptions"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
@@ -127,7 +107,7 @@
             <div class="stats-section">
               <Graph
                 :id="'chloropleth-map'"
-                :date="getDatesFromValues"
+                :date="dateValueStr"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
@@ -136,7 +116,7 @@
             <div class="stats-section">
               <Graph
                 :id="'map'"
-                :date="getDatesFromValues"
+                :date="dateValueStr"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
@@ -153,7 +133,7 @@
           >
             <Graph
               :id="'chloropleth-cities-map'"
-              :date="getDatesFromValues"
+              :date="dateValueStr"
               :city="city"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
@@ -162,7 +142,7 @@
           <div class="stats-section -large">
             <Graph
               :id="'is-legal-per-surface'"
-              :date="getDatesFromValues"
+              :date="dateValueStr"
               :city="city"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
@@ -171,7 +151,7 @@
           <div v-if="city === 'all'" class="stats-section -large">
             <Graph
               :id="'price-variation'"
-              :date="getDatesFromValues"
+              :date="dateValueStr"
               :city="city"
               @errorOutput="getErrorMessage($event)"
             ></Graph>
@@ -181,7 +161,7 @@
             <div class="stats-section">
               <Graph
                 :id="'price-difference'"
-                :date="getDatesFromValues"
+                :date="dateValueStr"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
@@ -190,7 +170,7 @@
             <div class="stats-section">
               <Graph
                 :id="'price-variation'"
-                :date="getDatesFromValues"
+                :date="dateValueStr"
                 :city="city"
                 @errorOutput="getErrorMessage($event)"
               ></Graph>
@@ -211,317 +191,247 @@
   </div>
 </template>
 
-<script>
-import { domain } from "@/helper/config";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shadcn/ui/select";
-import Dropfilters from "@/shared/Dropfilters.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
-import Graph from "@/shared/Graph.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
-import Slider from "@vueform/slider";
-import { onMounted, ref, watchEffect } from "vue";
-import { useRoute } from "vue-router";
-import BounceLoader from "vue-spinner/src/BounceLoader.vue";
-
-import { camelize, kebabize } from "../tools/kebabier";
-
-import "@vueform/slider/themes/default.css";
-
-export default {
-  name: "Stats",
-  components: {
-    BounceLoader,
-    GoogleRecaptcha,
-    SectionTitle,
-    Page2Wrapper,
-    StrokeIcon,
-    FixedButton,
-    Dropfilters,
-    Graph,
-    Slider,
+<script setup>
+  import { domain } from "@/helper/config";
+  import StrokeIcon from "@/icons/StrokeIcon.vue";
+  import {
     Select,
     SelectContent,
     SelectGroup,
     SelectItem,
     SelectTrigger,
     SelectValue,
-  },
-  mounted: function () {
-    this.isMounted = true;
-    this.needCaptcha();
-    this.setDateValueStr(this.dateValue);
-  },
-  beforeUnmount: function () {
-    this.controller.abort();
-  },
-  computed: {
-    getDatesFromValues() {
-      return this.dateValueStr;
-    },
-  },
-  setup() {
-    const route = useRoute();
-    const showCloseButton = ref(true);
-    const isLegalVariation = ref(null);
-    const legalPercentageFiltersCount = ref(0);
-    const cityDropdownOptions = ref([]);
+  } from "@/shadcn/ui/select";
+  import Dropfilters from "@/shared/Dropfilters.vue";
+  import FixedButton from "@/shared/FixedButton.vue";
+  import Graph from "@/shared/Graph.vue";
+  import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+  import SectionTitle from "@/shared/SectionTitle.vue";
+  import Slider from "@vueform/slider";
+  import { onMounted, onUnmounted, onBeforeUnmount, ref, watchEffect, watch } from "vue";
+  import { useRoute, useRouter } from "vue-router";
+  import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 
-    // Date of the first ad in the db
-    const realStartDate = new Date("2019-10-22");
-    const realEndDate = new Date();
-    // Number of days between the first ad in the db and today
-    const maxDateValue = Math.round(
-      (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
-    );
-    // Number of days between the first ad in the db and 3 months before today
-    const minDateValue = Math.round(
-      (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) -
-        realStartDate) /
-        (1000 * 60 * 60 * 24)
-    );
+  import { camelize, kebabize } from "../tools/kebabier";
 
-    const initialLegalPercentageOptions = {
-      surfaceValue: [9, 100],
-      roomValue: [1, 6],
-      furnishedValue: "all",
-      districtValues: [],
-      isParticulierValue: "all",
-    };
+  import "@vueform/slider/themes/default.css";
 
-    const legalPercentageOptions = ref({
-      ...initialLegalPercentageOptions,
-    });
+  const route = useRoute();
+  const router = useRouter()
+  const showCloseButton = ref(true);
+  const isLegalVariation = ref(null);
+  const legalPercentageFiltersCount = ref(0);
+  const cityDropdownOptions = ref([]);
+  const isMounted = ref(false);
+  const city = ref(camelize(route.params.city) || "paris");
+  const serverError = ref('');
+  const welcomeData = ref(null);
+  const isWelcomeTextLoaded = ref(false);
+  const dateValueStr = ref('');
+  
+  const controller = new AbortController();
 
-    watchEffect(
-      () => {
-        if (legalPercentageOptions.value) {
-          let cpt = 0;
-          Object.keys(legalPercentageOptions.value).forEach((key) => {
-            if (
-              JSON.stringify(legalPercentageOptions.value[key]) !==
-              JSON.stringify(initialLegalPercentageOptions[key])
-            ) {
-              cpt += 1;
-            }
-          });
+  // Date of the first ad in the db
+  const realStartDate = new Date("2019-10-22");
+  const realEndDate = new Date();
+  // Number of days between the first ad in the db and today
+  const maxDateValue = Math.round(
+    (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
+  );
+  // Number of days between the first ad in the db and 3 months before today
+  const minDateValue = Math.round(
+    (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) -
+      realStartDate) /
+      (1000 * 60 * 60 * 24)
+  );
+  const dateValue = ref([minDateValue, maxDateValue]);
 
-          legalPercentageFiltersCount.value = cpt;
-        }
-      },
-      {
-        flush: "post",
+  const initialLegalPercentageOptions = {
+    surfaceValue: [9, 100],
+    roomValue: [1, 6],
+    furnishedValue: "all",
+    districtValues: [],
+    isParticulierValue: "all",
+  };
+
+  const legalPercentageOptions = ref({
+    ...initialLegalPercentageOptions,
+  });
+
+  watch(route, (newValue, oldValue) => {
+    if (newValue.params.city !== oldValue.oldValue) {
+      const value = newValue.params.city
+      city.value = value && camelize(value);
+      changeFilters();
+      onFetchWelcome(null);
+      isWelcomeTextLoaded.value = false;
+    }
+  });
+
+  watchEffect(
+    () => {
+      if (legalPercentageOptions.value) {
+        let cpt = 0;
+        Object.keys(legalPercentageOptions.value).forEach((key) => {
+          if (
+            JSON.stringify(legalPercentageOptions.value[key]) !==
+            JSON.stringify(initialLegalPercentageOptions[key])
+          ) {
+            cpt += 1;
+          }
+        });
+
+        legalPercentageFiltersCount.value = cpt;
       }
-    );
+    },
+    {
+      flush: "post",
+    }
+  );
 
-    const fetchCities = async () => {
-      try {
-        const rawResult = await fetch(`${domain}cities/list`);
-        const res = await rawResult.json();
-        if (res.message === "token expired") throw res;
+  const fetchCities = async () => {
+    try {
+      const rawResult = await fetch(`${domain}cities/list`);
+      const res = await rawResult.json();
+      if (res.message === "token expired") throw res;
 
-        cityDropdownOptions.value = Object.keys(res).reduce(
-          (prev, city, index) => {
-            if (index === 0) {
-              prev.push({
-                value: "all",
-                label: "Tout",
-              });
-            }
-
-            if (prev.some((value) => value.value === res[city].mainCity)) {
-              return prev.map((data) => {
-                return data.value === res[city].mainCity
-                  ? {
-                      ...data,
-                      multipleCities: true,
-                    }
-                  : {
-                      ...data,
-                    };
-              });
-            }
-
+      cityDropdownOptions.value = Object.keys(res).reduce(
+        (prev, city, index) => {
+          if (index === 0) {
             prev.push({
-              value: res[city].mainCity,
-              label: res[city].displayName.mainCity,
-              multipleCities: false,
+              value: "all",
+              label: "Tout",
             });
-            return prev;
-          },
-          []
-        );
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    onMounted(async () => {
-      await fetchCities();
-    });
-
-    return {
-      showCloseButton,
-      isLegalVariation,
-      controller: new AbortController(),
-      isMounted: ref(false),
-      city: ref(camelize(route.params.city) || "paris"),
-      status: ref(""),
-      sucessfulServerResponse: ref(""),
-      serverError: ref(""),
-      welcomeData: ref(null),
-      isWelcomeTextLoaded: ref(false),
-      cityDropdownOptions,
-      initialLegalPercentageOptions,
-      legalPercentageOptions,
-      legalPercentageFiltersCount,
-      realStartDate,
-      dateValue: ref([minDateValue, maxDateValue]),
-      maxDateValue,
-      dateValueStr: ref(""),
-    };
-  },
-  watch: {
-    "$route.params.city": function (value) {
-      this.city = value && camelize(value);
-      this.changeFilters();
-      this.onFetchWelcome(null);
-      this.isWelcomeTextLoaded = false;
-    },
-  },
-  methods: {
-    // helper to get a displayable message to the user
-    getErrorMessage(err) {
-      let responseBody;
-      responseBody = err.response;
-      if (!responseBody) {
-        responseBody = err;
-      } else {
-        responseBody = err.response.data || responseBody;
-      }
-
-      if (err.message === "token expired") {
-        this.status = "";
-        this.welcomeData = null;
-      }
-
-      return responseBody.message || JSON.stringify(responseBody);
-    },
-    needCaptcha: function () {
-      this.status = "submitting";
-      fetch(`${domain}stats/need-captcha`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
           }
-        })
-        .then((res) => {
-          if (res) {
-            this.status = "";
-          } else {
-            this.onFetchWelcome(null);
+
+          if (prev.some((value) => value.value === res[city].mainCity)) {
+            return prev.map((data) => {
+              return data.value === res[city].mainCity
+                ? {
+                    ...data,
+                    multipleCities: true,
+                  }
+                : {
+                    ...data,
+                  };
+            });
           }
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchWelcome: function (recaptchaToken) {
-      fetch(
-        `${domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
-        {
-          signal: this.controller.signal,
+
+          prev.push({
+            value: res[city].mainCity,
+            label: res[city].displayName.mainCity,
+            multipleCities: false,
+          });
+          return prev;
+        },
+        []
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  onMounted(async () => {
+    await fetchCities();
+    isMounted.value = true;
+    setDateValueStr(dateValue.value);
+    onFetchWelcome();
+  });
+
+  onUnmounted(() => {
+    isMounted.value = false;
+  });
+
+  onBeforeUnmount(() => {
+    controller.abort();
+  });
+
+  const getErrorMessage = (err) => {
+    let responseBody;
+    responseBody = err.response;
+    if (!responseBody) {
+      responseBody = err;
+    } else {
+      responseBody = err.response.data || responseBody;
+    }
+
+    if (err.message === "token expired") {
+      welcomeData.value = null;
+    }
+
+    return responseBody.message || JSON.stringify(responseBody);
+  }
+
+  const onFetchWelcome = () => {
+    fetch(
+      `${domain}stats/welcome/${city.value}`,
+      {
+        signal: controller.signal,
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "token expired") {
+          throw res;
+        } else {
+          return res;
         }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          this.status = "ok";
-          this.welcomeData = res;
-          this.isWelcomeTextLoaded = true;
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onCaptchaVerified: function (recaptchaToken) {
-      this.status = "submitting";
-      this.$refs.vueRecaptcha.reset();
-      this.onFetchWelcome(recaptchaToken);
-    },
-    onCaptchaExpired: function () {
-      this.status = "";
-      this.$refs.vueRecaptcha.reset();
-    },
-    changeCity(opt) {
-      this.$router.push({ path: kebabize(opt) });
-    },
-    changeFilters(opt = null) {
-      if (opt) {
-        this.legalPercentageOptions = { ...opt };
-      } else {
-        this.legalPercentageOptions = { ...this.initialLegalPercentageOptions };
-      }
-    },
-    leave: function () {
-      setTimeout(() => {
-        this.$router.push({ path: "/" });
-      }, 400);
-    },
-    unmount: function () {
-      this.isMounted = false;
-    },
-    getDateFromValue: function (value) {
-      const copy = new Date(Number(this.realStartDate));
-      copy.setDate(this.realStartDate.getDate() + value);
-      return copy;
-    },
-    dateValueFct: function (value) {
-      return this.getDateFromValue(value).toLocaleDateString();
-    },
-    getDateValueStr: function (dateValue) {
-      const date = [
-        this.getDateFromValue(dateValue[0]),
-        this.getDateFromValue(dateValue[1]),
-      ];
+      })
+      .then((res) => {
+        welcomeData.value = res;
+        isWelcomeTextLoaded.value = true;
+      })
+      .catch((err) => {
+        serverError.value = getErrorMessage(err);
+      });
+  }
 
-      const currDate1 = date[0].getDate();
-      const currMonth1 = date[0].getMonth() + 1; //Months are zero based
-      const currYear1 = date[0].getFullYear();
+  const changeCity = (opt) => {
+    router.push({ path: kebabize(opt) });
+  }
 
-      const currDate2 = date[1].getDate();
-      const currMonth2 = date[1].getMonth() + 1; //Months are zero based
-      const currYear2 = date[1].getFullYear();
+  const changeFilters = (opt = null) => {
+    legalPercentageOptions.value = (opt) ?
+      { ...opt } :
+      { ...initialLegalPercentageOptions };
+  }
 
-      return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
-    },
-    setDateValueStr: function (dateValue) {
-      this.dateValueStr = this.getDateValueStr(dateValue);
-    },
-  },
-};
+  const leave = () => {
+    setTimeout(() => {
+      router.push({ path: "/" });
+    }, 400);
+  }
+
+  const getDateFromValue = (value) => {
+    const copy = new Date(Number(realStartDate));
+    copy.setDate(realStartDate.getDate() + value);
+    return copy;
+  }
+
+  const dateValueFct = (value) => {
+    return getDateFromValue(value).toLocaleDateString();
+  }
+
+  const getDateValueStr = (dateValue) => {
+    const date = [
+      getDateFromValue(dateValue[0]),
+      getDateFromValue(dateValue[1]),
+    ];
+
+    const currDate1 = date[0].getDate();
+    const currMonth1 = date[0].getMonth() + 1; // Months are zero based
+    const currYear1 = date[0].getFullYear();
+
+    const currDate2 = date[1].getDate();
+    const currMonth2 = date[1].getMonth() + 1; // Months are zero based
+    const currYear2 = date[1].getFullYear();
+
+    return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
+  }
+
+  const setDateValueStr = (dateValue) => {
+    dateValueStr.value = getDateValueStr(dateValue);
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -538,24 +448,10 @@ export default {
   z-index: 2;
 }
 
-.recaptcha {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .page2-wrapper {
   padding: 24px;
   box-sizing: border-box;
   align-items: baseline;
-}
-
-.entire-page-centered {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  width: 100%;
 }
 
 .slide-fade-enter-from,
@@ -571,12 +467,6 @@ export default {
 
 .graph-list {
   width: 100%;
-}
-
-.entire-page-centered > .spinner {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .title {

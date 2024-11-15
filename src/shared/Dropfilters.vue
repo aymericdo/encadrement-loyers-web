@@ -137,255 +137,228 @@
   </DropdownMenu>
 </template>
 
-<script>
-import { domain } from "@/helper/config";
-import ArrowIcon from "@/icons/ArrowIcon.vue";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import { Button } from "@/shadcn/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shadcn/ui/dropdown-menu";
-import { DualRangeSlider } from "@/shadcn/ui/dual-range-slider";
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/shadcn/ui/form";
-// import { MultiSelect } from "@/shadcn/ui/multi-select";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shadcn/ui/select";
-import { Slider } from "@/shadcn/ui/slider";
-
-import Dropdown from "@/shared/Dropdown.vue";
-import MultiDropdown from "@/shared/MultiDropdown.vue";
-// import Slider from "@vueform/slider";
-import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
-
-import "@vueform/slider/themes/default.css";
-
-export default defineComponent({
-  name: "Dropfilters",
-  props: {
-    city: {
-      type: String,
-      required: true,
-    },
-    options: {
-      type: Object,
-    },
-    filtersCount: {
-      type: Number,
-    },
-  },
-  beforeUnmount: function () {
-    this.controller.abort();
-  },
-  components: {
-    ArrowIcon,
-    StrokeIcon,
-    Slider,
-    Dropdown,
-    MultiDropdown,
+<script setup>
+  import { domain } from "@/helper/config";
+  import ArrowIcon from "@/icons/ArrowIcon.vue";
+  import StrokeIcon from "@/icons/StrokeIcon.vue";
+  import { Button } from "@/shadcn/ui/button";
+  import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+  } from "@/shadcn/ui/dropdown-menu";
+  import { DualRangeSlider } from "@/shadcn/ui/dual-range-slider";
+  import {
     FormControl,
     FormDescription,
-    DualRangeSlider,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-    Button,
+  } from "@/shadcn/ui/form";
+  // import { MultiSelect } from "@/shadcn/ui/multi-select";
+  import {
     Select,
+    SelectGroup,
     SelectContent,
+    SelectLabel,
     SelectItem,
     SelectTrigger,
     SelectValue,
-    // MultiSelect,
-  },
-  setup(props) {
-    const { options, city } = toRefs(props);
+  } from "@/shadcn/ui/select";
+  import { Slider } from "@/shadcn/ui/slider";
 
-    const controller = new AbortController();
-    const districtDropdownOptions = ref([]);
-    const optionValues = ref({ ...options.value });
+  import Dropdown from "@/shared/Dropdown.vue";
+  import MultiDropdown from "@/shared/MultiDropdown.vue";
+  // import Slider from "@vueform/slider";
+  import { defineEmits, onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
 
-    const fetchDistricts = () => {
-      fetch(`${domain}districts/list/${city.value}`, {
-        signal: controller.signal,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          const groupedOptions = res.reduce((acc, district) => {
-            if (!acc[district.groupBy]) {
-              acc[district.groupBy] = [];
-            }
-            acc[district.groupBy].push({
-              value: district.value,
-              label: district.label,
-            });
-            return acc;
-          }, {});
-          // districtDropdownOptions.value = groupedOptions;
-          districtDropdownOptions.value = Object.keys(groupedOptions).map(
-            (groupBy) => ({
-              groupBy,
-              options: groupedOptions[groupBy],
-            })
-          );
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    };
+  import "@vueform/slider/themes/default.css";
+  
+  const props = defineProps({
+    city: String,
+    options: Object,
+    filtersCount: Number,
+  });
 
-    watch(
-      () => props.city,
-      (newValue) => {
-        if (newValue !== "all") {
-          fetchDistricts();
+  const emit = defineEmits([
+    'onDropFilterOpeningChanged',
+    'onReset',
+    'onSubmit',
+  ])
+
+  const {
+    city,
+    options,
+    filtersCount,
+  } = toRefs(props);
+
+  const controller = new AbortController();
+  const districtDropdownOptions = ref([]);
+  const optionValues = ref({ ...options.value });
+  const isOpen = ref(false);
+  const furnishedDropdownOptions = ref([
+    {
+      value: "all",
+      label: "Tout",
+    },
+    {
+      value: "furnished",
+      label: "Meublé",
+    },
+    {
+      value: "nonFurnished",
+      label: "Non meublé",
+    },
+  ]);
+
+  const particulierDropdownOptions = ref([
+    {
+      value: "all",
+      label: "Tout",
+    },
+    {
+      value: "true",
+      label: "Particulier",
+    },
+    {
+      value: "false",
+      label: "Agence",
+    },
+  ]);
+
+  const fetchDistricts = () => {
+    fetch(`${domain}districts/list/${city.value}`, {
+      signal: controller.signal,
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "token expired") {
+          throw res;
+        } else {
+          return res;
         }
-        options.value.districtValues = [];
-      }
-    );
+      })
+      .then((res) => {
+        const groupedOptions = res.reduce((acc, district) => {
+          if (!acc[district.groupBy]) {
+            acc[district.groupBy] = [];
+          }
+          acc[district.groupBy].push({
+            value: district.value,
+            label: district.label,
+          });
+          return acc;
+        }, {});
+        // districtDropdownOptions.value = groupedOptions;
+        districtDropdownOptions.value = Object.keys(groupedOptions).map(
+          (groupBy) => ({
+            groupBy,
+            options: groupedOptions[groupBy],
+          })
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
-    watch(
-      () => props.options,
-      (newValue) => {
-        optionValues.value = newValue;
-      }
-    );
-
-    onMounted(() => {
-      if (city.value !== "all") {
+  watch(
+    () => props.city,
+    (newValue) => {
+      if (newValue !== "all") {
         fetchDistricts();
       }
-    });
+      options.value.districtValues = [];
+    }
+  );
 
-    return {
-      controller,
-      isOpen: ref(false),
-      optionValues,
-      furnishedDropdownOptions: [
-        {
-          value: "all",
-          label: "Tout",
-        },
-        {
-          value: "furnished",
-          label: "Meublé",
-        },
-        {
-          value: "nonFurnished",
-          label: "Non meublé",
-        },
-      ],
-      particulierDropdownOptions: [
-        {
-          value: "all",
-          label: "Tout",
-        },
-        {
-          value: "true",
-          label: "Particulier",
-        },
-        {
-          value: "false",
-          label: "Agence",
-        },
-      ],
-      districtDropdownOptions,
-    };
-  },
-  methods: {
-    onOpen: function () {
-      this.isOpen = !this.isOpen;
-      this.$emit("onDropFilterOpeningChanged", this.isOpen);
-    },
-    onReset: function () {
-      this.isOpen = false;
-      this.$emit("onReset");
-    },
-    onSubmit: function () {
-      this.isOpen = false;
-      this.$emit("onSubmit", {
-        districtValues: this.optionValues.districtValues,
-        furnishedValue: this.optionValues.furnishedValue,
-        surfaceValue: this.optionValues.surfaceValue,
-        roomValue: this.optionValues.roomValue,
-        isParticulierValue: this.optionValues.isParticulierValue,
-      });
-    },
-    roomValueFct: function (value) {
-      return `${value} pièce${value > 1 ? "s" : ""}`;
-    },
-    districtValuesChanged: function (opts) {
-      if (opts.length < 2) {
-        const opt = opts[0];
-        if (
-          this.optionValues.districtValues.some((value) => value === opt.value)
-        ) {
-          this.optionValues.districtValues =
-            this.optionValues.districtValues.filter(
-              (value) => value !== opt.value
-            );
-        } else {
-          this.optionValues.districtValues = [
-            ...this.optionValues.districtValues,
-            opt.value,
-          ];
-        }
+  watch(
+    () => props.options,
+    (newValue) => {
+      optionValues.value = newValue;
+    }
+  );
+
+  onMounted(() => {
+    if (city.value !== "all") {
+      fetchDistricts();
+    }
+  });
+
+  onBeforeUnmount(() => {
+    controller.abort()
+  });
+
+  const onOpen = () => {
+    isOpen.value = true;
+    emit("onDropFilterOpeningChanged", isOpen.value);
+  }
+
+  const onReset = () => {
+    isOpen.value = false;
+    emit("onReset");
+  }
+
+  const onSubmit = () => {
+    isOpen.value = false;
+    emit("onSubmit", {
+      districtValues: optionValues.value.districtValues,
+      furnishedValue: optionValues.value.furnishedValue,
+      surfaceValue: optionValues.value.surfaceValue,
+      roomValue: optionValues.value.roomValue,
+      isParticulierValue: optionValues.value.isParticulierValue,
+    });
+  }
+
+  const roomValueFct = (value) => {
+    return `${value} pièce${value > 1 ? "s" : ""}`;
+  }
+
+  const districtValuesChanged = (opts) => {
+    if (opts.length < 2) {
+      const opt = opts[0];
+      if (
+        optionValues.value.districtValues.some((value) => value === opt.value)
+      ) {
+        optionValues.value.districtValues =
+          optionValues.value.districtValues.filter(
+            (value) => value !== opt.value
+          );
       } else {
-        if (
-          opts.every((opt) =>
-            this.optionValues.districtValues.some(
-              (value) => value === opt.value
-            )
-          )
-        ) {
-          this.optionValues.districtValues =
-            this.optionValues.districtValues.filter(
-              (value) => !opts.map((o) => o.value).includes(value)
-            );
-        } else {
-          this.optionValues.districtValues = [
-            ...this.optionValues.districtValues,
-            ...opts
-              .map((o) => o.value)
-              .filter(
-                (v) =>
-                  !this.optionValues.districtValues.some((value) => value === v)
-              ),
-          ];
-        }
+        optionValues.value.districtValues = [
+          ...optionValues.value.districtValues,
+          opt.value,
+        ];
       }
-    },
-  },
-});
+    } else {
+      if (
+        opts.every((opt) =>
+          optionValues.value.districtValues.some(
+            (value) => value === opt.value
+          )
+        )
+      ) {
+        optionValues.value.districtValues =
+          optionValues.value.districtValues.filter(
+            (value) => !opts.map((o) => o.value).includes(value)
+          );
+      } else {
+        optionValues.value.districtValues = [
+          ...optionValues.value.districtValues,
+          ...opts
+            .map((o) => o.value)
+            .filter(
+              (v) =>
+                !optionValues.value.districtValues.some((value) => value === v)
+            ),
+        ];
+      }
+    }
+  }
 </script>
 
 <style lang="scss" scoped>

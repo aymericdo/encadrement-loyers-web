@@ -21,8 +21,6 @@ const VEGA_COMMON = {
     theme: "dark",
   },
   actions: false,
-  // not working héhé
-  // width: 'container',
 };
 
 export default {
