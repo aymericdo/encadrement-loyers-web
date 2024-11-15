@@ -476,11 +476,7 @@ export default {
       this.$refs.vueRecaptcha.reset();
     },
     changeCity(opt) {
-      if (this.city === opt.value) {
-        return;
-      }
-
-      this.$router.push({ path: kebabize(opt.value) });
+      this.$router.push({ path: kebabize(opt) });
     },
     changeFilters(opt = null) {
       if (opt) {
