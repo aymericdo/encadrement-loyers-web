@@ -45,117 +45,118 @@
   </div>
 </template>
 
-<script>
-import ArrowIcon from "@/icons/ArrowIcon.vue";
-import {
-  defineComponent,
-  ref,
-  watch,
-  watchEffect,
-  onMounted,
-  onUnmounted,
-} from "vue";
-export default defineComponent({
-  name: "Dropdown",
-  props: ["options", "currentValue"],
-  setup(props) {
-    const optionListRef = ref(null);
-    const isOpen = ref(false);
-    const currentValueDisplay = ref("");
-    const groupByList = ref({});
-    const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
-    let scrollIntoViewTimeout = null;
+<script setup>
+  import ArrowIcon from "@/icons/ArrowIcon.vue";
+  import {
+    ref,
+    toRefs,
+    watch,
+    watchEffect,
+    onMounted,
+    onUnmounted,
+  } from "vue";
 
-    const setGroupByList = (currentOptions) => {
-      groupByList.value = currentOptions.reduce((prev, currentValue) => {
-        if (prev[currentValue.groupBy]) {
-          prev[currentValue.groupBy].push(currentValue);
-        } else {
-          prev[currentValue.groupBy] = [currentValue];
-        }
-        return prev;
-      }, {});
-    };
+  const props = defineProps({
+    currentValue: String,
+    options: Object,
+  });
 
-    watch(
-      () => props.options,
-      (newValue) => {
-        isGroupBy.value = newValue.length && !!newValue[0].groupBy;
-        if (isGroupBy.value) {
-          setGroupByList(newValue);
-        }
+  const emit = defineEmits([
+    'onSelect',
+  ])
+
+  const {
+    city,
+    options,
+    filtersCount,
+  } = toRefs(props);
+
+  const optionListRef = ref(null);
+  const isOpen = ref(false);
+  const currentValueDisplay = ref("");
+  const groupByList = ref({});
+  const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
+  let scrollIntoViewTimeout = null;
+
+  const setGroupByList = (currentOptions) => {
+    groupByList.value = currentOptions.reduce((prev, currentValue) => {
+      if (prev[currentValue.groupBy]) {
+        prev[currentValue.groupBy].push(currentValue);
+      } else {
+        prev[currentValue.groupBy] = [currentValue];
       }
-    );
+      return prev;
+    }, {});
+  };
 
-    watchEffect(
-      () => {
-        if (!isOpen.value) {
-          clearTimeout(scrollIntoViewTimeout);
-        }
-
-        if (optionListRef.value && isOpen) {
-          scrollIntoViewTimeout = setTimeout(() => {
-            if (optionListRef.value.querySelector('.option.-selected')) {
-              optionListRef.value.querySelector('.option.-selected').scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              })
-            } else {
-              optionListRef.value.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
-            }
-          }, 250);
-        }
-      },
-      {
-        flush: "post",
-      }
-    );
-
-    onMounted(() => {
+  watch(
+    () => props.options,
+    (newValue) => {
+      isGroupBy.value = newValue.length && !!newValue[0].groupBy;
       if (isGroupBy.value) {
-        setGroupByList(props.options);
+        setGroupByList(newValue);
       }
+    }
+  );
 
-      currentValueDisplay.value = props.options.find(
-        (opt) => opt.value === props.currentValue
-      )?.label;
-    });
-
-    onUnmounted(() => {
-      clearTimeout(scrollIntoViewTimeout);
-    });
-
-    return {
-      optionListRef,
-      isOpen,
-      currentValueDisplay,
-      isGroupBy,
-      groupByList,
-    };
-  },
-  watch: {
-    currentValue: function(newValue) {
-      this.currentValueDisplay = this.options.find(
+  watch(
+    () => props.currentValue,
+    (newValue) => {
+      currentValueDisplay.value = options.value.find(
         (opt) => opt.value === newValue
       )?.label;
     },
-  },
-  methods: {
-    onOpen: function() {
-      this.isOpen = !this.isOpen;
+  );
+
+  watchEffect(
+    () => {
+      if (!isOpen.value) {
+        clearTimeout(scrollIntoViewTimeout);
+      }
+
+      if (optionListRef.value && isOpen) {
+        scrollIntoViewTimeout = setTimeout(() => {
+          if (optionListRef.value.querySelector('.option.-selected')) {
+            optionListRef.value.querySelector('.option.-selected').scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            })
+          } else {
+            optionListRef.value.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        }, 250);
+      }
     },
-    onSelect: function(opt) {
-      this.isOpen = false;
-      this.$emit("onSelect", opt);
-    },
-  },
-  components: {
-    ArrowIcon,
-  },
-});
+    {
+      flush: "post",
+    }
+  );
+
+  const onOpen = () => {
+    isOpen.value = !isOpen.value;
+  }
+  
+  const onSelect = (opt) => {
+    isOpen.value = false;
+    emit("onSelect", opt);
+  }
+
+  onMounted(() => {
+    if (isGroupBy.value) {
+      setGroupByList(props.options);
+    }
+
+    currentValueDisplay.value = props.options.find(
+      (opt) => opt.value === props.currentValue
+    )?.label;
+  });
+
+  onUnmounted(() => {
+    clearTimeout(scrollIntoViewTimeout);
+  });
 </script>
 
 <style lang="scss" scoped>

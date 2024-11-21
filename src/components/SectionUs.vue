@@ -50,19 +50,10 @@
   </Section>
 </template>
 
-<script>
+<script setup>
 import Section from "@/shared/Section.vue";
 import SectionRightPart from "@/shared/SectionRightPart.vue";
 import SectionTitle from "@/shared/SectionTitle.vue";
-
-export default {
-  name: "SectionHow",
-  components: {
-    Section,
-    SectionRightPart,
-    SectionTitle,
-  },
-};
 </script>
 
 <style lang="scss" scoped>

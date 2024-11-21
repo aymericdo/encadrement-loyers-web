@@ -123,8 +123,10 @@ export default {
   pointer-events: auto;
 
   &.inactive {
+    height: 100vh;
     filter: blur(4px);
     pointer-events: none;
+    overflow-y: hidden;
   }
 }
 </style>

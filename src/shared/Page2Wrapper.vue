@@ -4,10 +4,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Page2Wrapper",
-};
+<script setup>
 </script>
 
 <style lang="scss" scoped>
