@@ -32,18 +32,24 @@
   </svg>
 </template>
 
-<script>
-export default {
-  name: "FacebookIcon",
-  props: {
+<script setup>
+  import {
+    toRefs,
+  } from "vue";
+
+  const props = defineProps({
     width: {
       type: [Number, String],
-      default: 18
+      default: 18,
     },
     height: {
       type: [Number, String],
-      default: 18
+      default: 18,
     },
-  }
-};
+  });
+
+  const {
+    width,
+    height,
+  } = toRefs(props);
 </script>

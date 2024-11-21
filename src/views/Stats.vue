@@ -8,12 +8,12 @@
           <div class="row">
             <div class="welcome">
               <div v-if="!isWelcomeTextLoaded" class="welcome-spinner">
-                <bounce-loader
+                <BounceLoader
                   class="spinner"
                   :loading="!isWelcomeTextLoaded"
                   color="#fdcd56"
                   :size="'60px'"
-                ></bounce-loader>
+                ></BounceLoader>
               </div>
               <template v-if="isWelcomeTextLoaded">
                 <div>
@@ -182,10 +182,10 @@
     <div
       class="fixed-btn"
       :class="{ 'show-on-mobile': showCloseButton }"
-      @click="unmount"
+      @click="isMounted = false"
     >
       <FixedButton>
-        <StrokeIcon :width="'20px'" :height="'20px'" />
+        <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
   </div>
@@ -288,10 +288,6 @@
       flush: "post",
     }
   );
-
-  const unmount = () => {
-    isMounted.value = false;
-  };
 
   const fetchCities = async () => {
     try {

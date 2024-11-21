@@ -325,9 +325,9 @@
         </p>
       </Page2Wrapper>
     </transition>
-    <div @click="unmount">
+    <div @click="isMounted = false">
       <FixedButton>
-        <StrokeIcon :width="'20px'" :height="'20px'" />
+        <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
   </div>
@@ -357,9 +357,6 @@ export default {
       setTimeout(() => {
         this.$router.push({ path: "/" });
       }, 400);
-    },
-    unmount: function() {
-      this.isMounted = false;
     },
   },
 };

@@ -66,9 +66,8 @@
   ])
 
   const {
-    city,
+    currentValue,
     options,
-    filtersCount,
   } = toRefs(props);
 
   const optionListRef = ref(null);
@@ -90,7 +89,7 @@
   };
 
   watch(
-    () => props.options,
+    () => options.value,
     (newValue) => {
       isGroupBy.value = newValue.length && !!newValue[0].groupBy;
       if (isGroupBy.value) {
@@ -100,7 +99,7 @@
   );
 
   watch(
-    () => props.currentValue,
+    () => currentValue.value,
     (newValue) => {
       currentValueDisplay.value = options.value.find(
         (opt) => opt.value === newValue

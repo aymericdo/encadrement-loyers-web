@@ -65,17 +65,13 @@
     </div>
   </Section>
 </template>
-<script>
-import Section from "@/shared/Section.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
 
-export default {
-  name: "SectionBlog",
-  components: {
-    Section,
-    SectionTitle,
-  },
-  mounted: function() {
+<script setup>
+  import { onMounted } from 'vue';
+  import Section from "@/shared/Section.vue";
+  import SectionTitle from "@/shared/SectionTitle.vue";
+
+  onMounted(() => {
     const twitterScript = document.createElement("script");
     twitterScript.setAttribute("async", true);
 
@@ -84,8 +80,7 @@ export default {
       "https://platform.twitter.com/widgets.js"
     );
     document.head.appendChild(twitterScript);
-  },
-};
+  });
 </script>
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;

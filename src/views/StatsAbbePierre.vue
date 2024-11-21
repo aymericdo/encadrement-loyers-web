@@ -6,25 +6,11 @@
           >Observatoire de l'encadrement des loyers à
           {{ city.charAt(0).toUpperCase() + city.slice(1) }}</SectionTitle
         >
-        <div v-if="status !== 'ok'" class="entire-page-centered">
-          <GoogleRecaptcha
-            class="recaptcha"
-            v-if="status !== 'submitting'"
-            ref="recaptcha"
-            size="normal"
-            theme="light"
-            :tabindex="0"
-            @verify="onCaptchaVerified"
-            @expire="onCaptchaExpired"
-            siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
-          />
-          <bounce-loader class="spinner" :loading="status === 'submitting'" color="#fdcd56" :size="'120px'"></bounce-loader>
-        </div>
-        <div class="graph-list" v-if="status === 'ok'">
+        <div class="graph-list">
           <div class="row -paragraph">
             <p>Pour le premier baromètre de l’Observatoire de l’Encadrement des Loyers à Paris, la Fondation Abbé Pierre nous a contactés pour leur fournir les données que nous avons collectées.</p>
             <p>Ce fut avec plaisir que nous leur avons partagé nos informations, ainsi que les graphiques que nous pouvons vous présenter ci-dessous.</p>
-            <p>En complément, <a href="https://encadrement-loyers.fr/stats"> cette page</a> résume plus globalement l'état de l'encadrement sur plusieurs des villes où il est en application.</p>
+            <p>En complément, <router-link to="/stats">cette page</router-link> résume plus globalement l'état de l'encadrement sur plusieurs des villes où il est en application.</p>
           </div>
 
           <div class="row">
@@ -42,7 +28,7 @@
           </div>
 
           <div class="row">
-            <span>(sur les {{ monthsNb }} derniers mois)</span>
+            <span>sur les {{ monthsNb }} derniers mois</span>
           </div>
 
           <Section class="stats-section -large -first">
@@ -72,218 +58,139 @@
         </div>
       </Page2Wrapper>
     </transition>
-    <div @click="unmount">
+    <div @click="isMounted = false">
       <FixedButton>
-        <StrokeIcon :width="'20px'" :height="'20px'" />
+        <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
   </div>
 </template>
 
-<script>
-import { ref, watchEffect } from "vue";
-import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
-import SectionTitle from "@/shared/SectionTitle.vue";
-import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import Section from "@/shared/Section.vue";
-import Graph from "@/shared/Graph.vue";
-import { domain } from "@/helper/config";
-import Slider from "@vueform/slider";
+<script setup>
+  import { ref, watchEffect, onBeforeUnmount, onMounted } from "vue";
+  import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
+  import SectionTitle from "@/shared/SectionTitle.vue";
+  import StrokeIcon from "@/icons/StrokeIcon.vue";
+  import FixedButton from "@/shared/FixedButton.vue";
+  import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+  import Section from "@/shared/Section.vue";
+  import Graph from "@/shared/Graph.vue";
+  import { domain } from "@/helper/config";
+  import Slider from "@vueform/slider";
 
-import "@vueform/slider/themes/default.css";
+  import "@vueform/slider/themes/default.css";
 
-export default {
-  name: "StatsAbbePierre",
-  components: {
-    BounceLoader,
-    StrokeIcon,
-    SectionTitle,
-    FixedButton,
-    GoogleRecaptcha,
-    Page2Wrapper,
-    Graph,
-    Section,
-    Slider,
-  },
-  mounted: function() {
-    this.isMounted = true;
-    this.needCaptcha();
-  },
-  beforeUnmount: function() {
-    this.controller.abort();
-  },
-  setup() {
-    const monthValue = ref(2);
+  const monthValue = ref(2);
+  const isMounted = ref(false);
+  const city = ref('paris');
+  const serverError = ref('');
+  const welcomeData = ref(null);
 
-    function getMonthNbValue(value) {
-      switch (value) {
-        case 1:
-          return 3;
-        case 2:
-          return 6;
-        case 3:
-          return 12;
-      }
+  const controller = new AbortController();
+
+  onMounted(() => {
+    isMounted.value = true;
+  });
+
+  onBeforeUnmount(() => {
+    controller.abort();
+  });
+
+  // helper to get a displayable message to the user
+  const getErrorMessage = (err) => {
+    let responseBody;
+    responseBody = err.response;
+    if (!responseBody) {
+      responseBody = err;
+    } else {
+      responseBody = err.response.data || responseBody;
     }
 
-    function formatDate(monthValue) {
-      const today = new Date();
-      const realEndDate = new Date();
-      const realStartDate = new Date(
-        realEndDate.setMonth(realEndDate.getMonth() - monthValue)
-      );
-
-      const currDate1 = realStartDate.getDate();
-      const currMonth1 = realStartDate.getMonth() + 1; // Months are zero based
-      const currYear1 = realStartDate.getFullYear();
-
-      const currDate2 = today.getDate();
-      const currMonth2 = today.getMonth() + 1; // Months are zero based
-      const currYear2 = today.getFullYear();
-
-      return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
+    if (err.message === "token expired") {
+      welcomeData.value = null;
     }
 
-    function monthFormatValueFct(monthsNb) {
-      return `${monthsNb} mois`;
-    }
+    return responseBody.message || JSON.stringify(responseBody);
+  }
 
-    const monthsNb = ref(getMonthNbValue(monthValue.value));
-    const monthFormatValue = ref(monthFormatValueFct(monthsNb.value));
-    const datesValues = ref(formatDate(monthsNb.value));
-
-    watchEffect(
-      () => {
-        if (monthValue.value) {
-          monthsNb.value = getMonthNbValue(monthValue.value);
-          monthFormatValue.value = monthFormatValueFct(monthsNb.value);
-          datesValues.value = formatDate(monthsNb.value);
-        }
-      },
+  const onFetchWelcome = () => {
+    fetch(
+      `${domain}stats/welcome/${city.value}`,
       {
-        flush: "post",
+        signal: controller.signal,
       }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "token expired") {
+          throw res;
+        } else {
+          return res;
+        }
+      })
+      .then((res) => {
+        welcomeData.value = res;
+      })
+      .catch((err) => {
+        serverError.value = getErrorMessage(err);
+      });
+  }
+
+  const leave = () => {
+    setTimeout(() => {
+      $router.value.push({ path: "/" });
+    }, 400);
+  }
+
+  const getMonthNbValue = (value) => {
+    switch (value) {
+      case 1:
+        return 3;
+      case 2:
+        return 6;
+      case 3:
+        return 12;
+    }
+  }
+
+  const monthFormatValueFct = (monthsNb) => {
+    return `${getMonthNbValue(monthsNb)} mois`;
+  }
+
+  function formatDate(monthValue) {
+    const today = new Date();
+    const realEndDate = new Date();
+    const realStartDate = new Date(
+      realEndDate.setMonth(realEndDate.getMonth() - monthValue)
     );
 
-    return {
-      controller: new AbortController(),
-      isLegalVariationLoaded: ref(false),
-      isPriceVariationLoaded: ref(false),
-      isLegalPerRenterLoaded: ref(false),
-      isMounted: ref(false),
-      city: "paris",
-      sucessfulServerResponse: ref(""),
-      serverError: ref(""),
-      status: ref(""),
-      welcomeData: ref(null),
-      monthsNb,
-      monthValue,
-      monthFormatValue,
-      datesValues,
-    };
-  },
-  methods: {
-    // helper to get a displayable message to the user
-    getErrorMessage(err) {
-      let responseBody;
-      responseBody = err.response;
-      if (!responseBody) {
-        responseBody = err;
-      } else {
-        responseBody = err.response.data || responseBody;
-      }
+    const currDate1 = realStartDate.getDate();
+    const currMonth1 = realStartDate.getMonth() + 1; // Months are zero based
+    const currYear1 = realStartDate.getFullYear();
 
-      if (err.message === "token expired") {
-        this.status = "";
-        this.welcomeData = null;
-      }
+    const currDate2 = today.getDate();
+    const currMonth2 = today.getMonth() + 1; // Months are zero based
+    const currYear2 = today.getFullYear();
 
-      return responseBody.message || JSON.stringify(responseBody);
-    },
-    needCaptcha: function() {
-      this.status = "submitting";
-      fetch(`${domain}stats/need-captcha`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          if (res) {
-            this.status = "";
-          } else {
-            this.onFetchWelcome(null);
-          }
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchWelcome: function(recaptchaToken) {
-      fetch(
-        `${domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
-        {
-          signal: this.controller.signal,
-        }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          this.status = "ok";
-          this.welcomeData = res;
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onCaptchaVerified: function(recaptchaToken) {
-      this.status = "submitting";
-      this.$refs.recaptcha.reset();
-      this.onFetchWelcome(recaptchaToken);
-    },
-    onCaptchaExpired: function() {
-      this.status = "";
-      this.$refs.recaptcha.reset();
-    },
-    leave: function() {
-      setTimeout(() => {
-        this.$router.push({ path: "/" });
-      }, 400);
-    },
-    unmount: function() {
-      this.isMounted = false;
-    },
-    getMonthNbValue(value) {
-      switch (value) {
-        case 1:
-          return 3;
-        case 2:
-          return 6;
-        case 3:
-          return 12;
+    return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
+  }
+
+  const monthsNb = ref(getMonthNbValue(monthValue.value));
+  const monthFormatValue = ref(monthFormatValueFct(monthsNb.value));
+  const datesValues = ref(formatDate(monthsNb.value));
+
+  watchEffect(
+    () => {
+      if (monthValue.value) {
+        monthsNb.value = getMonthNbValue(monthValue.value);
+        monthFormatValue.value = monthFormatValueFct(monthsNb.value);
+        datesValues.value = formatDate(monthsNb.value);
       }
     },
-    monthFormatValueFct: function(monthsNb) {
-      return `${this.getMonthNbValue(monthsNb)} mois`;
-    },
-  },
-};
+    {
+      flush: "post",
+    }
+  );
 </script>
 
 <style lang="scss" scoped>
@@ -319,12 +226,6 @@ export default {
   background: $deepblack;
   border-color: $yellow;
   line-height: 16px;
-}
-
-.recaptcha {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .entire-page-centered {

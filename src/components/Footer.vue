@@ -26,21 +26,11 @@
     </p>
   </Section>
 </template>
-<script>
-import Section from "@/shared/Section.vue";
-import FacebookIcon from "@/icons/FacebookIcon.vue";
-import InstagramIcon from "@/icons/InstagramIcon.vue";
-import TwitterIcon from "@/icons/TwitterIcon.vue";
-
-export default {
-  name: "Footer",
-  components: {
-    Section,
-    TwitterIcon,
-    InstagramIcon,
-    FacebookIcon
-  }
-};
+<script setup>
+  import Section from "@/shared/Section.vue";
+  import FacebookIcon from "@/icons/FacebookIcon.vue";
+  import InstagramIcon from "@/icons/InstagramIcon.vue";
+  import TwitterIcon from "@/icons/TwitterIcon.vue";
 </script>
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;

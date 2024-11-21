@@ -7,22 +7,15 @@
     </div>	
     <router-link to="/">	
       <FixedButton>	
-        <StrokeIcon :width="'20px'" :height="'20px'" />	
+        <StrokeIcon :width="'18px'" :height="'18px'" />	
       </FixedButton>	
     </router-link>	
   </div>
 </template>	
 
-<script>	
+<script setup>	
 import StrokeIcon from "@/icons/StrokeIcon.vue";	
 import FixedButton from "@/shared/FixedButton.vue";	
-export default {	
-  name: "Video",	
-  components: {	
-    FixedButton,	
-    StrokeIcon	
-  }	
-};	
 </script>	
 
 <style lang="scss" scoped>	

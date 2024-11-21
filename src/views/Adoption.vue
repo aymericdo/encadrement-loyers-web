@@ -2,29 +2,18 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <GoogleRecaptcha
-          class="recaptcha"
-          v-if="status !== 'ok' && status !== 'submitting'"
-          ref="recaptcha"
-          size="normal"
-          theme="light"
-          :tabindex="0"
-          @verify="onCaptchaVerified"
-          @expire="onCaptchaExpired"
-          siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
-        />
-        <bounce-loader class="spinner" :loading="status !== 'ok' && status === 'submitting'" color="#fdcd56" :size="'120px'"></bounce-loader>
+        <BounceLoader class="spinner" :loading="status !== 'ok' && status === 'submitting'" color="#fdcd56" :size="'120px'"></BounceLoader>
         <Section class="stats-section">
           <div v-if="status === 'ok'" class="container" ref="adoptionContainer">
-            <bounce-loader class="spinner" :loading="!isAdoptionLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
+            <BounceLoader class="spinner" :loading="!isAdoptionLoaded" color="#fdcd56" :size="'60px'"></BounceLoader>
             <div v-if="isAdoptionLoaded" id="adoption"></div>
           </div>
         </Section>
       </Page2Wrapper>
     </transition>
-    <div @click="unmount">
+    <div @click="isMounted = false">
       <FixedButton>
-        <StrokeIcon :width="'20px'" :height="'20px'" />
+        <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
   </div>
@@ -33,7 +22,6 @@
 <script>
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import vegaEmbed from "vega-embed";
-import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
@@ -44,7 +32,6 @@ export default {
   name: "Adoption",
   components: {
     BounceLoader,
-    GoogleRecaptcha,
     StrokeIcon,
     FixedButton,
     Page2Wrapper,
@@ -52,6 +39,7 @@ export default {
   },
   mounted: function() {
     this.isMounted = true;
+    this.onFetchAdoption();
   },
   data() {
     return {
@@ -74,8 +62,8 @@ export default {
       }
       return responseBody.message || JSON.stringify(responseBody);
     },
-    onFetchAdoption: function(recaptchaToken) {
-      fetch(`${domain}stats/adoption?recaptchaToken=${recaptchaToken}`)
+    onFetchAdoption: function() {
+      fetch(`${domain}stats/adoption`)
         .then((res) => res.json())
         .then((spec) => {
           this.status = "ok";
@@ -92,22 +80,10 @@ export default {
           this.status = "error";
         });
     },
-    onCaptchaVerified: function(recaptchaToken) {
-      this.status = "submitting";
-      this.$refs.recaptcha.reset();
-      this.onFetchAdoption(recaptchaToken);
-    },
-    onCaptchaExpired: function() {
-      this.status = "";
-      this.$refs.recaptcha.reset();
-    },
     leave: function() {
       setTimeout(() => {
         this.$router.push({ path: "/" });
       }, 400);
-    },
-    unmount: function() {
-      this.isMounted = false;
     },
   },
 };
@@ -125,12 +101,6 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 2;
-}
-
-.recaptcha {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .slide-fade-enter-from,

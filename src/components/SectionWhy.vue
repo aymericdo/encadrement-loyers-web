@@ -11,18 +11,10 @@
   </Section>
 </template>
 
-<script>
-import Section from "@/shared/Section.vue";
-import SectionRightPart from "@/shared/SectionRightPart.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
-export default {
-  name: "SectionWhy",
-  components: {
-    Section,
-    SectionRightPart,
-    SectionTitle,
-  },
-};
+<script setup>
+  import Section from "@/shared/Section.vue";
+  import SectionRightPart from "@/shared/SectionRightPart.vue";
+  import SectionTitle from "@/shared/SectionTitle.vue";
 </script>
 
 <style scoped></style>

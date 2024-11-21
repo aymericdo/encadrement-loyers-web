@@ -211,7 +211,7 @@
               class="row result"
             >
               <template v-if="simulationResultsLoading">
-                <bounce-loader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'"></bounce-loader>
+                <BounceLoader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'"></BounceLoader>
               </template>
               <template v-else>
                 <span>{{
@@ -245,7 +245,7 @@
     </transition>
     <div @click="handleClose">
       <FixedButton>
-        <StrokeIcon :width="'20px'" :height="'20px'" />
+        <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
   </div>
