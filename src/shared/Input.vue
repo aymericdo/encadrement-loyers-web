@@ -5,7 +5,7 @@
       <input
         class="main-input"
         :class="{ '-text-selected': currentValueDisplay }"
-        ref="myinput"
+        ref="myinputRef"
         @focus="onFocusing"
         @input="onTyping"
         type="text"
@@ -51,121 +51,123 @@
   </div>
 </template>
 
-<script>
-import ArrowIcon from "@/icons/ArrowIcon.vue";
-import { defineComponent, ref, watch, watchEffect, onMounted, onUnmounted } from "vue";
-export default defineComponent({
-  name: "Input",
-  props: ["options", "currentValue", "textTyped", "placeholder"],
-  setup(props) {
-    const optionListRef = ref(null);
-    const isOpen = ref(false);
-    const currentValueDisplay = ref("");
-    const groupByList = ref({});
-    const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
-    let scrollIntoViewTimeout = null;
+<script setup>
+  import ArrowIcon from "@/icons/ArrowIcon.vue";
+  import { ref, watch, watchEffect, onMounted, onUnmounted, toRefs } from "vue";
 
-    const setGroupByList = (currentOptions) => {
-      groupByList.value = currentOptions.reduce((prev, currentValue) => {
-        if (prev[currentValue.groupBy]) {
-          prev[currentValue.groupBy].push(currentValue);
-        } else {
-          prev[currentValue.groupBy] = [currentValue];
-        }
-        return prev;
-      }, {});
-    };
+  const props = defineProps(['currentValue', 'options', 'textTyped', 'placeholder'])
 
-    watch(
-      () => props.options,
-      (newValue) => {
-        isGroupBy.value = newValue.length && !!newValue[0].groupBy;
-        if (isGroupBy.value) {
-          setGroupByList(newValue);
-        }
+  const emits = defineEmits([
+    'onSelect',
+  ])
+
+  const {
+    currentValue,
+    options,
+    textTyped,
+    placeholder,
+  } = toRefs(props);
+
+  const myinputRef = ref(null);
+  const optionListRef = ref(null);
+  const isOpen = ref(false);
+  const currentValueDisplay = ref("");
+  const groupByList = ref({});
+  const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
+  let scrollIntoViewTimeout = null;
+
+  const setGroupByList = (currentOptions) => {
+    groupByList.value = currentOptions.reduce((prev, currentValue) => {
+      if (prev[currentValue.groupBy]) {
+        prev[currentValue.groupBy].push(currentValue);
+      } else {
+        prev[currentValue.groupBy] = [currentValue];
       }
-    );
+      return prev;
+    }, {});
+  };
 
-    watchEffect(
-      () => {
-        if (!isOpen.value) {
-          clearTimeout(scrollIntoViewTimeout);
-        }
-
-        if (optionListRef.value && isOpen) {
-          scrollIntoViewTimeout = setTimeout(() => {
-            optionListRef.value.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }, 250);
-        }
-      },
-      {
-        flush: "post",
-      }
-    );
-
-    onMounted(() => {
+  watch(
+    () => props.options,
+    (newValue) => {
+      isGroupBy.value = newValue.length && !!newValue[0].groupBy;
       if (isGroupBy.value) {
-        setGroupByList(props.options);
+        setGroupByList(newValue);
       }
+    }
+  );
 
-      currentValueDisplay.value = props.options.find(
-        (opt) => opt.value === props.currentValue
-      )?.label;
-    });
-
-    onUnmounted(() => {
-      clearTimeout(scrollIntoViewTimeout);
-    });
-
-    return {
-      optionListRef,
-      isOpen,
-      currentValueDisplay,
-      isGroupBy,
-      groupByList,
-    };
-  },
-  watch: {
-    currentValue: function(newValue) {
-      this.currentValueDisplay = this.options.find(
+  watch(
+    () => currentValue.value,
+    (newValue) => {
+      currentValueDisplay.value = options.value.find(
         (opt) => opt.value === newValue
       )?.label;
-    },
-  },
-  methods: {
-    onOpen: function(event) {
-      if (this.isOpen && event.target.className === "main-input") {
-        return;
+    }
+  );
+
+  watchEffect(
+    () => {
+      if (!isOpen.value) {
+        clearTimeout(scrollIntoViewTimeout);
       }
 
-      this.isOpen = !this.isOpen;
-
-      if (this.isOpen) {
-        this.$refs.myinput.focus();
-      } else {
-        this.$emit("onClose", "");
+      if (optionListRef.value && isOpen) {
+        scrollIntoViewTimeout = setTimeout(() => {
+          optionListRef.value.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 250);
       }
     },
-    onSelect: function(opt) {
-      this.isOpen = false;
-      this.$emit("onSelect", opt);
-    },
-    onTyping: function(opt) {
-      this.$emit("onTyping", opt.target.value);
-      this.$emit("onSelect", "");
-      this.isOpen = true;
-    },
-    onFocusing: function() {
-      this.isOpen = true;
-    },
-  },
-  components: {
-    ArrowIcon,
-  },
-});
+    {
+      flush: "post",
+    }
+  );
+
+  onMounted(() => {
+    if (isGroupBy.value) {
+      setGroupByList(props.options);
+    }
+
+    currentValueDisplay.value = options.value.find(
+      (opt) => opt.value === currentValue.value
+    )?.label;
+  });
+
+  onUnmounted(() => {
+    clearTimeout(scrollIntoViewTimeout);
+  });
+
+  const onOpen = (event) => {
+    if (isOpen.value && event.target.className === "main-input") {
+      return;
+    }
+
+    isOpen.value = !isOpen.value;
+
+    if (isOpen.value) {
+      myinputRef.value.focus();
+    } else {
+      emits("onClose", "");
+    }
+  }
+
+  const onSelect = (opt) => {
+    isOpen.value = false;
+    emits("onSelect", opt);
+  }
+
+  const onTyping = (opt) => {
+    emits("onTyping", opt.target.value);
+    emits("onSelect", "");
+    isOpen.value = true;
+  }
+
+  const onFocusing = ()  =>{
+    isOpen.value = true;
+  }
 </script>
 
 <style lang="scss" scoped>

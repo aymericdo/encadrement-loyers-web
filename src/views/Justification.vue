@@ -73,33 +73,27 @@
   </div>
 </template>
 
-<script>
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-export default {
-  name: "Justification",
-  components: {
-    FixedButton,
-    StrokeIcon,
-    Page2Wrapper,
-  },
-  mounted: function() {
-    this.isMounted = true;
-  },
-  data() {
-    return {
-      isMounted: false,
-    };
-  },
-  methods: {
-    leave: function() {
-      setTimeout(() => {
-        this.$router.push({ path: "/" });
-      }, 400);
-    },
-  },
-};
+<script setup>
+  import StrokeIcon from "@/icons/StrokeIcon.vue";
+  import FixedButton from "@/shared/FixedButton.vue";
+  import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+  import { onMounted, ref } from "vue";
+
+  import { useRouter } from "vue-router";
+
+  const router = useRouter()
+
+  const isMounted = ref(false);
+
+  onMounted(() => {
+    isMounted.value = true;
+  })
+
+  const leave = () => {
+    setTimeout(() => {
+      router.push({ path: "/" });
+    }, 400);
+  }
 </script>
 
 <style lang="scss" scoped>

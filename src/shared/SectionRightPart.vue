@@ -3,11 +3,7 @@
     <slot />
   </div>
 </template>
-<script>
-export default {
-  name: "SectionRightPart"
-};
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;

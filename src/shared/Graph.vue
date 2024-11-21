@@ -42,7 +42,7 @@
     },
   });
 
-  const emit = defineEmits([
+  const emits = defineEmits([
     'errorOutput',
   ])
 
@@ -145,7 +145,7 @@
         });
       })
       .catch((err) => {
-        emit("errorOutput", err);
+        emits("errorOutput", err);
       });
   }
 </script>

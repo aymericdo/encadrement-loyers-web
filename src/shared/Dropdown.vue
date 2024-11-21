@@ -56,12 +56,9 @@
     onUnmounted,
   } from "vue";
 
-  const props = defineProps({
-    currentValue: String,
-    options: Object,
-  });
+  const props = defineProps(['currentValue', 'options'])
 
-  const emit = defineEmits([
+  const emits = defineEmits([
     'onSelect',
   ])
 
@@ -140,7 +137,7 @@
   
   const onSelect = (opt) => {
     isOpen.value = false;
-    emit("onSelect", opt);
+    emits("onSelect", opt);
   }
 
   onMounted(() => {

@@ -1,7 +1,7 @@
 <template>
   <div class="multi-dropdown">
-    <div class="overlay" v-if="isOpen" @click="onOpen"></div>
-    <button @click="onOpen" :class="{ '-is-open': isOpen }">
+    <div class="overlay" v-if="isOpen" @click="isOpen = !isOpen;"></div>
+    <button @click="isOpen = !isOpen;" :class="{ '-is-open': isOpen }">
       <span>{{ currentValuesDisplay }}</span
       ><ArrowIcon
         class="arrow-icon"
@@ -57,121 +57,114 @@
   </div>
 </template>
 
-<script>
-import {
-  defineComponent,
-  ref,
-  watchEffect,
-  watch,
-  onMounted,
-  onUnmounted,
-} from "vue";
-import ArrowIcon from "@/icons/ArrowIcon.vue";
+<script setup>
+  import {
+    ref,
+    watchEffect,
+    watch,
+    onMounted,
+    onUnmounted,
+  } from "vue";
+  import ArrowIcon from "@/icons/ArrowIcon.vue";
 
-export default defineComponent({
-  name: "MultiDropdown",
-  props: ["options", "currentValues"],
-  setup(props) {
-    const optionListRef = ref(null);
-    const isOpen = ref(false);
-    const currentValuesDisplay = ref("");
-    const groupByList = ref({});
-    const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
+  const props = defineProps({
+    currentValues: [String],
+    options: Object,
+  });
 
-    const setGroupByList = (currentOptions) => {
-      groupByList.value = currentOptions.reduce((prev, currentValue) => {
-        if (prev[currentValue.groupBy]) {
-          prev[currentValue.groupBy].push(currentValue);
-        } else {
-          prev[currentValue.groupBy] = [currentValue];
-        }
-        return prev;
-      }, {});
-    };
+  const emits = defineEmits([
+    'onSelect',
+  ])
 
-    const setCurrentValueDisplay = (newCurrentValues) => {
-      currentValuesDisplay.value =
-        props.options
-          .filter((opt) => newCurrentValues.includes(opt.value))
-          .map((opt) => opt.label)
-          .join(", ") || "Tout";
-    };
+  const {
+    currentValues,
+    options,
+  } = toRefs(props);
 
-    watch(
-      () => props.options,
-      (newValue) => {
-        isGroupBy.value = newValue.length && !!newValue[0].groupBy;
-        if (isGroupBy.value) {
-          setGroupByList(newValue);
-        }
+  const optionListRef = ref(null);
+  const isOpen = ref(false);
+  const currentValuesDisplay = ref("");
+  const groupByList = ref({});
+  const isGroupBy = ref(props.options.length && !!props.options[0].groupBy);
+
+  const setGroupByList = (currentOptions) => {
+    groupByList.value = currentOptions.reduce((prev, currentValue) => {
+      if (prev[currentValue.groupBy]) {
+        prev[currentValue.groupBy].push(currentValue);
+      } else {
+        prev[currentValue.groupBy] = [currentValue];
       }
-    );
+      return prev;
+    }, {});
+  };
 
-    watch(
-      () => props.currentValues,
-      (newValue) => {
-        setCurrentValueDisplay(newValue);
-      }
-    );
+  const setCurrentValueDisplay = (newCurrentValues) => {
+    currentValuesDisplay.value =
+      props.options
+        .filter((opt) => newCurrentValues.includes(opt.value))
+        .map((opt) => opt.label)
+        .join(", ") || "Tout";
+  };
 
-    let scrollIntoViewTimeout = null;
-    watchEffect(
-      () => {
-        if (!isOpen.value) {
-          clearTimeout(scrollIntoViewTimeout);
-        }
-
-        if (optionListRef.value && isOpen) {
-          scrollIntoViewTimeout = setTimeout(() => {
-            if (optionListRef.value.querySelector('.option.-selected')) {
-              optionListRef.value.querySelector('.option.-selected').scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              })
-            }
-          }, 250);
-        }
-      },
-      {
-        flush: "post",
-      }
-    );
-
-    onMounted(() => {
+  watch(
+    () => props.options,
+    (newValue) => {
+      isGroupBy.value = newValue.length && !!newValue[0].groupBy;
       if (isGroupBy.value) {
-        setGroupByList(props.options);
+        setGroupByList(newValue);
+      }
+    }
+  );
+
+  watch(
+    () => props.currentValues,
+    (newValue) => {
+      setCurrentValueDisplay(newValue);
+    }
+  );
+
+  let scrollIntoViewTimeout = null;
+  watchEffect(
+    () => {
+      if (!isOpen.value) {
+        clearTimeout(scrollIntoViewTimeout);
       }
 
-      setCurrentValueDisplay(props.currentValues);
-    });
+      if (optionListRef.value && isOpen) {
+        scrollIntoViewTimeout = setTimeout(() => {
+          if (optionListRef.value.querySelector('.option.-selected')) {
+            optionListRef.value.querySelector('.option.-selected').scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            })
+          }
+        }, 250);
+      }
+    },
+    {
+      flush: "post",
+    }
+  );
 
-    onUnmounted(() => {
-      clearTimeout(scrollIntoViewTimeout);
-    });
+  onMounted(() => {
+    if (isGroupBy.value) {
+      setGroupByList(props.options);
+    }
 
-    return {
-      optionListRef,
-      isOpen,
-      currentValuesDisplay,
-      isGroupBy,
-      groupByList,
-    };
-  },
-  methods: {
-    onOpen: function() {
-      this.isOpen = !this.isOpen;
-    },
-    onSelect: function(opt) {
-      this.$emit("onSelect", [opt]);
-    },
-    onGroupBySelect: function(groupByKey) {
-      this.$emit("onSelect", this.groupByList[groupByKey]);
-    },
-  },
-  components: {
-    ArrowIcon,
-  },
-});
+    setCurrentValueDisplay(props.currentValues);
+  });
+
+  onUnmounted(() => {
+    clearTimeout(scrollIntoViewTimeout);
+  });
+
+  const onSelect = (opt) => {
+    emits('onSelect', [opt]);
+  }
+
+  const onGroupBySelect = (groupByKey) => {
+    emits('onSelect', groupByList.value[groupByKey]);
+  }
 </script>
 
 <style lang="scss" scoped>

@@ -27,7 +27,7 @@ const props = defineProps({
   suffix: String,
 });
 
-const emit = defineEmits([
+const emits = defineEmits([
   'onTyping',
 ])
 
@@ -47,7 +47,7 @@ const onTyping = (opt) => {
     opt.target.value = min.value;
   }
 
-  emit('onTyping', opt.target.value)
+  emits('onTyping', opt.target.value)
 }
 
 </script>

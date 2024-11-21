@@ -78,7 +78,12 @@
   import { domain } from "@/helper/config";
   import Slider from "@vueform/slider";
 
+  import { useRouter } from "vue-router";
+
+  
   import "@vueform/slider/themes/default.css";
+  
+  const router = useRouter();
 
   const monthValue = ref(2);
   const isMounted = ref(false);
@@ -138,7 +143,7 @@
 
   const leave = () => {
     setTimeout(() => {
-      $router.value.push({ path: "/" });
+      router.push({ path: "/" });
     }, 400);
   }
 

@@ -262,7 +262,9 @@ import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { domain } from "@/helper/config";
-import router from "@/router";
+import { useRouter } from "vue-router";
+
+const router = useRouter()
 
 const idkId = -1;
 
@@ -817,16 +819,19 @@ onMounted(async () => {
 
 .option-list div > .row .info-btn {
   position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 1rem;
-    z-index: 4;
-    background: white;
-    color: black;
-    border: solid 1px white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1rem;
+  z-index: 4;
+  background: white;
+  color: black;
+  border: solid 1px white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .option-list .info-section {

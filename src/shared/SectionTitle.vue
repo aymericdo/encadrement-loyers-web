@@ -5,10 +5,7 @@
     </h3>
   </div>
 </template>
-<script>
-export default {
-  name: "SectionTitle",
-};
+<script setup>
 </script>
 
 <style lang="scss" scoped>

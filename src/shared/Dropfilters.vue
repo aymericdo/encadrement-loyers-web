@@ -184,7 +184,7 @@
     filtersCount: Number,
   });
 
-  const emit = defineEmits([
+  const emits = defineEmits([
     'onDropFilterOpeningChanged',
     'onReset',
     'onSubmit',
@@ -295,17 +295,17 @@
 
   const onOpen = () => {
     isOpen.value = true;
-    emit("onDropFilterOpeningChanged", isOpen.value);
+    emits("onDropFilterOpeningChanged", isOpen.value);
   }
 
   const onReset = () => {
     isOpen.value = false;
-    emit("onReset");
+    emits("onReset");
   }
 
   const onSubmit = () => {
     isOpen.value = false;
-    emit("onSubmit", {
+    emits("onSubmit", {
       districtValues: optionValues.value.districtValues,
       furnishedValue: optionValues.value.furnishedValue,
       surfaceValue: optionValues.value.surfaceValue,

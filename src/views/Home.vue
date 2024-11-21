@@ -4,7 +4,7 @@
     <router-view />
     <div
       class="center-wrapper inactivable"
-      v-bind:class="{ inactive: $route.name !== 'home' }"
+      v-bind:class="{ inactive: route.name !== 'home' }"
     >
       <div>
         <Hero />
@@ -21,44 +21,31 @@
   </div>
 </template>
 
-<script>
-import Hero from "@/components/Hero.vue";
-import SectionWhy from "@/components/SectionWhy.vue";
-import SectionWhere from "@/components/SectionWhere.vue";
-import SectionHow from "@/components/SectionHow.vue";
-import SectionDisclaimer from "@/components/SectionDisclaimer.vue";
-import SectionThanks from "@/components/SectionThanks.vue";
-import SectionBlog from "@/components/SectionBlog.vue";
-import SectionUs from "@/components/SectionUs.vue";
-import Footer from "@/components/Footer.vue";
-import Menu from "@/components/menu/Menu.vue";
+<script setup>
+  import Hero from "@/components/Hero.vue";
+  import SectionWhy from "@/components/SectionWhy.vue";
+  import SectionWhere from "@/components/SectionWhere.vue";
+  import SectionHow from "@/components/SectionHow.vue";
+  import SectionDisclaimer from "@/components/SectionDisclaimer.vue";
+  import SectionThanks from "@/components/SectionThanks.vue";
+  import SectionBlog from "@/components/SectionBlog.vue";
+  import SectionUs from "@/components/SectionUs.vue";
+  import Footer from "@/components/Footer.vue";
+  import Menu from "@/components/menu/Menu.vue";
 
-export default {
-  name: "Home",
-  components: {
-    Footer,
-    Hero,
-    SectionDisclaimer,
-    SectionBlog,
-    SectionHow,
-    SectionThanks,
-    SectionWhere,
-    SectionUs,
-    SectionWhy,
-    Menu,
-  },
-  data: function() {
-    return {
-      isFirstVisitDone: false,
-    };
-  },
-  mounted() {
-    if (this.$route.name === "home" && !localStorage.isFirstVisitDone) {
-      this.$router.push({ path: "video" });
-      localStorage.isFirstVisitDone = true;
+  import { onMounted, ref } from "vue";
+
+  import { useRouter, useRoute } from "vue-router";
+
+  const router = useRouter()
+  const route = useRoute()
+
+  onMounted(() => {
+    if (route.name === "home" && !localStorage.getItem('isFirstVisitDone')) {
+      router.push({ path: "video" });
+      localStorage.setItem('isFirstVisitDone', true);
     }
-  },
-};
+  })
 </script>
 
 <style lang="scss" scoped>

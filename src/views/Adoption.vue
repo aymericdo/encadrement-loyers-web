@@ -2,11 +2,9 @@
   <div id="stats">
     <transition name="slide-fade" v-on:leave="leave">
       <Page2Wrapper v-if="isMounted">
-        <BounceLoader class="spinner" :loading="status !== 'ok' && status === 'submitting'" color="#fdcd56" :size="'120px'"></BounceLoader>
         <Section class="stats-section">
-          <div v-if="status === 'ok'" class="container" ref="adoptionContainer">
-            <BounceLoader class="spinner" :loading="!isAdoptionLoaded" color="#fdcd56" :size="'60px'"></BounceLoader>
-            <div v-if="isAdoptionLoaded" id="adoption"></div>
+          <div class="container" ref="adoptionContainer">
+            <iframe style="background: #21313C;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-encadrement-rents-pfblv/embed/charts?id=843b46f9-9c34-46eb-932c-6a5d15dc1dc3&maxDataAge=86400&theme=dark&autoRefresh=true"></iframe>
           </div>
         </Section>
       </Page2Wrapper>
@@ -19,74 +17,30 @@
   </div>
 </template>
 
-<script>
-import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
-import vegaEmbed from "vega-embed";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import Section from "@/shared/Section.vue";
-import { domain } from "@/helper/config";
+<script setup>
+  import StrokeIcon from "@/icons/StrokeIcon.vue";
+  import FixedButton from "@/shared/FixedButton.vue";
+  import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+  import Section from "@/shared/Section.vue";
 
-export default {
-  name: "Adoption",
-  components: {
-    BounceLoader,
-    StrokeIcon,
-    FixedButton,
-    Page2Wrapper,
-    Section,
-  },
-  mounted: function() {
-    this.isMounted = true;
-    this.onFetchAdoption();
-  },
-  data() {
-    return {
-      isAdoptionLoaded: false,
-      isMounted: false,
-      sucessfulServerResponse: "",
-      serverError: "",
-      status: "",
-    };
-  },
-  methods: {
-    // helper to get a displayable message to the user
-    getErrorMessage(err) {
-      let responseBody;
-      responseBody = err.response;
-      if (!responseBody) {
-        responseBody = err;
-      } else {
-        responseBody = err.response.data || responseBody;
-      }
-      return responseBody.message || JSON.stringify(responseBody);
-    },
-    onFetchAdoption: function() {
-      fetch(`${domain}stats/adoption`)
-        .then((res) => res.json())
-        .then((spec) => {
-          this.status = "ok";
-          this.isAdoptionLoaded = true;
-          vegaEmbed("#adoption", spec, {
-            tooltip: {
-              theme: "dark",
-            },
-            actions: false,
-          });
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    leave: function() {
-      setTimeout(() => {
-        this.$router.push({ path: "/" });
-      }, 400);
-    },
-  },
-};
+  import { onMounted, ref } from "vue";
+
+  import { useRouter } from "vue-router";
+
+  const router = useRouter()
+
+  const isMounted = ref(false);
+  const isAdoptionLoaded = ref(false);
+
+  onMounted(() => {
+    isMounted.value = true;
+  })
+
+  const leave = () => {
+    setTimeout(() => {
+      router.push({ path: "/" });
+    }, 400);
+  }
 </script>
 
 <style lang="scss" scoped>
