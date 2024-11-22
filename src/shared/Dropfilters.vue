@@ -174,7 +174,7 @@
   import Dropdown from "@/shared/Dropdown.vue";
   import MultiDropdown from "@/shared/MultiDropdown.vue";
   // import Slider from "@vueform/slider";
-  import { defineEmits, onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
+  import { onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
 
   import "@vueform/slider/themes/default.css";
   

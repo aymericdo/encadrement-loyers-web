@@ -22,4 +22,7 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1600
+  },
 });
