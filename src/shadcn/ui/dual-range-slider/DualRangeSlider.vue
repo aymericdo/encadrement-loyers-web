@@ -18,13 +18,13 @@
     <SliderThumb
       v-for="(value, index) in initialValue"
       :key="index"
-      class="relative block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+      class="relative block w-5 h-5 transition-colors border-2 rounded-full border-primary bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
     >
       <span
         v-if="props.label"
         :class="
           cn(
-            'absolute flex w-full justify-center',
+            'absolute flex w-full justify-center text-xs',
             props.labelPosition === 'top' ? '-top-7' : 'top-4'
           )
         "

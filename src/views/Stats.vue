@@ -18,27 +18,46 @@
               <template v-if="isWelcomeTextLoaded">
                 <div>
                   <span>Sur les</span>
-                  <span class="yellow">&nbsp;{{ welcomeData.numberRents }}&nbsp;</span>
+                  <span class="yellow"
+                    >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
+                  >
                   <span>annonces étudiées au total</span>
                   <template v-if="city !== 'all'">
-                    à<span class="yellow">&nbsp;{{ cityDropdownOptions.find((c) => c.value === city).label }}</span>
+                    à<span class="yellow"
+                      >&nbsp;{{
+                        cityDropdownOptions.find((c) => c.value === city).label
+                      }}</span
+                    >
                   </template>
                   <span>,</span>
-                  <span class="yellow">&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span>
+                  <span class="yellow"
+                    >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
+                  >
                   <span>sont non conformes.</span>
                 </div>
                 <div>
                   <span>Pour les annonces d'une surface inférieure à</span>
-                  <span class="yellow">&nbsp;{{ welcomeData.pivotSurface }}m²</span><span>, il y a</span>
-                  <span class="yellow">&nbsp;{{ welcomeData.isIllegalPercentageUnderPivot }}%&nbsp;</span>
+                  <span class="yellow"
+                    >&nbsp;{{ welcomeData.pivotSurface }}m²</span
+                  ><span>, il y a</span>
+                  <span class="yellow"
+                    >&nbsp;{{
+                      welcomeData.isIllegalPercentageUnderPivot
+                    }}%&nbsp;</span
+                  >
                   <span>d'annonces non conformes.</span>
                 </div>
               </template>
             </div>
 
             <div class="city-dropdown">
-              <Select v-model="city" @update:model-value="changeCity">
-                <SelectTrigger>
+              <Select
+                v-model="city"
+                :open="isSelectOpen"
+                @update:model-value="changeCity"
+                @update:open="isSelectOpen = $event"
+              >
+                <SelectTrigger :open="isSelectOpen">
                   <SelectValue placeholder="Choisir une ville..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -178,242 +197,233 @@
 </template>
 
 <script setup>
-  import { domain } from "@/helper/config";
-  import StrokeIcon from "@/icons/StrokeIcon.vue";
-  import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/shadcn/ui/select";
-  import Dropfilters from "@/shared/Dropfilters.vue";
-  import FixedButton from "@/shared/FixedButton.vue";
-  import Graph from "@/shared/Graph.vue";
-  import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-  import SectionTitle from "@/shared/SectionTitle.vue";
-  import Slider from "@vueform/slider";
-  import { onMounted, onBeforeUnmount, ref, watchEffect, watch } from "vue";
-  import { useRoute, useRouter } from "vue-router";
-  import BounceLoader from "vue-spinner/src/BounceLoader.vue";
+import { domain } from "@/helper/config";
+import StrokeIcon from "@/icons/StrokeIcon.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
+import Dropfilters from "@/shared/Dropfilters.vue";
+import FixedButton from "@/shared/FixedButton.vue";
+import Graph from "@/shared/Graph.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
+import Slider from "@vueform/slider";
+import { onBeforeUnmount, onMounted, ref, watch, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 
-  import { camelize, kebabize } from "../tools/kebabier";
+import { camelize, kebabize } from "../tools/kebabier";
 
-  import "@vueform/slider/themes/default.css";
+import "@vueform/slider/themes/default.css";
 
-  const route = useRoute();
-  const router = useRouter()
-  const showCloseButton = ref(true);
-  const isLegalVariation = ref(null);
-  const legalPercentageFiltersCount = ref(0);
-  const cityDropdownOptions = ref([]);
-  const isMounted = ref(false);
-  const city = ref(camelize(route.params.city) || "paris");
-  const serverError = ref('');
-  const welcomeData = ref(null);
-  const isWelcomeTextLoaded = ref(false);
-  const dateValueStr = ref('');
-  
-  const controller = new AbortController();
+const route = useRoute();
+const router = useRouter();
+const showCloseButton = ref(true);
+const isLegalVariation = ref(null);
+const legalPercentageFiltersCount = ref(0);
+const cityDropdownOptions = ref([]);
+const isMounted = ref(false);
+const city = ref(camelize(route.params.city) || "paris");
+const serverError = ref("");
+const welcomeData = ref(null);
+const isWelcomeTextLoaded = ref(false);
+const dateValueStr = ref("");
+const isSelectOpen = ref(false);
 
-  // Date of the first ad in the db
-  const realStartDate = new Date("2019-10-22");
-  const realEndDate = new Date();
-  // Number of days between the first ad in the db and today
-  const maxDateValue = Math.round(
-    (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
-  );
-  // Number of days between the first ad in the db and 3 months before today
-  const minDateValue = Math.round(
-    (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) -
-      realStartDate) /
-      (1000 * 60 * 60 * 24)
-  );
-  const dateValue = ref([minDateValue, maxDateValue]);
+const controller = new AbortController();
 
-  const initialLegalPercentageOptions = {
-    surfaceValue: [9, 100],
-    roomValue: [1, 6],
-    furnishedValue: "all",
-    districtValues: [],
-    isParticulierValue: "all",
-  };
+// Date of the first ad in the db
+const realStartDate = new Date("2019-10-22");
+const realEndDate = new Date();
+// Number of days between the first ad in the db and today
+const maxDateValue = Math.round(
+  (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
+);
+// Number of days between the first ad in the db and 3 months before today
+const minDateValue = Math.round(
+  (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) - realStartDate) /
+    (1000 * 60 * 60 * 24)
+);
+const dateValue = ref([minDateValue, maxDateValue]);
 
-  const legalPercentageOptions = ref({
-    ...initialLegalPercentageOptions,
-  });
+const initialLegalPercentageOptions = {
+  surfaceValue: [9, 100],
+  roomValue: [1, 6],
+  furnishedValue: "all",
+  districtValues: [],
+  isParticulierValue: "all",
+};
 
-  watch(route, (newValue, oldValue) => {
-    if (newValue.params.city !== oldValue.oldValue) {
-      const value = newValue.params.city
-      city.value = value && camelize(value);
-      changeFilters();
-      onFetchWelcome(null);
-      isWelcomeTextLoaded.value = false;
-    }
-  });
+const legalPercentageOptions = ref({
+  ...initialLegalPercentageOptions,
+});
 
-  watchEffect(
-    () => {
-      if (legalPercentageOptions.value) {
-        let cpt = 0;
-        Object.keys(legalPercentageOptions.value).forEach((key) => {
-          if (
-            JSON.stringify(legalPercentageOptions.value[key]) !==
-            JSON.stringify(initialLegalPercentageOptions[key])
-          ) {
-            cpt += 1;
-          }
-        });
-
-        legalPercentageFiltersCount.value = cpt;
-      }
-    },
-    {
-      flush: "post",
-    }
-  );
-
-  const fetchCities = async () => {
-    try {
-      const rawResult = await fetch(`${domain}cities/list`);
-      const res = await rawResult.json();
-      if (res.message === "token expired") throw res;
-
-      cityDropdownOptions.value = Object.keys(res).reduce(
-        (prev, city, index) => {
-          if (index === 0) {
-            prev.push({
-              value: "all",
-              label: "Tout",
-            });
-          }
-
-          if (prev.some((value) => value.value === res[city].mainCity)) {
-            return prev.map((data) => {
-              return data.value === res[city].mainCity
-                ? {
-                    ...data,
-                    multipleCities: true,
-                  }
-                : {
-                    ...data,
-                  };
-            });
-          }
-
-          prev.push({
-            value: res[city].mainCity,
-            label: res[city].displayName.mainCity,
-            multipleCities: false,
-          });
-          return prev;
-        },
-        []
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  onMounted(async () => {
-    await fetchCities();
-    isMounted.value = true;
-    setDateValueStr(dateValue.value);
-    onFetchWelcome();
-  });
-
-  onBeforeUnmount(() => {
-    controller.abort();
-  });
-
-  const getErrorMessage = (err) => {
-    let responseBody;
-    responseBody = err.response;
-    if (!responseBody) {
-      responseBody = err;
-    } else {
-      responseBody = err.response.data || responseBody;
-    }
-
-    if (err.message === "token expired") {
-      welcomeData.value = null;
-    }
-
-    return responseBody.message || JSON.stringify(responseBody);
+watch(route, (newValue, oldValue) => {
+  if (newValue.params.city !== oldValue.oldValue) {
+    const value = newValue.params.city;
+    city.value = value && camelize(value);
+    changeFilters();
+    onFetchWelcome(null);
+    isWelcomeTextLoaded.value = false;
   }
+});
 
-  const onFetchWelcome = () => {
-    fetch(
-      `${domain}stats/welcome/${city.value}`,
-      {
-        signal: controller.signal,
-      }
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.message === "token expired") {
-          throw res;
-        } else {
-          return res;
+watchEffect(
+  () => {
+    if (legalPercentageOptions.value) {
+      let cpt = 0;
+      Object.keys(legalPercentageOptions.value).forEach((key) => {
+        if (
+          JSON.stringify(legalPercentageOptions.value[key]) !==
+          JSON.stringify(initialLegalPercentageOptions[key])
+        ) {
+          cpt += 1;
         }
-      })
-      .then((res) => {
-        welcomeData.value = res;
-        isWelcomeTextLoaded.value = true;
-      })
-      .catch((err) => {
-        serverError.value = getErrorMessage(err);
       });
+
+      legalPercentageFiltersCount.value = cpt;
+    }
+  },
+  {
+    flush: "post",
+  }
+);
+
+const fetchCities = async () => {
+  try {
+    const rawResult = await fetch(`${domain}cities/list`);
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
+
+    cityDropdownOptions.value = Object.keys(res).reduce((prev, city, index) => {
+      if (index === 0) {
+        prev.push({
+          value: "all",
+          label: "Tout",
+        });
+      }
+
+      if (prev.some((value) => value.value === res[city].mainCity)) {
+        return prev.map((data) => {
+          return data.value === res[city].mainCity
+            ? {
+                ...data,
+                multipleCities: true,
+              }
+            : {
+                ...data,
+              };
+        });
+      }
+
+      prev.push({
+        value: res[city].mainCity,
+        label: res[city].displayName.mainCity,
+        multipleCities: false,
+      });
+      return prev;
+    }, []);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+onMounted(async () => {
+  await fetchCities();
+  isMounted.value = true;
+  setDateValueStr(dateValue.value);
+  onFetchWelcome();
+});
+
+onBeforeUnmount(() => {
+  controller.abort();
+});
+
+const getErrorMessage = (err) => {
+  let responseBody;
+  responseBody = err.response;
+  if (!responseBody) {
+    responseBody = err;
+  } else {
+    responseBody = err.response.data || responseBody;
   }
 
-  const changeCity = (opt) => {
-    router.push({ path: kebabize(opt) });
+  if (err.message === "token expired") {
+    welcomeData.value = null;
   }
 
-  const changeFilters = (opt = null) => {
-    legalPercentageOptions.value = (opt) ?
-      { ...opt } :
-      { ...initialLegalPercentageOptions };
-  }
+  return responseBody.message || JSON.stringify(responseBody);
+};
 
-  const leave = () => {
-    setTimeout(() => {
-      router.push({ path: "/" });
-    }, 400);
-  }
+const onFetchWelcome = () => {
+  fetch(`${domain}stats/welcome/${city.value}`, {
+    signal: controller.signal,
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.message === "token expired") {
+        throw res;
+      } else {
+        return res;
+      }
+    })
+    .then((res) => {
+      welcomeData.value = res;
+      isWelcomeTextLoaded.value = true;
+    })
+    .catch((err) => {
+      serverError.value = getErrorMessage(err);
+    });
+};
 
-  const getDateFromValue = (value) => {
-    const copy = new Date(Number(realStartDate));
-    copy.setDate(realStartDate.getDate() + value);
-    return copy;
-  }
+const changeCity = (opt) => {
+  router.push({ path: kebabize(opt) });
+};
 
-  const dateValueFct = (value) => {
-    return getDateFromValue(value).toLocaleDateString();
-  }
+const changeFilters = (opt = null) => {
+  legalPercentageOptions.value = opt
+    ? { ...opt }
+    : { ...initialLegalPercentageOptions };
+};
 
-  const getDateValueStr = (dateValue) => {
-    const date = [
-      getDateFromValue(dateValue[0]),
-      getDateFromValue(dateValue[1]),
-    ];
+const leave = () => {
+  setTimeout(() => {
+    router.push({ path: "/" });
+  }, 400);
+};
 
-    const currDate1 = date[0].getDate();
-    const currMonth1 = date[0].getMonth() + 1; // Months are zero based
-    const currYear1 = date[0].getFullYear();
+const getDateFromValue = (value) => {
+  const copy = new Date(Number(realStartDate));
+  copy.setDate(realStartDate.getDate() + value);
+  return copy;
+};
 
-    const currDate2 = date[1].getDate();
-    const currMonth2 = date[1].getMonth() + 1; // Months are zero based
-    const currYear2 = date[1].getFullYear();
+const dateValueFct = (value) => {
+  return getDateFromValue(value).toLocaleDateString();
+};
 
-    return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
-  }
+const getDateValueStr = (dateValue) => {
+  const date = [getDateFromValue(dateValue[0]), getDateFromValue(dateValue[1])];
 
-  const setDateValueStr = (dateValue) => {
-    dateValueStr.value = getDateValueStr(dateValue);
-  }
+  const currDate1 = date[0].getDate();
+  const currMonth1 = date[0].getMonth() + 1; // Months are zero based
+  const currYear1 = date[0].getFullYear();
+
+  const currDate2 = date[1].getDate();
+  const currMonth2 = date[1].getMonth() + 1; // Months are zero based
+  const currYear2 = date[1].getFullYear();
+
+  return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
+};
+
+const setDateValueStr = (dateValue) => {
+  dateValueStr.value = getDateValueStr(dateValue);
+};
 </script>
 
 <style lang="scss" scoped>

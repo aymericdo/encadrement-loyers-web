@@ -1,5 +1,5 @@
 <template>
-  <DropdownMenu>
+  <DropdownMenu :open="isOpen" @update:open="isOpen = $event">
     <DropdownMenuTrigger asChild>
       <Button variant="default">
         Filtres
@@ -10,13 +10,14 @@
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-80">
       <form class="p-4 space-y-4" @submit.prevent="onSubmit">
-        <FormField v-slot="{ componentField }" name="surface">
+        <FormField name="surface">
           <FormItem>
-            <FormLabel>Surface</FormLabel>
+            <FormLabel>Surface (m²)</FormLabel>
             <FormControl>
               <DualRangeSlider
                 v-model="optionValues.surfaceValue"
-                :label="(value) => `${value} m²`"
+                :label="(value) => value"
+                labelPosition="bottom"
                 :min="9"
                 :max="100"
                 :step="1"
@@ -26,13 +27,14 @@
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="rooms">
+        <FormField name="rooms">
           <FormItem>
             <FormLabel>Nombre de pièce(s)</FormLabel>
             <FormControl>
               <DualRangeSlider
                 v-model="optionValues.roomValue"
-                :label="roomValueFct"
+                :label="(value) => value"
+                labelPosition="bottom"
                 :min="1"
                 :max="6"
                 :step="1"
@@ -42,7 +44,7 @@
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="furnished">
+        <FormField name="furnished">
           <FormItem>
             <FormLabel>Meublé</FormLabel>
             <Select
@@ -65,11 +67,7 @@
           </FormItem>
         </FormField>
 
-        <FormField
-          v-if="city !== 'all'"
-          v-slot="{ componentField }"
-          name="districts"
-        >
+        <FormField v-if="city !== 'all'" name="districts">
           <FormItem>
             <FormLabel>Localisation</FormLabel>
             <Select
@@ -103,7 +101,7 @@
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="particulier">
+        <FormField name="particulier">
           <FormItem>
             <FormLabel>Particulier</FormLabel>
             <Select
@@ -138,227 +136,215 @@
 </template>
 
 <script setup>
-  import { domain } from "@/helper/config";
-  import ArrowIcon from "@/icons/ArrowIcon.vue";
-  import StrokeIcon from "@/icons/StrokeIcon.vue";
-  import { Button } from "@/shadcn/ui/button";
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/shadcn/ui/dropdown-menu";
-  import { DualRangeSlider } from "@/shadcn/ui/dual-range-slider";
-  import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/shadcn/ui/form";
-  // import { MultiSelect } from "@/shadcn/ui/multi-select";
-  import {
-    Select,
-    SelectGroup,
-    SelectContent,
-    SelectLabel,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/shadcn/ui/select";
-  import { Slider } from "@/shadcn/ui/slider";
+import { domain } from "@/helper/config";
+import { Button } from "@/shadcn/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/shadcn/ui/dropdown-menu";
+import { DualRangeSlider } from "@/shadcn/ui/dual-range-slider";
+import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+// import { MultiSelect } from "@/shadcn/ui/multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
 
-  import Dropdown from "@/shared/Dropdown.vue";
-  import MultiDropdown from "@/shared/MultiDropdown.vue";
-  // import Slider from "@vueform/slider";
-  import { onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
+// import Slider from "@vueform/slider";
+import { onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
 
-  import "@vueform/slider/themes/default.css";
-  
-  const props = defineProps({
-    city: String,
-    options: Object,
-    filtersCount: Number,
-  });
+import "@vueform/slider/themes/default.css";
 
-  const emits = defineEmits([
-    'onDropFilterOpeningChanged',
-    'onReset',
-    'onSubmit',
-  ])
+const props = defineProps({
+  city: String,
+  options: Object,
+  filtersCount: Number,
+});
 
-  const {
-    city,
-    options,
-    filtersCount,
-  } = toRefs(props);
+const emits = defineEmits([
+  "onDropFilterOpeningChanged",
+  "onReset",
+  "onSubmit",
+]);
 
-  const controller = new AbortController();
-  const districtDropdownOptions = ref([]);
-  const optionValues = ref({ ...options.value });
-  const isOpen = ref(false);
-  const furnishedDropdownOptions = ref([
-    {
-      value: "all",
-      label: "Tout",
-    },
-    {
-      value: "furnished",
-      label: "Meublé",
-    },
-    {
-      value: "nonFurnished",
-      label: "Non meublé",
-    },
-  ]);
+const { city, options, filtersCount } = toRefs(props);
 
-  const particulierDropdownOptions = ref([
-    {
-      value: "all",
-      label: "Tout",
-    },
-    {
-      value: "true",
-      label: "Particulier",
-    },
-    {
-      value: "false",
-      label: "Agence",
-    },
-  ]);
+const controller = new AbortController();
+const districtDropdownOptions = ref([]);
+const optionValues = ref({ ...options.value });
+const isOpen = ref(false);
+const furnishedDropdownOptions = ref([
+  {
+    value: "all",
+    label: "Tout",
+  },
+  {
+    value: "furnished",
+    label: "Meublé",
+  },
+  {
+    value: "nonFurnished",
+    label: "Non meublé",
+  },
+]);
 
-  const fetchDistricts = () => {
-    fetch(`${domain}districts/list/${city.value}`, {
-      signal: controller.signal,
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.message === "token expired") {
-          throw res;
-        } else {
-          return res;
-        }
-      })
-      .then((res) => {
-        const groupedOptions = res.reduce((acc, district) => {
-          if (!acc[district.groupBy]) {
-            acc[district.groupBy] = [];
-          }
-          acc[district.groupBy].push({
-            value: district.value,
-            label: district.label,
-          });
-          return acc;
-        }, {});
-        // districtDropdownOptions.value = groupedOptions;
-        districtDropdownOptions.value = Object.keys(groupedOptions).map(
-          (groupBy) => ({
-            groupBy,
-            options: groupedOptions[groupBy],
-          })
-        );
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+const particulierDropdownOptions = ref([
+  {
+    value: "all",
+    label: "Tout",
+  },
+  {
+    value: "true",
+    label: "Particulier",
+  },
+  {
+    value: "false",
+    label: "Agence",
+  },
+]);
 
-  watch(
-    () => props.city,
-    (newValue) => {
-      if (newValue !== "all") {
-        fetchDistricts();
+const fetchDistricts = () => {
+  fetch(`${domain}districts/list/${city.value}`, {
+    signal: controller.signal,
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.message === "token expired") {
+        throw res;
+      } else {
+        return res;
       }
-      options.value.districtValues = [];
-    }
-  );
+    })
+    .then((res) => {
+      const groupedOptions = res.reduce((acc, district) => {
+        if (!acc[district.groupBy]) {
+          acc[district.groupBy] = [];
+        }
+        acc[district.groupBy].push({
+          value: district.value,
+          label: district.label,
+        });
+        return acc;
+      }, {});
+      // districtDropdownOptions.value = groupedOptions;
+      districtDropdownOptions.value = [
+        {
+          groupBy: "",
+          options: [
+            {
+              value: "all",
+              label: "Tout",
+            },
+          ],
+        },
+        ...Object.keys(groupedOptions).map((groupBy) => ({
+          groupBy,
+          options: groupedOptions[groupBy],
+        })),
+      ];
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
 
-  watch(
-    () => props.options,
-    (newValue) => {
-      optionValues.value = newValue;
-    }
-  );
-
-  onMounted(() => {
-    if (city.value !== "all") {
+watch(
+  () => props.city,
+  (newValue) => {
+    if (newValue !== "all") {
       fetchDistricts();
     }
+    options.value.districtValues = [];
+  }
+);
+
+watch(
+  () => props.options,
+  (newValue) => {
+    optionValues.value = newValue;
+  }
+);
+
+onMounted(() => {
+  if (city.value !== "all") {
+    fetchDistricts();
+  }
+});
+
+onBeforeUnmount(() => {
+  controller.abort();
+});
+
+const onOpen = () => {
+  isOpen.value = true;
+  emits("onDropFilterOpeningChanged", isOpen.value);
+};
+
+const onReset = () => {
+  isOpen.value = false;
+  emits("onReset");
+};
+
+const onSubmit = () => {
+  isOpen.value = false;
+  emits("onSubmit", {
+    districtValues: optionValues.value.districtValues,
+    furnishedValue: optionValues.value.furnishedValue,
+    surfaceValue: optionValues.value.surfaceValue,
+    roomValue: optionValues.value.roomValue,
+    isParticulierValue: optionValues.value.isParticulierValue,
   });
+};
 
-  onBeforeUnmount(() => {
-    controller.abort()
-  });
+const roomValueFct = (value) => {
+  return `${value} pièce${value > 1 ? "s" : ""}`;
+};
 
-  const onOpen = () => {
-    isOpen.value = true;
-    emits("onDropFilterOpeningChanged", isOpen.value);
-  }
-
-  const onReset = () => {
-    isOpen.value = false;
-    emits("onReset");
-  }
-
-  const onSubmit = () => {
-    isOpen.value = false;
-    emits("onSubmit", {
-      districtValues: optionValues.value.districtValues,
-      furnishedValue: optionValues.value.furnishedValue,
-      surfaceValue: optionValues.value.surfaceValue,
-      roomValue: optionValues.value.roomValue,
-      isParticulierValue: optionValues.value.isParticulierValue,
-    });
-  }
-
-  const roomValueFct = (value) => {
-    return `${value} pièce${value > 1 ? "s" : ""}`;
-  }
-
-  const districtValuesChanged = (opts) => {
-    if (opts.length < 2) {
-      const opt = opts[0];
-      if (
-        optionValues.value.districtValues.some((value) => value === opt.value)
-      ) {
-        optionValues.value.districtValues =
-          optionValues.value.districtValues.filter(
-            (value) => value !== opt.value
-          );
-      } else {
-        optionValues.value.districtValues = [
-          ...optionValues.value.districtValues,
-          opt.value,
-        ];
-      }
+const districtValuesChanged = (opts) => {
+  if (opts.length < 2) {
+    const opt = opts[0];
+    if (
+      optionValues.value.districtValues.some((value) => value === opt.value)
+    ) {
+      optionValues.value.districtValues =
+        optionValues.value.districtValues.filter(
+          (value) => value !== opt.value
+        );
     } else {
-      if (
-        opts.every((opt) =>
-          optionValues.value.districtValues.some(
-            (value) => value === opt.value
-          )
-        )
-      ) {
-        optionValues.value.districtValues =
-          optionValues.value.districtValues.filter(
-            (value) => !opts.map((o) => o.value).includes(value)
-          );
-      } else {
-        optionValues.value.districtValues = [
-          ...optionValues.value.districtValues,
-          ...opts
-            .map((o) => o.value)
-            .filter(
-              (v) =>
-                !optionValues.value.districtValues.some((value) => value === v)
-            ),
-        ];
-      }
+      optionValues.value.districtValues = [
+        ...optionValues.value.districtValues,
+        opt.value,
+      ];
+    }
+  } else {
+    if (
+      opts.every((opt) =>
+        optionValues.value.districtValues.some((value) => value === opt.value)
+      )
+    ) {
+      optionValues.value.districtValues =
+        optionValues.value.districtValues.filter(
+          (value) => !opts.map((o) => o.value).includes(value)
+        );
+    } else {
+      optionValues.value.districtValues = [
+        ...optionValues.value.districtValues,
+        ...opts
+          .map((o) => o.value)
+          .filter(
+            (v) =>
+              !optionValues.value.districtValues.some((value) => value === v)
+          ),
+      ];
     }
   }
+};
 </script>
 
 <style lang="scss" scoped>
