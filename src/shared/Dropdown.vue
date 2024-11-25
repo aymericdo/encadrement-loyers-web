@@ -176,6 +176,7 @@
   padding: 6px 12px;
   border-color: transparent;
   transition: all ease 0.3s;
+  color: black;
 }
 
 .dropdown > button.-is-open {

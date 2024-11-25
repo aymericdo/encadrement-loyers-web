@@ -8,8 +8,8 @@
         }}</span>
       </Button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="w-80">
-      <form class="p-4 space-y-4" @submit.prevent="onSubmit">
+    <DropdownMenuContent class="absolute w-80">
+      <form class="p-4 space-y-8" @submit.prevent="onSubmit">
         <FormField name="surface">
           <FormItem>
             <FormLabel>Surface (m²)</FormLabel>
@@ -67,40 +67,6 @@
           </FormItem>
         </FormField>
 
-        <FormField v-if="city !== 'all'" name="districts">
-          <FormItem>
-            <FormLabel>Localisation</FormLabel>
-            <Select
-              v-model="optionValues.districtValues"
-              :options="furnishedDropdownOptions"
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Sélectionner..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup
-                  :key="group.groupBy"
-                  v-for="group in districtDropdownOptions"
-                >
-                  <SelectLabel>{{ group.groupBy }}</SelectLabel>
-                  <SelectItem
-                    :key="value"
-                    v-for="{ label, value } in group.options"
-                    :value="value"
-                  >
-                    {{ label }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <!-- <MultiSelect
-              v-model="optionValues.districtValues"
-              :options="districtDropdownOptions"
-              @update:modelValue="districtValuesChanged"
-            /> -->
-          </FormItem>
-        </FormField>
-
         <FormField name="particulier">
           <FormItem>
             <FormLabel>Particulier</FormLabel>
@@ -145,19 +111,15 @@ import {
 } from "@/shadcn/ui/dropdown-menu";
 import { DualRangeSlider } from "@/shadcn/ui/dual-range-slider";
 import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
-// import { MultiSelect } from "@/shadcn/ui/multi-select";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
 
-// import Slider from "@vueform/slider";
-import { onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
+import { ref, toRefs, watch } from "vue";
 
 import "@vueform/slider/themes/default.css";
 
@@ -173,10 +135,8 @@ const emits = defineEmits([
   "onSubmit",
 ]);
 
-const { city, options, filtersCount } = toRefs(props);
+const { options, filtersCount } = toRefs(props);
 
-const controller = new AbortController();
-const districtDropdownOptions = ref([]);
 const optionValues = ref({ ...options.value });
 const isOpen = ref(false);
 const furnishedDropdownOptions = ref([
@@ -209,82 +169,12 @@ const particulierDropdownOptions = ref([
   },
 ]);
 
-const fetchDistricts = () => {
-  fetch(`${domain}districts/list/${city.value}`, {
-    signal: controller.signal,
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.message === "token expired") {
-        throw res;
-      } else {
-        return res;
-      }
-    })
-    .then((res) => {
-      const groupedOptions = res.reduce((acc, district) => {
-        if (!acc[district.groupBy]) {
-          acc[district.groupBy] = [];
-        }
-        acc[district.groupBy].push({
-          value: district.value,
-          label: district.label,
-        });
-        return acc;
-      }, {});
-      // districtDropdownOptions.value = groupedOptions;
-      districtDropdownOptions.value = [
-        {
-          groupBy: "",
-          options: [
-            {
-              value: "all",
-              label: "Tout",
-            },
-          ],
-        },
-        ...Object.keys(groupedOptions).map((groupBy) => ({
-          groupBy,
-          options: groupedOptions[groupBy],
-        })),
-      ];
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
-
-watch(
-  () => props.city,
-  (newValue) => {
-    if (newValue !== "all") {
-      fetchDistricts();
-    }
-    options.value.districtValues = [];
-  }
-);
-
 watch(
   () => props.options,
   (newValue) => {
     optionValues.value = newValue;
   }
 );
-
-onMounted(() => {
-  if (city.value !== "all") {
-    fetchDistricts();
-  }
-});
-
-onBeforeUnmount(() => {
-  controller.abort();
-});
-
-const onOpen = () => {
-  isOpen.value = true;
-  emits("onDropFilterOpeningChanged", isOpen.value);
-};
 
 const onReset = () => {
   isOpen.value = false;
@@ -294,56 +184,11 @@ const onReset = () => {
 const onSubmit = () => {
   isOpen.value = false;
   emits("onSubmit", {
-    districtValues: optionValues.value.districtValues,
     furnishedValue: optionValues.value.furnishedValue,
     surfaceValue: optionValues.value.surfaceValue,
     roomValue: optionValues.value.roomValue,
     isParticulierValue: optionValues.value.isParticulierValue,
   });
-};
-
-const roomValueFct = (value) => {
-  return `${value} pièce${value > 1 ? "s" : ""}`;
-};
-
-const districtValuesChanged = (opts) => {
-  if (opts.length < 2) {
-    const opt = opts[0];
-    if (
-      optionValues.value.districtValues.some((value) => value === opt.value)
-    ) {
-      optionValues.value.districtValues =
-        optionValues.value.districtValues.filter(
-          (value) => value !== opt.value
-        );
-    } else {
-      optionValues.value.districtValues = [
-        ...optionValues.value.districtValues,
-        opt.value,
-      ];
-    }
-  } else {
-    if (
-      opts.every((opt) =>
-        optionValues.value.districtValues.some((value) => value === opt.value)
-      )
-    ) {
-      optionValues.value.districtValues =
-        optionValues.value.districtValues.filter(
-          (value) => !opts.map((o) => o.value).includes(value)
-        );
-    } else {
-      optionValues.value.districtValues = [
-        ...optionValues.value.districtValues,
-        ...opts
-          .map((o) => o.value)
-          .filter(
-            (v) =>
-              !optionValues.value.districtValues.some((value) => value === v)
-          ),
-      ];
-    }
-  }
 };
 </script>
 

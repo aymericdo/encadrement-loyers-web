@@ -53,11 +53,11 @@
             <div class="city-dropdown">
               <Select
                 v-model="city"
-                :open="isSelectOpen"
+                :open="isCitySelectOpen"
                 @update:model-value="changeCity"
-                @update:open="isSelectOpen = $event"
+                @update:open="isCitySelectOpen = $event"
               >
-                <SelectTrigger :open="isSelectOpen">
+                <SelectTrigger :open="isCitySelectOpen">
                   <SelectValue placeholder="Choisir une ville..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -233,7 +233,7 @@ const serverError = ref("");
 const welcomeData = ref(null);
 const isWelcomeTextLoaded = ref(false);
 const dateValueStr = ref("");
-const isSelectOpen = ref(false);
+const isCitySelectOpen = ref(false);
 
 const controller = new AbortController();
 
@@ -255,7 +255,6 @@ const initialLegalPercentageOptions = {
   surfaceValue: [9, 100],
   roomValue: [1, 6],
   furnishedValue: "all",
-  districtValues: [],
   isParticulierValue: "all",
 };
 

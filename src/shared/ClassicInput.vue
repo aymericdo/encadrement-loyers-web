@@ -94,8 +94,8 @@ input[type=number]::-webkit-outer-spin-button {
   padding-right: 1em;
   border: 0;
   background: transparent;
-  font-weight: bold;
   font-size: 1rem;
+  color: black;
 
   &:focus {
     outline: none;

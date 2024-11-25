@@ -207,8 +207,8 @@
   padding-right: 1em;
   border: 0;
   background: transparent;
-  font-weight: 500;
   font-size: 1rem;
+  color: black;
 
   &.-text-selected {
     font-weight: bold;
