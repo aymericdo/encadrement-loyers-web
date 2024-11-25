@@ -38,7 +38,7 @@
                     class="dropdown"
                     :options="districtDropdownOptions"
                     :currentValue="optionValues.districtValue"
-                    @onSelect="setOptionValues({ districtValue: $event.value, addressValue: '' })"
+                    @onSelect="setOptionValues({ districtValue: $event.value, addressValue: undefined })"
                   >
                   </Dropdown>
                 </span>
@@ -272,7 +272,7 @@ const isMounted = ref(false);
 const loading = ref(true)
 
 const infoVisible = ref(false);
-const citySelected = ref('');
+const citySelected = ref(undefined);
 const cityDropdownOptions = ref([])
 const dateBuiltValueDropdownOptions = ref([])
 
@@ -295,16 +295,16 @@ const isMultipleCities = ref(false);
 let cityInformation = []
 
 const initialOptionValues = {
-  surfaceValue: 20,
-  priceValue: 1000,
-  roomValue: 2,
+  surfaceValue: undefined,
+  priceValue: undefined,
+  roomValue: undefined,
   dateBuiltValue: idkId,
-  furnishedValue: "furnished",
-  addressValue: "",
+  furnishedValue: undefined,
+  addressValue: undefined,
   isHouseValue: 0,
-  cityTyped: "",
-  addressTyped: "",
-  districtValue: "",
+  cityTyped: '',
+  addressTyped: '',
+  districtValue: undefined,
   cityValue: citySelected.value,
 };
 
@@ -413,17 +413,6 @@ const setAddressDropdownOptions = (res) => {
   }));
 }
 
-const setDefaultCity = (city) => {
-  citySelected.value = city.value;
-  initialOptionValues.cityValue = city.value;
-}
-
-const setDefaultOptionValues = () => {
-  optionValues.value = {
-    ...initialOptionValues,
-  }
-}
-
 const setOptionValues = async (newOptionValues) => {
   optionValues.value = {
     ...optionValues.value,
@@ -431,12 +420,6 @@ const setOptionValues = async (newOptionValues) => {
   }
 
   await fetchSimulatorResult()
-}
-
-const setDefaultValues = async () => {
-  setDefaultCity(cityInformation[0])
-  setDefaultOptionValues()
-  await cityChanged(optionValues.value.cityValue)
 }
 
 const setCityInformation = async (res) => {
@@ -464,14 +447,13 @@ const setCityInformation = async (res) => {
   })
 
   setCityDropdownOptions()
-  await setDefaultValues()
 }
 
 const cityChanged = async (newMainCity) => {
   optionValues.value = {
     ...optionValues.value,
-    districtValue: '',
-    addressValue: '',
+    districtValue: undefined,
+    addressValue: undefined,
     cityTyped: '',
     addressTyped: '',
     dateBuiltValue: idkId,
@@ -480,9 +462,6 @@ const cityChanged = async (newMainCity) => {
   const currentCityOption = cityInformation.find((c) => c.value === newMainCity);
   isMultipleCities.value = currentCityOption.cities.length > 1
   hasHouse.value = !!currentCityOption?.hasHouse;
-  if (!hasHouse.value) {
-    optionValues.value.isHouseValue = 0;
-  }
 
   setDateBuiltRangeDropdownOptions([...currentCityOption.dateBuiltRange])
 
@@ -493,25 +472,33 @@ const cityChanged = async (newMainCity) => {
     simulationResults.value = null;
     isLegal.value = null;
 
-    if (districtDropdownOptions.value.length === 1) {
-      setOptionValues({
-        districtValue: districtDropdownOptions.value[0].value,
-        addressValue: '',
-        cityTyped: '',
-        addressTyped: '',
-        dateBuiltValue: idkId,
-      });
+    if (!hasHouse.value) {
+      optionValues.value.isHouseValue = 0;
     }
+
+    if (!optionValues.value.furnishedValue) {
+      optionValues.value.furnishedValue = initialOptionValues.furnishedValue;
+    }
+
+    if (districtDropdownOptions.value.length === 1) {
+      optionValues.value.districtValue = districtDropdownOptions.value[0].value;
+    }
+
+    await setOptionValues({
+      addressValue: undefined,
+      cityTyped: '',
+      addressTyped: '',
+      dateBuiltValue: idkId,
+    });
   }
 }
 
-const handleSelectPrice = (price) => {
-  console.log(price)
+const handleSelectPrice = async (price) => {
   optionValues.value.priceValue = price;
   if (!price) return;
   
-  initialOptionValues.priceValue = price;
-  setOptionValues({ priceValue: price })
+  // initialOptionValues.priceValue = price;
+  await setOptionValues({ priceValue: price })
 }
 
 const handleCloseCity = () => {
@@ -559,9 +546,13 @@ const fetchCities = async () => {
 };
 
 const fetchSimulatorResult = async () => {
-  if (!optionValues.value.cityValue
-    || !optionValues.value.districtValue
-    || !optionValues.value.priceValue) return;
+  if (optionValues.value.cityValue === undefined
+    || optionValues.value.surfaceValue === undefined
+    || optionValues.value.roomValue === undefined
+    || optionValues.value.isHouseValue === undefined
+    || optionValues.value.furnishedValue === undefined
+    || optionValues.value.districtValue === undefined
+    || optionValues.value.priceValue === undefined) return;
 
   simulationResultsLoading.value = true;
 
@@ -601,7 +592,7 @@ const fetchSimulatorResult = async () => {
     } catch (err) {
       console.error(err);
     }
-  }, 1000);
+  }, 300);
 }
 
 const onLeaving = () => {
@@ -626,8 +617,8 @@ const handleSearchingCity = async (city) => {
 const handleSearchingAddress = async (address) => {
   optionValues.value = {
     ...optionValues.value,
-    districtValue: '',
-    addressValue: '',
+    districtValue: undefined,
+    addressValue: undefined,
     addressTyped: address,
   }
 
@@ -649,9 +640,9 @@ const handleSearchingAddress = async (address) => {
   }, 500);
 }
 
-const handleAddressSelect = (event) => {
+const handleAddressSelect = async (event) => {
   if (event.district) {
-    setOptionValues({
+    await setOptionValues({
       addressValue: event.value,
       districtValue: event.district,
     })
@@ -662,6 +653,7 @@ const onReset = () => {
   optionValues.value = {
     ...optionValues.value,
     ...initialOptionValues,
+    cityValue: undefined,
   }
   addressDropdownOptions.value = [];
   simulationResults.value = null;
