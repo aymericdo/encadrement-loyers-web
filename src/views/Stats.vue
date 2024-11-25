@@ -244,9 +244,9 @@ const realEndDate = new Date();
 const maxDateValue = Math.round(
   (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
 );
-// Number of days between the first ad in the db and 3 months before today
+// Number of days between the first ad in the db and 6 months before today
 const minDateValue = Math.round(
-  (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) - realStartDate) /
+  (new Date(realEndDate.setMonth(realEndDate.getMonth() - 6)) - realStartDate) /
     (1000 * 60 * 60 * 24)
 );
 const dateValue = ref([minDateValue, maxDateValue]);
