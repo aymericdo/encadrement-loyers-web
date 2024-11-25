@@ -8,17 +8,27 @@
               <div class="row">
                 <span class="label">Ville</span>
                 <span>
-                  <Input
-                    class="dropdown"
-                    :placeholder="'Entre le nom de ta ville'"
-                    :options="cityDropdownOptions"
-                    :currentValue="citySelected"
-                    :textTyped="optionValues.cityTyped"
-                    @onTyping="handleSearchingCity"
-                    @onSelect="handleSelectCity($event)"
-                    @onClose="handleCloseCity()"
+                  <Select
+                    :value="citySelected"
+                    :open="isCitySelectOpen"
+                    @update:model-value="handleSelectCity"
+                    @update:open="isCitySelectOpen = $event"
                   >
-                  </Input>
+                    <SelectTrigger :open="isCitySelectOpen">
+                      <SelectValue :placeholder="'Entre le nom de ta ville'" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup
+                        v-for="group in cityDropdownOptions"
+                        :key="group.groupBy"
+                      >
+                        <SelectLabel>{{ group.groupBy }}</SelectLabel>
+                        <SelectItem :value="group.value" :key="group.value">
+                          {{ group.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </span>
               </div>
               <div class="row" v-if="districtDropdownOptions.length">
@@ -34,93 +44,182 @@
                     @onSelect="handleAddressSelect($event)"
                   >
                   </Input>
-                  <Dropdown
-                    class="dropdown"
-                    :options="districtDropdownOptions"
-                    :currentValue="optionValues.districtValue"
-                    @onSelect="setOptionValues({ districtValue: $event.value, addressValue: undefined })"
+                  <Select
+                    @update:model-value="
+                      setOptionValues({
+                        districtValue: $event.value,
+                        addressValue: undefined,
+                      })
+                    "
                   >
-                  </Dropdown>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="option in addressDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </span>
               </div>
               <div v-if="hasHouse" class="row">
                 <span class="label">Maison</span>
                 <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="isHouseValueDropdownOptions"
-                    :currentValue="optionValues.isHouseValue"
-                    @onSelect="setOptionValues({ isHouseValue: $event.value })"
+                  <Select
+                    v-model="optionValues.isHouseValue"
+                    @update:model-value="
+                      setOptionValues({ isHouseValue: $event })
+                    "
                   >
-                  </Dropdown>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="option in isHouseValueDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </span>
               </div>
               <div class="row">
-                <span class="label">Prix (hors charges)
-                  <div class="overlay" v-if="infoVisible" @click="infoVisible = false"></div>
-                  <button @click="infoVisible = true" class="info-btn">i</button>
-                  <div v-if="infoVisible" class="info-section">Si vous ne connaissez pas votre loyer hors charges, vous pouvez enlever 10% à votre loyer total.</div> 
+                <span class="label"
+                  >Prix (hors charges)
+                  <div
+                    class="overlay"
+                    v-if="infoVisible"
+                    @click="infoVisible = false"
+                  ></div>
+                  <button @click="infoVisible = true" class="info-btn">
+                    i
+                  </button>
+                  <div v-if="infoVisible" class="info-section">
+                    Si vous ne connaissez pas votre loyer hors charges, vous
+                    pouvez enlever 10% à votre loyer total.
+                  </div>
                 </span>
                 <span>
-                  <ClassicInput
-                    class="dropdown"
-                    :type="'number'"
+                  <Input
+                    v-model="optionValues.priceValue"
+                    type="number"
                     :placeholder="'Entre ton loyer'"
                     :min="0"
                     :max="10000"
-                    :currentValue="+optionValues.priceValue"
-                    @onTyping="handleSelectPrice"
-                    :suffix="'€'"
-                  >
-                  </ClassicInput>
+                    @update:modelValue="handleSelectPrice"
+                  />
                 </span>
               </div>
               <div class="row">
                 <span class="label">Surface</span>
                 <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="surfaceValueDropdownOptions"
-                    :currentValue="optionValues.surfaceValue"
-                    @onSelect="setOptionValues({ surfaceValue: $event.value })"
+                  <Select
+                    v-model="optionValues.surfaceValue"
+                    @update:model-value="
+                      setOptionValues({ surfaceValue: $event })
+                    "
                   >
-                  </Dropdown>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="option in surfaceValueDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </span>
               </div>
               <div class="row">
                 <span class="label">Nombre de pièce(s)</span>
                 <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="roomValueDropdownOptions"
-                    :currentValue="optionValues.roomValue"
-                    @onSelect="setOptionValues({ roomValue: $event.value })"
+                  <Select
+                    v-model="optionValues.roomValue"
+                    @update:model-value="setOptionValues({ roomValue: $event })"
                   >
-                  </Dropdown>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="option in roomValueDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </span>
               </div>
               <div class="row">
                 <span class="label">Meublé</span>
                 <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="furnishedDropdownOptions"
-                    :currentValue="optionValues.furnishedValue"
-                    @onSelect="setOptionValues({ furnishedValue: $event.value })"
+                  <Select
+                    v-model="optionValues.furnishedValue"
+                    @update:model-value="
+                      setOptionValues({ furnishedValue: $event })
+                    "
                   >
-                  </Dropdown>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="option in furnishedDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </span>
               </div>
               <div class="row">
                 <span class="label">Date de construction</span>
                 <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="dateBuiltValueDropdownOptions"
-                    :currentValue="optionValues.dateBuiltValue"
-                    @onSelect="setOptionValues({ dateBuiltValue: $event.value })"
+                  <Select
+                    v-model="optionValues.dateBuiltValue"
+                    @update:model-value="
+                      setOptionValues({ dateBuiltValue: $event })
+                    "
                   >
-                  </Dropdown>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="option in dateBuiltValueDropdownOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </span>
               </div>
             </div>
@@ -131,8 +230,9 @@
                 key="2"
                 class="grid"
                 v-bind:style="{
-                  'grid-template-columns': `repeat(${simulationResults.length +
-                    1}, 2fr)`,
+                  'grid-template-columns': `repeat(${
+                    simulationResults?.length + 1
+                  }, 2fr)`,
                 }"
               >
                 <span class="label">Année de construction</span>
@@ -160,32 +260,40 @@
                     v-for="simulationResult in simulationResults"
                     class="exceeding"
                     v-bind:key="simulationResult.yearBuilt"
-                    >+{{ +(optionValues.priceValue - simulationResult.maxTotalPrice).toFixed(2) }}€
+                    >+{{
+                      +(
+                        optionValues.priceValue - simulationResult.maxTotalPrice
+                      ).toFixed(2)
+                    }}€
                   </span>
                 </template>
               </div>
-              <div
-              class="pushy-text"
-                v-if="!isLegal"
-              >
+              <div class="pushy-text" v-if="!isLegal">
                 <h4>Et maintenant ?</h4>
                 <p>
-                  Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et qu'aucune
-                  <b>mention justificative</b> n'apparait dans les documents, vous
-                  pouvez vous renseigner afin de <b>faire valoir vos droits.</b>
+                  Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et
+                  qu'aucune <b>mention justificative</b> n'apparait dans les
+                  documents, vous pouvez vous renseigner afin de
+                  <b>faire valoir vos droits.</b>
                 </p>
 
                 <p>
-                  Pour plus d’informations, voir le site de votre 
-                  <b><a :href="simulationResults[0].moreInfo" target="_blank">
-                    {{ isMultipleCities ? 'agglomération' : 'ville' }}
-                  </a></b>.
+                  Pour plus d’informations, voir le site de votre
+                  <b
+                    ><a :href="simulationResults[0].moreInfo" target="_blank">
+                      {{ isMultipleCities ? "agglomération" : "ville" }}
+                    </a></b
+                  >.
                 </p>
-                
+
                 <p v-if="optionValues.cityValue === 'paysBasque'">
-                  Pour avoir de l'aide dans vos démarches, contactez l'<b><a :href="'https://www.alda.eus/contact/'" target="_blank">association de défense des locataires Alda</a></b>.
+                  Pour avoir de l'aide dans vos démarches, contactez l'<b
+                    ><a :href="'https://www.alda.eus/contact/'" target="_blank"
+                      >association de défense des locataires Alda</a
+                    ></b
+                  >.
                 </p>
-                
+
                 <h4>Articles intéressants</h4>
                 <div class="reference-links">
                   <a
@@ -211,26 +319,26 @@
               class="row result"
             >
               <template v-if="simulationResultsLoading">
-                <BounceLoader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'"></BounceLoader>
+                <BounceLoader
+                  class="spinner"
+                  :loading="simulationResultsLoading"
+                  color="#fdcd56"
+                  :size="'20px'"
+                ></BounceLoader>
               </template>
               <template v-else>
-                <span>{{
-                  isLegal
-                    ? "Conforme"
-                    : "Non conforme"
-                }}
-                </span>
-                <button
-                  class="more-info-btn"
-                  @click="onClickMoreInfo"
-                >
+                <span>{{ isLegal ? "Conforme" : "Non conforme" }} </span>
+                <button class="more-info-btn" @click="onClickMoreInfo">
                   <template v-if="displayMoreInfo">
                     <span>Retour</span>
                   </template>
                   <template v-else>
                     <span>Cliquez pour plus d'info</span>
                   </template>
-                  <span class="arrow-icon" :class="{ '-is-open': displayMoreInfo }">
+                  <span
+                    class="arrow-icon"
+                    :class="{ '-is-open': displayMoreInfo }"
+                  >
                     <ArrowIcon :iconColor="'white'"></ArrowIcon>
                   </span>
                 </button>
@@ -252,31 +360,38 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import Dropdown from "@/shared/Dropdown.vue";
-import Input from "@/shared/Input.vue";
-import ClassicInput from "@/shared/ClassicInput.vue";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import ArrowIcon from "@/icons/ArrowIcon.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { domain } from "@/helper/config";
+import ArrowIcon from "@/icons/ArrowIcon.vue";
+import StrokeIcon from "@/icons/StrokeIcon.vue";
+import { Input } from "@/shadcn/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
+import FixedButton from "@/shared/FixedButton.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 
-const router = useRouter()
+const router = useRouter();
 
 const idkId = -1;
 
 const optionListRef = ref(null);
 
 const isMounted = ref(false);
-const loading = ref(true)
+const loading = ref(true);
 
 const infoVisible = ref(false);
 const citySelected = ref(undefined);
-const cityDropdownOptions = ref([])
-const dateBuiltValueDropdownOptions = ref([])
+const cityDropdownOptions = ref([]);
+const dateBuiltValueDropdownOptions = ref([]);
 
 const optionValues = ref({});
 const displayMoreInfo = ref(false);
@@ -288,13 +403,13 @@ const isLegal = ref(null);
 const prevCity = ref(null);
 const simulationResultsLoading = ref(false);
 
-let searchingAddressTimeoutRef = null
-let searchingCityTimeoutRef = null
+let searchingAddressTimeoutRef = null;
+let searchingCityTimeoutRef = null;
 let simulationTimeoutRef = null;
 
 const hasHouse = ref(false);
 const isMultipleCities = ref(false);
-let cityInformation = []
+let cityInformation = [];
 
 const initialOptionValues = {
   surfaceValue: undefined,
@@ -304,8 +419,8 @@ const initialOptionValues = {
   furnishedValue: undefined,
   addressValue: undefined,
   isHouseValue: 0,
-  cityTyped: '',
-  addressTyped: '',
+  cityTyped: "",
+  addressTyped: "",
   districtValue: undefined,
   cityValue: citySelected.value,
 };
@@ -319,8 +434,8 @@ const furnishedDropdownOptions = [
     value: "nonFurnished",
     label: "Non meublé",
   },
-]
-      
+];
+
 const isHouseValueDropdownOptions = [
   {
     value: 1,
@@ -330,74 +445,77 @@ const isHouseValueDropdownOptions = [
     value: 0,
     label: "Appartement",
   },
-]
+];
 
-const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()]
-  .map(x => {
-    x += 1;
+const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()].map((x) => {
+  x += 1;
 
-    return {
-      value: x,
-      label: `${x} pièce${x > 1 ? "s" : ""}`,
-    }
-  });
+  return {
+    value: x,
+    label: `${x} pièce${x > 1 ? "s" : ""}`,
+  };
+});
 
-const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
-  .map(x => {
-    const val = x + 9;
-    return {
-      value: val,
-      label: `${val}m²`,
-    }
-  });
+const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()].map((x) => {
+  const val = x + 9;
+  return {
+    value: val,
+    label: `${val}m²`,
+  };
+});
 
 const setDateBuiltRangeDropdownOptions = (datesRange) => {
-  dateBuiltValueDropdownOptions.value = datesRange.reduce((prev, dates, index) => {
-    if (index === 0) {
-      prev.push({
-        value: idkId,
-        label: "Je ne sais pas",
-      })
-    }
+  dateBuiltValueDropdownOptions.value = datesRange.reduce(
+    (prev, dates, index) => {
+      if (index === 0) {
+        prev.push({
+          value: idkId,
+          label: "Je ne sais pas",
+        });
+      }
 
-    if (dates[0] === null) {
-      prev.push({
-        value: dates,
-        label: `Avant ${dates[1]}`,
-      })
-    } else if (dates[1] === null) {
-      prev.push({
-        value: dates,
-        label: `Après ${dates[0]}`,
-      })
-    } else {
-      prev.push({
-        value: dates,
-        label: `${dates[0]}-${dates[1]}`,
-      })
-    }
+      if (dates[0] === null) {
+        prev.push({
+          value: dates,
+          label: `Avant ${dates[1]}`,
+        });
+      } else if (dates[1] === null) {
+        prev.push({
+          value: dates,
+          label: `Après ${dates[0]}`,
+        });
+      } else {
+        prev.push({
+          value: dates,
+          label: `${dates[0]}-${dates[1]}`,
+        });
+      }
 
-    return prev
-  }, [])
-}
+      return prev;
+    },
+    []
+  );
+};
 
 const setCityDropdownOptions = () => {
   cityDropdownOptions.value = cityInformation.reduce((prev, currentValue) => {
     currentValue.cities.forEach(({ value, label }) => {
       const currentCityTyped = optionValues.value.cityTyped?.toLowerCase();
       if (currentCityTyped?.length) {
-        if (label.toLowerCase().includes(currentCityTyped)
-          || value.toLowerCase().includes(currentCityTyped)
-          || currentValue.label.toLowerCase().includes(currentCityTyped)) {
-          prev.push({ value, label, groupBy: currentValue.label })
+        if (
+          label.toLowerCase().includes(currentCityTyped) ||
+          value.toLowerCase().includes(currentCityTyped) ||
+          currentValue.label.toLowerCase().includes(currentCityTyped)
+        ) {
+          prev.push({ value, label, groupBy: currentValue.label });
         }
       } else {
-        prev.push({ value, label, groupBy: currentValue.label })
+        prev.push({ value, label, groupBy: currentValue.label });
       }
-    })
+    });
     return prev;
   }, []);
-}
+};
 
 const setDistrictDropdownOptions = (res) => {
   districtDropdownOptions.value = res.map((district) => ({
@@ -405,7 +523,7 @@ const setDistrictDropdownOptions = (res) => {
     value: district.value,
     label: district.label,
   }));
-}
+};
 
 const setAddressDropdownOptions = (res) => {
   addressDropdownOptions.value = res.map((a) => ({
@@ -413,62 +531,66 @@ const setAddressDropdownOptions = (res) => {
     label: a.properties.label,
     district: a.districtName,
   }));
-}
+};
 
 const setOptionValues = async (newOptionValues) => {
   optionValues.value = {
     ...optionValues.value,
     ...newOptionValues,
-  }
+  };
 
-  await fetchSimulatorResult()
-}
+  await fetchSimulatorResult();
+};
 
 const setCityInformation = async (res) => {
-  const cities = Object.keys(res)
-  cityInformation = cities.reduce((prev, city) => {
-    const currentCity = res[city]
-    const mainCity = currentCity.mainCity
-    if (prev.some(({ value }) => value === mainCity)) return prev
+  const cities = Object.keys(res);
+  cityInformation = cities
+    .reduce((prev, city) => {
+      const currentCity = res[city];
+      const mainCity = currentCity.mainCity;
+      if (prev.some(({ value }) => value === mainCity)) return prev;
 
-    prev.push({
-      value: mainCity,
-      label: currentCity.displayName.mainCity,
-      cities: cities.reduce((cityList, c) => {
-        if (mainCity === res[c].mainCity) {
-          cityList.push({ label: res[c].displayName.city, value: c })
-        }
-        return cityList
-      }, []),
-      dateBuiltRange: currentCity.dateBuiltRange,
-      hasHouse: currentCity.hasHouse,
-    })
-    return prev;
-  }, []).sort((a, b) => {
-    return a.value.localeCompare(b.value);
-  })
+      prev.push({
+        value: mainCity,
+        label: currentCity.displayName.mainCity,
+        cities: cities.reduce((cityList, c) => {
+          if (mainCity === res[c].mainCity) {
+            cityList.push({ label: res[c].displayName.city, value: c });
+          }
+          return cityList;
+        }, []),
+        dateBuiltRange: currentCity.dateBuiltRange,
+        hasHouse: currentCity.hasHouse,
+      });
+      return prev;
+    }, [])
+    .sort((a, b) => {
+      return a.value.localeCompare(b.value);
+    });
 
-  setCityDropdownOptions()
-}
+  setCityDropdownOptions();
+};
 
 const cityChanged = async (newMainCity) => {
   optionValues.value = {
     ...optionValues.value,
     districtValue: undefined,
     addressValue: undefined,
-    cityTyped: '',
-    addressTyped: '',
+    cityTyped: "",
+    addressTyped: "",
     dateBuiltValue: idkId,
-  }
+  };
 
-  const currentCityOption = cityInformation.find((c) => c.value === newMainCity);
-  isMultipleCities.value = currentCityOption.cities.length > 1
+  const currentCityOption = cityInformation.find(
+    (c) => c.value === newMainCity
+  );
+  isMultipleCities.value = currentCityOption.cities.length > 1;
   hasHouse.value = !!currentCityOption?.hasHouse;
 
-  setDateBuiltRangeDropdownOptions([...currentCityOption.dateBuiltRange])
+  setDateBuiltRangeDropdownOptions([...currentCityOption.dateBuiltRange]);
 
   if (citySelected.value !== prevCity.value) {
-    prevCity.value = citySelected.value
+    prevCity.value = citySelected.value;
     await fetchDistricts();
     addressDropdownOptions.value = [];
     simulationResults.value = null;
@@ -488,46 +610,52 @@ const cityChanged = async (newMainCity) => {
 
     await setOptionValues({
       addressValue: undefined,
-      cityTyped: '',
-      addressTyped: '',
+      cityTyped: "",
+      addressTyped: "",
       dateBuiltValue: idkId,
     });
   }
-}
+};
 
 const handleSelectPrice = async (price) => {
   optionValues.value.priceValue = price;
   if (!price) return;
-  
+
   // initialOptionValues.priceValue = price;
-  await setOptionValues({ priceValue: price })
-}
+  await setOptionValues({ priceValue: price });
+};
 
 const handleCloseCity = () => {
-  optionValues.value.cityTyped = '';
+  optionValues.value.cityTyped = "";
   setCityDropdownOptions();
   citySelected.value = initialOptionValues.cityValue;
-}
+};
 
 const handleSelectCity = (city) => {
-  citySelected.value = city.value;
+  citySelected.value = city;
 
   if (!city) return;
-  const mainCity = cityInformation.find((cityInfo) => cityInfo.cities.map((c) => c.value).includes(city.value))?.value
+  const mainCity = cityInformation.find((cityInfo) =>
+    cityInfo.cities.map((c) => c.value).includes(city)
+  )?.value;
 
   initialOptionValues.cityValue = citySelected.value;
-  optionValues.value.cityValue = mainCity
+  optionValues.value.cityValue = mainCity;
 
-  cityChanged(mainCity)
-}
+  cityChanged(mainCity);
+};
 
 const fetchDistricts = async () => {
   try {
-    const rawResult = await fetch(`${domain}districts/list/${optionValues.value.cityValue}?city=${citySelected.value.toLowerCase()}`)
-    const res = await rawResult.json()
-    if (res.message === "token expired") throw res
+    const rawResult = await fetch(
+      `${domain}districts/list/${
+        optionValues.value.cityValue
+      }?city=${citySelected.value.toLowerCase()}`
+    );
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
 
-    setDistrictDropdownOptions(res)
+    setDistrictDropdownOptions(res);
   } catch (err) {
     console.error(err);
   }
@@ -535,26 +663,29 @@ const fetchDistricts = async () => {
 
 const fetchCities = async () => {
   try {
-    const rawResult = await fetch(`${domain}cities/list`)
-    const res = await rawResult.json()
-    if (res.message === "token expired") throw res
+    const rawResult = await fetch(`${domain}cities/list`);
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
 
-    await setCityInformation(res)
+    await setCityInformation(res);
 
-    loading.value = false
+    loading.value = false;
   } catch (err) {
     console.error(err);
   }
 };
 
 const fetchSimulatorResult = async () => {
-  if (optionValues.value.cityValue === undefined
-    || optionValues.value.surfaceValue === undefined
-    || optionValues.value.roomValue === undefined
-    || optionValues.value.isHouseValue === undefined
-    || optionValues.value.furnishedValue === undefined
-    || optionValues.value.districtValue === undefined
-    || optionValues.value.priceValue === undefined) return;
+  if (
+    optionValues.value.cityValue === undefined ||
+    optionValues.value.surfaceValue === undefined ||
+    optionValues.value.roomValue === undefined ||
+    optionValues.value.isHouseValue === undefined ||
+    optionValues.value.furnishedValue === undefined ||
+    optionValues.value.districtValue === undefined ||
+    optionValues.value.priceValue === undefined
+  )
+    return;
 
   simulationResultsLoading.value = true;
 
@@ -584,9 +715,9 @@ const fetchSimulatorResult = async () => {
         `${domain}simulator/${optionValues.value.cityValue}${
           strOptions ? "?" + strOptions : ""
         }`
-      )
-      const res = await rawResult.json()
-      if (res.message === "token expired") throw res
+      );
+      const res = await rawResult.json();
+      if (res.message === "token expired") throw res;
 
       simulationResults.value = res;
       isLegal.value = res.length && res.some((r) => r.isLegal);
@@ -595,26 +726,26 @@ const fetchSimulatorResult = async () => {
       console.error(err);
     }
   }, 300);
-}
+};
 
 const onLeaving = () => {
   setTimeout(() => {
     router.push({ path: "/" });
   }, 400);
-}
+};
 
 const handleSearchingCity = async (city) => {
-  if (searchingCityTimeoutRef !== null) clearTimeout(searchingCityTimeoutRef)
+  if (searchingCityTimeoutRef !== null) clearTimeout(searchingCityTimeoutRef);
 
   optionValues.value = {
     ...optionValues.value,
     cityTyped: city,
-  }
-  
+  };
+
   searchingCityTimeoutRef = setTimeout(async () => {
-    setCityDropdownOptions()
+    setCityDropdownOptions();
   }, 200);
-}
+};
 
 const handleSearchingAddress = async (address) => {
   optionValues.value = {
@@ -622,50 +753,53 @@ const handleSearchingAddress = async (address) => {
     districtValue: undefined,
     addressValue: undefined,
     addressTyped: address,
-  }
+  };
 
-  if (address.trim().length < 4) return
+  if (address.trim().length < 4) return;
 
-  if (searchingAddressTimeoutRef !== null) clearTimeout(searchingAddressTimeoutRef)
+  if (searchingAddressTimeoutRef !== null)
+    clearTimeout(searchingAddressTimeoutRef);
 
   searchingAddressTimeoutRef = setTimeout(async () => {
     try {
       const rawResult = await fetch(
-        `${domain}districts/address/${optionValues.value.cityValue}?q=${address.trim()}&city=${citySelected.value.toLowerCase()}`,
-      )
-      const res = await rawResult.json()
-      if (res.message === "token expired") throw res
-      setAddressDropdownOptions(res)
+        `${domain}districts/address/${
+          optionValues.value.cityValue
+        }?q=${address.trim()}&city=${citySelected.value.toLowerCase()}`
+      );
+      const res = await rawResult.json();
+      if (res.message === "token expired") throw res;
+      setAddressDropdownOptions(res);
     } catch (err) {
       console.error(err);
     }
   }, 500);
-}
+};
 
 const handleAddressSelect = async (event) => {
   if (event.district) {
     await setOptionValues({
       addressValue: event.value,
       districtValue: event.district,
-    })
+    });
   }
-}
+};
 
 const onReset = () => {
   optionValues.value = {
     ...optionValues.value,
     ...initialOptionValues,
     cityValue: undefined,
-  }
+  };
   addressDropdownOptions.value = [];
   simulationResults.value = null;
   displayMoreInfo.value = false;
-}
+};
 
 const onClickMoreInfo = () => {
-  optionListRef.value.querySelector('div').scrollIntoView(true)
+  optionListRef.value.querySelector("div").scrollIntoView(true);
   displayMoreInfo.value = !displayMoreInfo.value;
-}
+};
 
 const handleClose = () => {
   isMounted.value = false;
@@ -756,7 +890,7 @@ onMounted(async () => {
 
 .option-list .pushy-text .reference-links {
   display: flex;
-  
+
   > a {
     margin-right: 1rem;
   }
@@ -796,17 +930,8 @@ onMounted(async () => {
   width: 65%;
 }
 
-.option-list div > .row .dropdown {
-  display: flex;
-  justify-content: center;
-}
-
 .option-list div > .row .dropdown.input.address {
   margin-bottom: 0.625rem;
-}
-
-.option-list div > .row .dropdown :deep(button) {
-  width: 100%;
 }
 
 .option-list div > .row .info-btn {

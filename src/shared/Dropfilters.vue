@@ -1,14 +1,17 @@
 <template>
   <DropdownMenu :open="isOpen" @update:open="isOpen = $event">
     <DropdownMenuTrigger asChild>
-      <Button variant="default" class="hover:bg-accent hover:text-accent-foreground">
+      <Button
+        variant="default"
+        class="hover:bg-accent hover:text-accent-foreground"
+      >
         Filtres
         <span v-if="filtersCount > 0" class="badge-count">{{
           filtersCount
         }}</span>
       </Button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="absolute w-80">
+    <DropdownMenuContent class="w-screen md:absolute md:w-80 lg:w-96">
       <form class="p-4 space-y-6" @submit.prevent="onSubmit">
         <FormField name="surface">
           <FormItem>
@@ -102,7 +105,6 @@
 </template>
 
 <script setup>
-import { domain } from "@/helper/config";
 import { Button } from "@/shadcn/ui/button";
 import {
   DropdownMenu,
