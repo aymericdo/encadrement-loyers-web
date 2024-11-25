@@ -3,7 +3,7 @@
     <Menu></Menu>
     <router-view />
     <div
-      class="center-wrapper inactivable"
+      class="center-wrapper"
       v-bind:class="{ inactive: route.name !== 'home' }"
     >
       <div>
@@ -33,7 +33,7 @@
   import Footer from "@/components/Footer.vue";
   import Menu from "@/components/menu/Menu.vue";
 
-  import { onMounted, ref } from "vue";
+  import { onMounted } from "vue";
 
   import { useRouter, useRoute } from "vue-router";
 
@@ -63,7 +63,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 8% 24px 0;
+  padding: 4rem 1.25rem 0;
   box-sizing: border-box;
 }
 
@@ -105,7 +105,7 @@
   transition: opacity ease 400ms;
 }
 
-.inactivable {
+.center-wrapper{
   transition: filter ease 400ms;
   pointer-events: auto;
 

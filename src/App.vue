@@ -96,10 +96,6 @@ a:visited {
   }
 }
 
-p {
-  margin: 0;
-}
-
 button:focus {
   outline-style: none !important;
   box-shadow: none !important;

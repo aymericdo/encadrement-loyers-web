@@ -8,7 +8,9 @@
         extraordinaires, etc). Les annonces notées non conformes ne le sont donc
         peut-être pas.
       </p>
-      <p><router-link to="/justification">En savoir plus</router-link></p>
+      <router-link to="/justification">
+        <span class="justification">En savoir plus</span>
+      </router-link>
     </SectionRightPart>
   </Section>
 </template>

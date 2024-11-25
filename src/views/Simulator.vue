@@ -1,361 +1,359 @@
 <template>
   <div id="simulator">
-    <transition name="slide-fade" v-on:leave="onLeaving">
-      <Page2Wrapper v-if="isMounted">
-        <div class="option-list" ref="optionListRef">
-          <transition name="slide-side-r2l">
-            <div key="1" v-if="!displayMoreInfo" class="global-content">
-              <div class="row">
-                <span class="label">Ville</span>
-                <span>
-                  <Select
-                    :value="citySelected"
-                    :open="isCitySelectOpen"
-                    @update:model-value="handleSelectCity"
-                    @update:open="isCitySelectOpen = $event"
-                  >
-                    <SelectTrigger :open="isCitySelectOpen">
-                      <SelectValue :placeholder="'Entre le nom de ta ville'" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup
-                        v-for="group in cityDropdownOptions"
-                        :key="group.groupBy"
-                      >
-                        <SelectLabel>{{ group.groupBy }}</SelectLabel>
-                        <SelectItem :value="group.value" :key="group.value">
-                          {{ group.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div>
-              <div class="row" v-if="districtDropdownOptions.length">
-                <span class="label">Localisation</span>
-                <span>
-                  <Input
-                    class="dropdown address"
-                    :placeholder="'Entre ton adresse...'"
-                    :options="addressDropdownOptions"
-                    :currentValue="optionValues.addressValue"
-                    :textTyped="optionValues.addressTyped"
-                    @onTyping="handleSearchingAddress"
-                    @onSelect="handleAddressSelect($event)"
-                  >
-                  </Input>
-                  <Select
-                    @update:model-value="
-                      setOptionValues({
-                        districtValue: $event.value,
-                        addressValue: undefined,
-                      })
-                    "
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem
-                          v-for="option in addressDropdownOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
-                          {{ option.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div>
-              <div v-if="hasHouse" class="row">
-                <span class="label">Maison</span>
-                <span>
-                  <Select
-                    v-model="optionValues.isHouseValue"
-                    @update:model-value="
-                      setOptionValues({ isHouseValue: $event })
-                    "
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem
-                          v-for="option in isHouseValueDropdownOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
-                          {{ option.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label"
-                  >Prix (hors charges)
-                  <div
-                    class="overlay"
-                    v-if="infoVisible"
-                    @click="infoVisible = false"
-                  ></div>
-                  <button @click="infoVisible = true" class="info-btn">
-                    i
-                  </button>
-                  <div v-if="infoVisible" class="info-section">
-                    Si vous ne connaissez pas votre loyer hors charges, vous
-                    pouvez enlever 10% à votre loyer total.
-                  </div>
-                </span>
-                <span>
-                  <Input
-                    v-model="optionValues.priceValue"
-                    type="number"
-                    :placeholder="'Entre ton loyer'"
-                    :min="0"
-                    :max="10000"
-                    @update:modelValue="handleSelectPrice"
-                  />
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Surface</span>
-                <span>
-                  <Select
-                    v-model="optionValues.surfaceValue"
-                    @update:model-value="
-                      setOptionValues({ surfaceValue: $event })
-                    "
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem
-                          v-for="option in surfaceValueDropdownOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
-                          {{ option.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Nombre de pièce(s)</span>
-                <span>
-                  <Select
-                    v-model="optionValues.roomValue"
-                    @update:model-value="setOptionValues({ roomValue: $event })"
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem
-                          v-for="option in roomValueDropdownOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
-                          {{ option.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Meublé</span>
-                <span>
-                  <Select
-                    v-model="optionValues.furnishedValue"
-                    @update:model-value="
-                      setOptionValues({ furnishedValue: $event })
-                    "
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem
-                          v-for="option in furnishedDropdownOptions"
-                          :key="option.value"
-                          :value="option.value"
-                        >
-                          {{ option.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Date de construction</span>
-                <span>
-                  <Select
-                    v-model="optionValues.dateBuiltValue"
-                    @update:model-value="
-                      setOptionValues({ dateBuiltValue: $event })
-                    "
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
+    <Page2Wrapper :isMounted="isMounted">
+      <div class="option-list" ref="optionListRef">
+        <transition name="slide-side-r2l">
+          <div key="1" v-if="!displayMoreInfo" class="global-content">
+            <div class="row">
+              <span class="label">Ville</span>
+              <span>
+                <Select
+                  :value="citySelected"
+                  :open="isCitySelectOpen"
+                  @update:model-value="handleSelectCity"
+                  @update:open="isCitySelectOpen = $event"
+                >
+                  <SelectTrigger :open="isCitySelectOpen">
+                    <SelectValue :placeholder="'Entre le nom de ta ville'" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup
+                      v-for="group in cityDropdownOptions"
+                      :key="group.groupBy"
+                    >
+                      <SelectLabel>{{ group.groupBy }}</SelectLabel>
+                      <SelectItem :value="group.value" :key="group.value">
+                        {{ group.label }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </span>
+            </div>
+            <div class="row" v-if="districtDropdownOptions.length">
+              <span class="label">Localisation</span>
+              <span>
+                <Input
+                  class="dropdown address"
+                  :placeholder="'Entre ton adresse...'"
+                  :options="addressDropdownOptions"
+                  :currentValue="optionValues.addressValue"
+                  :textTyped="optionValues.addressTyped"
+                  @onTyping="handleSearchingAddress"
+                  @onSelect="handleAddressSelect($event)"
+                >
+                </Input>
+                <Select
+                  @update:model-value="
+                    setOptionValues({
+                      districtValue: $event.value,
+                      addressValue: undefined,
+                    })
+                  "
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
                       <SelectItem
-                        v-for="option in dateBuiltValueDropdownOptions"
+                        v-for="option in addressDropdownOptions"
                         :key="option.value"
                         :value="option.value"
                       >
                         {{ option.label }}
                       </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </span>
             </div>
-          </transition>
-          <transition name="slide-side-l2r">
-            <div v-if="displayMoreInfo" class="global-content result">
-              <div
-                key="2"
-                class="grid"
-                v-bind:style="{
-                  'grid-template-columns': `repeat(${
-                    simulationResults?.length + 1
-                  }, 2fr)`,
-                }"
-              >
-                <span class="label">Année de construction</span>
-                <span
-                  v-for="simulationResult in simulationResults"
-                  v-bind:key="simulationResult.yearBuilt"
+            <div v-if="hasHouse" class="row">
+              <span class="label">Maison</span>
+              <span>
+                <Select
+                  v-model="optionValues.isHouseValue"
+                  @update:model-value="
+                    setOptionValues({ isHouseValue: $event })
+                  "
                 >
-                  {{ simulationResult.yearBuilt }}
-                </span>
-                <span class="label">Prix maximum au m²</span>
-                <span
-                  v-for="simulationResult in simulationResults"
-                  v-bind:key="simulationResult.yearBuilt"
-                  >{{ simulationResult.maxPrice }}€
-                </span>
-                <span class="label">Prix maximum hors charges</span>
-                <span
-                  v-for="simulationResult in simulationResults"
-                  v-bind:key="simulationResult.yearBuilt"
-                  >{{ simulationResult.maxTotalPrice }}€
-                </span>
-                <template v-if="!isLegal">
-                  <span class="label">Dépassement</span>
-                  <span
-                    v-for="simulationResult in simulationResults"
-                    class="exceeding"
-                    v-bind:key="simulationResult.yearBuilt"
-                    >+{{
-                      +(
-                        optionValues.priceValue - simulationResult.maxTotalPrice
-                      ).toFixed(2)
-                    }}€
-                  </span>
-                </template>
-              </div>
-              <div class="pushy-text" v-if="!isLegal">
-                <h4>Et maintenant ?</h4>
-                <p>
-                  Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et
-                  qu'aucune <b>mention justificative</b> n'apparait dans les
-                  documents, vous pouvez vous renseigner afin de
-                  <b>faire valoir vos droits.</b>
-                </p>
-
-                <p>
-                  Pour plus d’informations, voir le site de votre
-                  <b
-                    ><a :href="simulationResults[0].moreInfo" target="_blank">
-                      {{ isMultipleCities ? "agglomération" : "ville" }}
-                    </a></b
-                  >.
-                </p>
-
-                <p v-if="optionValues.cityValue === 'paysBasque'">
-                  Pour avoir de l'aide dans vos démarches, contactez l'<b
-                    ><a :href="'https://www.alda.eus/contact/'" target="_blank"
-                      >association de défense des locataires Alda</a
-                    ></b
-                  >.
-                </p>
-
-                <h4>Articles intéressants</h4>
-                <div class="reference-links">
-                  <a
-                    href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
-                    target="_blank"
-                  >
-                    Le Parisien
-                  </a>
-                  <a
-                    href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
-                    target="_blank"
-                  >
-                    Le Figaro Immo
-                  </a>
-                </div>
-              </div>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="option in isHouseValueDropdownOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </span>
             </div>
-          </transition>
-
-          <transition name="slide-fade">
-            <div
-              v-if="simulationResultsLoading || simulationResults !== null"
-              class="row result"
-            >
-              <template v-if="simulationResultsLoading">
-                <BounceLoader
-                  class="spinner"
-                  :loading="simulationResultsLoading"
-                  color="#fdcd56"
-                  :size="'20px'"
-                ></BounceLoader>
-              </template>
-              <template v-else>
-                <span>{{ isLegal ? "Conforme" : "Non conforme" }} </span>
-                <button class="more-info-btn" @click="onClickMoreInfo">
-                  <template v-if="displayMoreInfo">
-                    <span>Retour</span>
-                  </template>
-                  <template v-else>
-                    <span>Cliquez pour plus d'info</span>
-                  </template>
-                  <span
-                    class="arrow-icon"
-                    :class="{ '-is-open': displayMoreInfo }"
-                  >
-                    <ArrowIcon :iconColor="'white'"></ArrowIcon>
-                  </span>
+            <div class="row">
+              <span class="label"
+                >Prix (hors charges)
+                <div
+                  class="overlay"
+                  v-if="infoVisible"
+                  @click="infoVisible = false"
+                ></div>
+                <button @click="infoVisible = true" class="info-btn">
+                  i
                 </button>
+                <div v-if="infoVisible" class="info-section">
+                  Si vous ne connaissez pas votre loyer hors charges, vous
+                  pouvez enlever 10% à votre loyer total.
+                </div>
+              </span>
+              <span>
+                <Input
+                  v-model="optionValues.priceValue"
+                  type="number"
+                  :placeholder="'Entre ton loyer'"
+                  :min="0"
+                  :max="10000"
+                  @update:modelValue="handleSelectPrice"
+                />
+              </span>
+            </div>
+            <div class="row">
+              <span class="label">Surface</span>
+              <span>
+                <Select
+                  v-model="optionValues.surfaceValue"
+                  @update:model-value="
+                    setOptionValues({ surfaceValue: $event })
+                  "
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="option in surfaceValueDropdownOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </span>
+            </div>
+            <div class="row">
+              <span class="label">Nombre de pièce(s)</span>
+              <span>
+                <Select
+                  v-model="optionValues.roomValue"
+                  @update:model-value="setOptionValues({ roomValue: $event })"
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="option in roomValueDropdownOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </span>
+            </div>
+            <div class="row">
+              <span class="label">Meublé</span>
+              <span>
+                <Select
+                  v-model="optionValues.furnishedValue"
+                  @update:model-value="
+                    setOptionValues({ furnishedValue: $event })
+                  "
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="option in furnishedDropdownOptions"
+                        :key="option.value"
+                        :value="option.value"
+                      >
+                        {{ option.label }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </span>
+            </div>
+            <div class="row">
+              <span class="label">Date de construction</span>
+              <span>
+                <Select
+                  v-model="optionValues.dateBuiltValue"
+                  @update:model-value="
+                    setOptionValues({ dateBuiltValue: $event })
+                  "
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="option in dateBuiltValueDropdownOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </span>
+            </div>
+          </div>
+        </transition>
+        <transition name="slide-side-l2r">
+          <div v-if="displayMoreInfo" class="global-content result">
+            <div
+              key="2"
+              class="grid"
+              v-bind:style="{
+                'grid-template-columns': `repeat(${
+                  simulationResults?.length + 1
+                }, 2fr)`,
+              }"
+            >
+              <span class="label">Année de construction</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
+              >
+                {{ simulationResult.yearBuilt }}
+              </span>
+              <span class="label">Prix maximum au m²</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxPrice }}€
+              </span>
+              <span class="label">Prix maximum hors charges</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxTotalPrice }}€
+              </span>
+              <template v-if="!isLegal">
+                <span class="label">Dépassement</span>
+                <span
+                  v-for="simulationResult in simulationResults"
+                  class="exceeding"
+                  v-bind:key="simulationResult.yearBuilt"
+                  >+{{
+                    +(
+                      optionValues.priceValue - simulationResult.maxTotalPrice
+                    ).toFixed(2)
+                  }}€
+                </span>
               </template>
             </div>
-          </transition>
-          <div class="row actions-btn">
-            <button class="reset-btn" @click="onReset">Réinitialiser</button>
+            <div class="pushy-text" v-if="!isLegal">
+              <h4>Et maintenant ?</h4>
+              <p>
+                Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et
+                qu'aucune <b>mention justificative</b> n'apparait dans les
+                documents, vous pouvez vous renseigner afin de
+                <b>faire valoir vos droits.</b>
+              </p>
+
+              <p>
+                Pour plus d’informations, voir le site de votre
+                <b
+                  ><a :href="simulationResults[0].moreInfo" target="_blank">
+                    {{ isMultipleCities ? "agglomération" : "ville" }}
+                  </a></b
+                >.
+              </p>
+
+              <p v-if="optionValues.cityValue === 'paysBasque'">
+                Pour avoir de l'aide dans vos démarches, contactez l'<b
+                  ><a :href="'https://www.alda.eus/contact/'" target="_blank"
+                    >association de défense des locataires Alda</a
+                  ></b
+                >.
+              </p>
+
+              <h4>Articles intéressants</h4>
+              <div class="reference-links">
+                <a
+                  href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
+                  target="_blank"
+                >
+                  Le Parisien
+                </a>
+                <a
+                  href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
+                  target="_blank"
+                >
+                  Le Figaro Immo
+                </a>
+              </div>
+            </div>
           </div>
+        </transition>
+
+        <transition name="slide-fade">
+          <div
+            v-if="simulationResultsLoading || simulationResults !== null"
+            class="row result"
+          >
+            <template v-if="simulationResultsLoading">
+              <BounceLoader
+                class="spinner"
+                :loading="simulationResultsLoading"
+                color="#fdcd56"
+                :size="'20px'"
+              ></BounceLoader>
+            </template>
+            <template v-else>
+              <span>{{ isLegal ? "Conforme" : "Non conforme" }} </span>
+              <button class="more-info-btn" @click="onClickMoreInfo">
+                <template v-if="displayMoreInfo">
+                  <span>Retour</span>
+                </template>
+                <template v-else>
+                  <span>Cliquez pour plus d'info</span>
+                </template>
+                <span
+                  class="arrow-icon"
+                  :class="{ '-is-open': displayMoreInfo }"
+                >
+                  <ArrowIcon :iconColor="'white'"></ArrowIcon>
+                </span>
+              </button>
+            </template>
+          </div>
+        </transition>
+        <div class="row actions-btn">
+          <button class="reset-btn" @click="onReset">Réinitialiser</button>
         </div>
-      </Page2Wrapper>
-    </transition>
-    <div @click="handleClose">
-      <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
-      </FixedButton>
-    </div>
+      </div>
+      <div @click="handleClose">
+        <FixedButton>
+          <StrokeIcon :width="'18px'" :height="'18px'" />
+        </FixedButton>
+      </div>
+    </Page2Wrapper>
   </div>
 </template>
 
@@ -1123,18 +1121,10 @@ onMounted(async () => {
   }
 }
 
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: scale(0);
-}
-
 .slide-side-l2r-enter-active,
 .slide-side-l2r-leave-active,
 .slide-side-r2l-enter-active,
-.slide-side-r2l-leave-active,
-.slide-fade-enter-active,
-.slide-fade-leave-active {
+.slide-side-r2l-leave-active {
   transition: all ease 400ms;
 }
 

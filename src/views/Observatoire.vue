@@ -1,74 +1,69 @@
 <template>
-  <div id="stats">
-    <transition name="slide-fade" v-on:leave="leave">
-      <Page2Wrapper v-if="isMounted">
-        <SectionTitle class="title"
-          >Observatoire de l'encadrement des loyers à
-          {{ city.charAt(0).toUpperCase() + city.slice(1) }}</SectionTitle
-        >
-        <div class="graph-list">
-          <div class="row -paragraph">
-            <p>Pour le premier baromètre de l’Observatoire de l’Encadrement des Loyers à Paris, la Fondation Abbé Pierre nous a contactés pour leur fournir les données que nous avons collectées.</p>
-            <p>Ce fut avec plaisir que nous leur avons partagé nos informations, ainsi que les graphiques que nous pouvons vous présenter ci-dessous.</p>
-            <p>En complément, <router-link to="/stats">cette page</router-link> résume plus globalement l'état de l'encadrement sur plusieurs des villes où il est en application.</p>
-          </div>
+  <Page2Wrapper :isMounted="isMounted">
+    <SectionTitle class="title"
+      >Observatoire de l'encadrement des loyers à
+      {{ city.charAt(0).toUpperCase() + city.slice(1) }}</SectionTitle
+    >
+    <div class="graph-list">
+      <div class="row -paragraph">
+        <p>Pour le premier baromètre de l’Observatoire de l’Encadrement des Loyers à Paris, la Fondation Abbé Pierre nous a contactés pour leur fournir les données que nous avons collectées.</p>
+        <p>Ce fut avec plaisir que nous leur avons partagé nos informations, ainsi que les graphiques que nous pouvons vous présenter ci-dessous.</p>
+        <p>En complément, <router-link to="/stats">cette page</router-link> résume plus globalement l'état de l'encadrement sur plusieurs des villes où il est en application.</p>
+      </div>
 
-          <div class="row">
-            <a target="_blank" href="https://www.fondation-abbe-pierre.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers">L'Observatoire 2024</a>
-          </div>
+      <div class="row">
+        <a target="_blank" href="https://www.fondation-abbe-pierre.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers">L'Observatoire 2024</a>
+      </div>
 
-          <div class="row slider-section">
-            <Slider
-              class="slider"
-              v-model="monthValue"
-              :min="1"
-              :max="3"
-              :format="monthFormatValueFct"
-            />
-          </div>
+      <div class="row slider-section">
+        <Slider
+          class="slider"
+          v-model="monthValue"
+          :min="1"
+          :max="3"
+          :format="monthFormatValueFct"
+        />
+      </div>
 
-          <div class="row">
-            <span>sur les {{ monthsNb }} derniers mois</span>
-          </div>
+      <div class="row">
+        <span>sur les {{ monthsNb }} derniers mois</span>
+      </div>
 
-          <Section class="stats-section -large -first">
-            <Graph
-              :id="'is-legal-per-website'"
-              :city="city"
-              :date="datesValues"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </Section>
-          <Section class="stats-section -large">
-            <Graph
-              :id="'is-legal-per-renter'"
-              :city="city"
-              :date="datesValues"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </Section>
-          <Section class="stats-section -large">
-            <Graph
-              :id="'is-legal-per-classic-renter'"
-              :city="city"
-              :date="datesValues"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </Section>
-        </div>
-      </Page2Wrapper>
-    </transition>
+      <Section class="stats-section -large -first">
+        <Graph
+          :id="'is-legal-per-website'"
+          :city="city"
+          :date="datesValues"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </Section>
+      <Section class="stats-section -large">
+        <Graph
+          :id="'is-legal-per-renter'"
+          :city="city"
+          :date="datesValues"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </Section>
+      <Section class="stats-section -large">
+        <Graph
+          :id="'is-legal-per-classic-renter'"
+          :city="city"
+          :date="datesValues"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </Section>
+    </div>
     <div @click="isMounted = false">
       <FixedButton>
         <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
-  </div>
+  </Page2Wrapper>
 </template>
 
 <script setup>
   import { ref, watchEffect, onBeforeUnmount, onMounted } from "vue";
-  import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
   import SectionTitle from "@/shared/SectionTitle.vue";
   import StrokeIcon from "@/icons/StrokeIcon.vue";
   import FixedButton from "@/shared/FixedButton.vue";
@@ -83,8 +78,6 @@
   
   import "@vueform/slider/themes/default.css";
   
-  const router = useRouter();
-
   const monthValue = ref(2);
   const isMounted = ref(false);
   const city = ref('paris');
@@ -139,12 +132,6 @@
       .catch((err) => {
         serverError.value = getErrorMessage(err);
       });
-  }
-
-  const leave = () => {
-    setTimeout(() => {
-      router.push({ path: "/" });
-    }, 400);
   }
 
   const getMonthNbValue = (value) => {
@@ -239,17 +226,6 @@
   justify-content: center;
   flex: 1;
   width: 100%;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all ease 400ms;
 }
 
 .graph {

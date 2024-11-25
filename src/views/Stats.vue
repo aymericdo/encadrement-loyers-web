@@ -1,189 +1,185 @@
 <template>
-  <div id="stats">
-    <transition name="slide-fade" v-on:leave="leave">
-      <Page2Wrapper class="page2-wrapper" v-if="isMounted">
-        <div class="welcome-section">
-          <SectionTitle class="title">Stats</SectionTitle>
+  <Page2Wrapper :isMounted="isMounted">
+    <div class="welcome-section">
+      <SectionTitle class="title">Stats</SectionTitle>
 
-          <div class="row">
-            <div class="welcome">
-              <div v-if="!isWelcomeTextLoaded" class="welcome-spinner">
-                <BounceLoader
-                  class="spinner"
-                  :loading="!isWelcomeTextLoaded"
-                  color="#fdcd56"
-                  :size="'60px'"
-                ></BounceLoader>
-              </div>
-              <template v-if="isWelcomeTextLoaded">
-                <div>
-                  <span>Sur les</span>
-                  <span class="yellow"
-                    >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
-                  >
-                  <span>annonces étudiées au total</span>
-                  <template v-if="city !== 'all'">
-                    à<span class="yellow"
-                      >&nbsp;{{
-                        cityDropdownOptions.find((c) => c.value === city).label
-                      }}</span
-                    >
-                  </template>
-                  <span>,</span>
-                  <span class="yellow"
-                    >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
-                  >
-                  <span>sont non conformes.</span>
-                </div>
-                <div>
-                  <span>Pour les annonces d'une surface inférieure à</span>
-                  <span class="yellow"
-                    >&nbsp;{{ welcomeData.pivotSurface }}m²</span
-                  ><span>, il y a</span>
-                  <span class="yellow"
-                    >&nbsp;{{
-                      welcomeData.isIllegalPercentageUnderPivot
-                    }}%&nbsp;</span
-                  >
-                  <span>d'annonces non conformes.</span>
-                </div>
-              </template>
-            </div>
-
-            <div class="city-dropdown">
-              <Select
-                v-model="city"
-                :open="isCitySelectOpen"
-                @update:model-value="changeCity"
-                @update:open="isCitySelectOpen = $event"
+      <div class="row">
+        <div class="welcome">
+          <div v-if="!isWelcomeTextLoaded" class="flex justify-center">
+            <BounceLoader
+              class="spinner"
+              :loading="!isWelcomeTextLoaded"
+              color="#fdcd56"
+              :size="'60px'"
+            ></BounceLoader>
+          </div>
+          <template v-if="isWelcomeTextLoaded">
+            <div>
+              <span>Sur les</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
               >
-                <SelectTrigger :open="isCitySelectOpen">
-                  <SelectValue placeholder="Choisir une ville..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      v-for="{ label, value } in cityDropdownOptions"
-                      :value="value"
-                      :key="value"
-                    >
-                      {{ label }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <span>annonces étudiées au total</span>
+              <template v-if="city !== 'all'">
+                à<span class="yellow"
+                  >&nbsp;{{
+                    cityDropdownOptions.find((c) => c.value === city).label
+                  }}</span
+                >
+              </template>
+              <span>,</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
+              >
+              <span>sont non conformes.</span>
             </div>
-          </div>
-          <div class="row">
-            <Slider
-              class="slider"
-              v-model="dateValue"
-              :min="0"
-              :max="maxDateValue"
-              :format="dateValueFct"
-              @change="setDateValueStr"
-            />
-          </div>
+            <div>
+              <span>Pour les annonces d'une surface inférieure à</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.pivotSurface }}m²</span
+              ><span>, il y a</span>
+              <span class="yellow"
+                >&nbsp;{{
+                  welcomeData.isIllegalPercentageUnderPivot
+                }}%&nbsp;</span
+              >
+              <span>d'annonces non conformes.</span>
+            </div>
+          </template>
         </div>
 
-        <div class="graph-list">
-          <div class="stats-section -large">
-            <Graph
-              ref="isLegalVariation"
-              :id="'is-legal-variation'"
-              :city="city"
-              :date="dateValueStr"
-              :options="legalPercentageOptions"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-            <div class="is-legal-variation-dropdown">
-              <Dropfilters
-                @onSubmit="changeFilters($event)"
-                @onReset="changeFilters()"
-                @onDropFilterOpeningChanged="showCloseButton = !$event"
-                :city="city"
-                :options="legalPercentageOptions"
-                :filtersCount="legalPercentageFiltersCount"
-              ></Dropfilters>
-            </div>
-          </div>
-
-          <div class="stats-section-row" v-if="city !== 'all'">
-            <div class="stats-section">
-              <Graph
-                :id="'chloropleth-map'"
-                :date="dateValueStr"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-
-            <div class="stats-section">
-              <Graph
-                :id="'map'"
-                :date="dateValueStr"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-          </div>
-
-          <div
-            class="stats-section -large"
-            v-if="
-              city !== 'all' &&
-              cityDropdownOptions.find((value) => value.value === city)
-                ?.multipleCities
-            "
+        <div class="city-dropdown">
+          <Select
+            v-model="city"
+            :open="isCitySelectOpen"
+            @update:model-value="changeCity"
+            @update:open="isCitySelectOpen = $event"
           >
-            <Graph
-              :id="'chloropleth-cities-map'"
-              :date="dateValueStr"
-              :city="city"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </div>
-
-          <div class="stats-section -large">
-            <Graph
-              :id="'is-legal-per-surface'"
-              :date="dateValueStr"
-              :city="city"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </div>
-
-          <div v-if="city === 'all'" class="stats-section -large">
-            <Graph
-              :id="'price-variation'"
-              :date="dateValueStr"
-              :city="city"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </div>
-
-          <div v-if="city !== 'all'" class="stats-section-row">
-            <div class="stats-section">
-              <Graph
-                :id="'price-difference'"
-                :date="dateValueStr"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-
-            <div class="stats-section">
-              <Graph
-                :id="'price-variation'"
-                :date="dateValueStr"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-          </div>
+            <SelectTrigger :open="isCitySelectOpen">
+              <SelectValue placeholder="Choisir une ville..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  v-for="{ label, value } in cityDropdownOptions"
+                  :value="value"
+                  :key="value"
+                >
+                  {{ label }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
-      </Page2Wrapper>
-    </transition>
+      </div>
+      <div class="row">
+        <Slider
+          class="slider"
+          v-model="dateValue"
+          :min="0"
+          :max="maxDateValue"
+          :format="dateValueFct"
+          @change="setDateValueStr"
+        />
+      </div>
+    </div>
+
+    <div class="graph-list">
+      <div class="stats-section -large">
+        <Graph
+          ref="isLegalVariation"
+          :id="'is-legal-variation'"
+          :city="city"
+          :date="dateValueStr"
+          :options="legalPercentageOptions"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+        <div class="is-legal-variation-dropdown">
+          <Dropfilters
+            @onSubmit="changeFilters($event)"
+            @onReset="changeFilters()"
+            @onDropFilterOpeningChanged="showCloseButton = !$event"
+            :city="city"
+            :options="legalPercentageOptions"
+            :filtersCount="legalPercentageFiltersCount"
+          ></Dropfilters>
+        </div>
+      </div>
+
+      <div class="stats-section-row" v-if="city !== 'all'">
+        <div class="stats-section">
+          <Graph
+            :id="'chloropleth-map'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+
+        <div class="stats-section">
+          <Graph
+            :id="'map'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+      </div>
+
+      <div
+        class="stats-section -large"
+        v-if="
+          city !== 'all' &&
+          cityDropdownOptions.find((value) => value.value === city)
+            ?.multipleCities
+        "
+      >
+        <Graph
+          :id="'chloropleth-cities-map'"
+          :date="dateValueStr"
+          :city="city"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </div>
+
+      <div class="stats-section -large">
+        <Graph
+          :id="'is-legal-per-surface'"
+          :date="dateValueStr"
+          :city="city"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </div>
+
+      <div v-if="city === 'all'" class="stats-section -large">
+        <Graph
+          :id="'price-variation'"
+          :date="dateValueStr"
+          :city="city"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </div>
+
+      <div v-if="city !== 'all'" class="stats-section-row">
+        <div class="stats-section">
+          <Graph
+            :id="'price-difference'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+
+        <div class="stats-section">
+          <Graph
+            :id="'price-variation'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+      </div>
+    </div>
     <div
       class="fixed-btn"
       :class="{ 'show-on-mobile': showCloseButton }"
@@ -193,7 +189,7 @@
         <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
-  </div>
+  </Page2Wrapper>
 </template>
 
 <script setup>
@@ -390,12 +386,6 @@ const changeFilters = (opt = null) => {
     : { ...initialLegalPercentageOptions };
 };
 
-const leave = () => {
-  setTimeout(() => {
-    router.push({ path: "/" });
-  }, 400);
-};
-
 const getDateFromValue = (value) => {
   const copy = new Date(Number(realStartDate));
   copy.setDate(realStartDate.getDate() + value);
@@ -428,36 +418,21 @@ const setDateValueStr = (dateValue) => {
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;
 
-#stats {
+.welcome-section,
+.graph-list {
+  min-width: 100%;
+}
+
+.welcome-section {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
-.page2-wrapper {
-  padding: 24px;
-  box-sizing: border-box;
-  align-items: baseline;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all ease 400ms;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .graph-list {
-  width: 100%;
+  padding: 1.25rem;
 }
 
 .title {
@@ -479,12 +454,10 @@ const setDateValueStr = (dateValue) => {
   flex-direction: column;
   justify-content: space-between;
   padding: 1.25rem;
-  width: 90%;
   margin-bottom: 1.25rem;
 }
 
 .welcome-section .city-dropdown {
-  min-width: 200px;
   flex: 1;
 }
 
@@ -519,12 +492,6 @@ const setDateValueStr = (dateValue) => {
   & div > span.yellow {
     color: $yellow;
   }
-}
-
-.welcome > .welcome-spinner {
-  min-height: 5rem;
-  display: flex;
-  justify-content: center;
 }
 
 .is-legal-variation-dropdown {
