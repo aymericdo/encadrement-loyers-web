@@ -44,7 +44,6 @@
                             {{ addressSelected
                               ? addressDropdownOptions.find((option) => option.value === addressSelected)?.label
                               : "Entre ton adresse" }}
-                            <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent class="popover-content" v-bind:style="{
@@ -110,32 +109,6 @@
                 </FormField>
               </template>
 
-              <!-- <div class="row" v-if="districtDropdownOptions.length">
-                <span class="label">Localisation</span>
-                <span class="space-y-4">
-                  <Input class="dropdown address" :placeholder="'Entre ton adresse...'" :options="addressDropdownOptions"
-                    :currentValue="optionValues.addressValue" :textTyped="optionValues.addressTyped"
-                    @onTyping="handleSearchingAddress" @onSelect="handleAddressSelect($event)">
-                  </Input>
-                  <Select @update:model-value="
-                    setOptionValues({
-                      districtValue: $event.value,
-                      addressValue: undefined,
-                    })
-                    ">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem v-for="option in addressDropdownOptions" :key="option.value" :value="option.value">
-                          {{ option.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </span>
-              </div> -->
               <div v-if="hasHouse" class="row">
                 <span class="label">Maison</span>
                 <span>
