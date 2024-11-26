@@ -39,19 +39,17 @@
                         @onTyping="handleSearchingAddress" @onSelect="handleAddressSelect($event)">
                       </Input> -->
                       <div>
-                        <!-- <div class="relative w-full items-center">
+                        <div class="relative w-full items-center">
                           <Input type="text" :placeholder="'Entre ton adresse'" class="pl-10" @update:model-value="handleSearchingAddress" />
                           <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
                             <Search class="size-6 text-muted-foreground" />
                           </span>
-                        </div> -->
+                        </div>
 
-                        <!-- <Select v-if="!!addressDropdownOptions.length"> -->
-                        <Select>
-                          <!-- <SelectTrigger>
+                        <Select v-if="!!addressDropdownOptions.length">
+                          <SelectTrigger>
                             <SelectValue :placeholder="'Choisis ton adresse'" />
-                          </SelectTrigger> -->
-                          <Input type="text" :placeholder="'Entre ton adresse'" class="pl-10" @update:model-value="handleSearchingAddress" />
+                          </SelectTrigger>
                           <SelectContent>
                             <SelectGroup v-for="option in addressDropdownOptions">
                               <SelectItem :key="option.value" :value="option.value">
