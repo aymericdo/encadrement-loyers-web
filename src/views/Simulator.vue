@@ -34,31 +34,54 @@
                   <FormItem>
                     <FormLabel>Localisation</FormLabel>
                     <div class="space-y-6">
-                      <!-- <Input :placeholder="'Entre ton adresse'" :options="addressDropdownOptions"
-                        :currentValue="optionValues.addressValue" :textTyped="optionValues.addressTyped"
-                        @onTyping="handleSearchingAddress" @onSelect="handleAddressSelect($event)">
-                      </Input> -->
-                      <div>
-                        <div class="relative w-full items-center">
-                          <Input type="text" :placeholder="'Entre ton adresse'" class="pl-10" @update:model-value="handleSearchingAddress" />
-                          <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-                            <Search class="size-6 text-muted-foreground" />
-                          </span>
-                        </div>
-
-                        <Select v-if="!!addressDropdownOptions.length">
-                          <SelectTrigger>
-                            <SelectValue :placeholder="'Choisis ton adresse'" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup v-for="option in addressDropdownOptions">
-                              <SelectItem :key="option.value" :value="option.value">
-                                {{ option.label }}
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <Popover v-model:open="isAddressPopoverOpen">
+                        <PopoverTrigger as-child>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            :aria-expanded="isAddressPopoverOpen"
+                          >
+                            {{ addressSelected
+                              ? addressDropdownOptions.find((option) => option.value === addressSelected)?.label
+                              : "Entre ton adresse" }}
+                            <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent class="popover-content" v-bind:style="{
+                          'width': 'var(--radix-popover-trigger-width)',
+                        }">
+                          <Command
+                            @update:searchTerm="handleSearchingAddress" :filterFunction="(list) => list"
+                            @update:modelValue="(addressSelected) => form.setFieldValue('district', addressDropdownOptions.find((option) => option.value === addressSelected)?.district)"
+                          >
+                            <CommandInput class="h-9" placeholder="Rechercher..." />
+                            <CommandEmpty>Pas d'adresse trouvée.</CommandEmpty>
+                            <CommandList>
+                              <CommandGroup>
+                                <CommandItem
+                                  v-for="option in addressDropdownOptions"
+                                  :key="option.value"
+                                  :value="option.value"
+                                  @select="(ev) => {
+                                    if (typeof ev.detail.value === 'string') {
+                                      addressSelected = ev.detail.value
+                                    }
+                                    isAddressPopoverOpen = false
+                                  }"
+                                >
+                                <CheckIcon
+                                  :class="cn(
+                                    'mr-2 h-4 w-4',
+                                    addressSelected === option.value ? 'opacity-100' : 'opacity-0',
+                                  )"
+                                />
+                                  {{ option.label }}
+                                </CommandItem>
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
 
                       <Select v-bind="componentField">
                         <SelectTrigger :open="isCitySelectOpen">
@@ -134,11 +157,9 @@
                 </span>
               </div>
               <div class="row">
-                <span class="label">Prix (hors charges)
+                <span class="label flex items-center relative">Prix (hors charges)
                   <div class="overlay" v-if="infoVisible" @click="infoVisible = false"></div>
-                  <button @click="infoVisible = true" class="info-btn">
-                    i
-                  </button>
+                  <button @click="infoVisible = true" class="info-btn">i</button>
                   <div v-if="infoVisible" class="info-section">
                     Si vous ne connaissez pas votre loyer hors charges, vous
                     pouvez enlever 10% à votre loyer total.
@@ -330,7 +351,6 @@
 import { domain } from "@/helper/config";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
-import { Search } from 'lucide-vue-next'
 import { Input } from "@/shadcn/ui/input";
 import { debounce } from '@/tools/debounce';
 import {
@@ -342,17 +362,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/shadcn/ui/popover'
+import {
+  Button,
+} from '@/shadcn/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from '@/shadcn/ui/command'
+import { CaretSortIcon, CheckIcon } from "@radix-icons/vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
 import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
+import { cn } from '@/lib/utils';
 import * as z from 'zod'
-
-const router = useRouter();
 
 const formSchema = toTypedSchema(z.object({
   city: z.string(),
@@ -388,7 +423,10 @@ const optionListRef = ref(null);
 
 const isMounted = ref(false);
 const loading = ref(true);
+
 const isCitySelectOpen = ref(false);
+const isAddressPopoverOpen = ref(false)
+const addressSelected = ref('')
 
 const infoVisible = ref(false);
 
@@ -541,7 +579,6 @@ const setAddressDropdownOptions = (res) => {
     label: a.properties.label,
     district: a.districtName,
   }));
-  console.log(addressDropdownOptions.value)
 };
 
 const onReset = () => {
@@ -788,7 +825,9 @@ const fetchingAddress = async (address) => {
   //   addressTyped: address,
   // };
 
-  if (address.trim().length < 4) return;
+  if (address.trim().length < 4) {
+    return;
+  }
 
   try {
     const rawResult = await fetch(
@@ -844,7 +883,6 @@ onMounted(async () => {
 
 .option-list {
   position: relative;
-  margin-top: 4px;
   box-sizing: border-box;
   width: 100%;
   max-width: 800px;
@@ -924,28 +962,25 @@ onMounted(async () => {
   margin-bottom: 0.625rem;
 }
 
-.option-list div>.row .info-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 1rem;
+.option-list .row .info-btn {
+  margin-left: 0.625rem;
   z-index: 4;
   background: white;
   color: black;
   border: solid 1px white;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 12px;
 }
 
-.option-list .info-section {
+.option-list .row .info-section {
   position: absolute;
   top: 0;
-  right: 0;
-  transform: translate(90%, -90%);
+  transform: translate(0, -100%);
   z-index: 4;
   background: white;
   color: black;
