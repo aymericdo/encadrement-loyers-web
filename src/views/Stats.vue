@@ -100,7 +100,6 @@
             @onReset="changeFilters()"
             :city="city"
             :options="legalPercentageOptions"
-            :filtersCount="legalPercentageFiltersCount"
           ></Dropfilters>
         </div>
       </div>
@@ -220,7 +219,6 @@ const route = useRoute();
 const router = useRouter();
 const showCloseButton = ref(true);
 const isLegalVariation = ref(null);
-const legalPercentageFiltersCount = ref(0);
 const cityDropdownOptions = ref([]);
 const isMounted = ref(false);
 const city = ref(camelize(route.params.city) || "paris");
@@ -266,27 +264,6 @@ watch(route, (newValue, oldValue) => {
     isWelcomeTextLoaded.value = false;
   }
 });
-
-watchEffect(
-  () => {
-    if (legalPercentageOptions.value) {
-      let cpt = 0;
-      Object.keys(legalPercentageOptions.value).forEach((key) => {
-        if (
-          JSON.stringify(legalPercentageOptions.value[key]) !==
-          JSON.stringify(initialLegalPercentageOptions[key])
-        ) {
-          cpt += 1;
-        }
-      });
-
-      legalPercentageFiltersCount.value = cpt;
-    }
-  },
-  {
-    flush: "post",
-  }
-);
 
 const fetchCities = async () => {
   try {

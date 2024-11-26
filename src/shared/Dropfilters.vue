@@ -14,7 +14,7 @@
     <DropdownMenuContent class="w-screen md:absolute md:w-80 lg:w-96">
       <form class="p-4 space-y-6" @submit="onSubmit">
         <FormField v-slot="{ componentField }" name="surface">
-          <FormItem>
+          <FormItem class="pb-4">
             <FormLabel>Surface (m²)</FormLabel>
             <FormControl>
               <DualRangeSlider
@@ -31,7 +31,7 @@
         </FormField>
 
         <FormField v-slot="{ componentField }"  name="rooms">
-          <FormItem>
+          <FormItem class="pb-4">
             <FormLabel>Nombre de pièce(s)</FormLabel>
             <FormControl>
               <DualRangeSlider
@@ -129,7 +129,6 @@ import "@vueform/slider/themes/default.css";
 const props = defineProps({
   city: String,
   options: Object,
-  filtersCount: Number,
 });
 
 const emits = defineEmits([
@@ -137,9 +136,10 @@ const emits = defineEmits([
   "onSubmit",
 ]);
 
-const { options, filtersCount } = toRefs(props);
+const { options } = toRefs(props);
 
-// Les forms, c'était plus simple en 2015
+const filtersCount = ref(0);
+
 const formSchema = toTypedSchema(z.object({
   surface: z.number().array(),
   rooms: z.number().array(),
@@ -158,6 +158,8 @@ const form = useForm({
   initialValues,
   validationSchema: formSchema,
 })
+
+const currentFormValues = ref({ ...initialValues });
 
 const isOpen = ref(false);
 const furnishedDropdownOptions = ref([
@@ -191,20 +193,44 @@ const particulierDropdownOptions = ref([
 ]);
 
 watch(
-  () => props.options,
+  () => isOpen.value,
   (newValue) => {
-    console.log(newValue);
-    // optionValues.value = newValue;
+    if (newValue) {
+      form.setValues({
+        ...currentFormValues.value,
+      })
+    }
   }
 );
 
+const setFiltersCount = () => {
+  let cpt = 0;
+  Object.keys(currentFormValues.value).forEach((key) => {
+    if (
+      JSON.stringify(currentFormValues.value[key]) !==
+      JSON.stringify(initialValues[key])
+    ) {
+      cpt += 1;
+    }
+  });
+
+  filtersCount.value = cpt;
+};
+
 const onReset = () => {
   isOpen.value = false;
+  currentFormValues.value = { ...initialValues };
+
+  setFiltersCount();
   emits("onReset");
 };
 
 const onSubmit = form.handleSubmit((values) => {
   isOpen.value = false;
+  currentFormValues.value = { ...values };
+
+  setFiltersCount();
+
   emits("onSubmit", {
     furnishedValue: values.furnished,
     surfaceValue: values.surface,
