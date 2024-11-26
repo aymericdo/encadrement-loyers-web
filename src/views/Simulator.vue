@@ -1,29 +1,23 @@
 <template>
-  <div id="simulator">
-    <Page2Wrapper :isMounted="isMounted">
+  <Page2Wrapper :isMounted="isMounted">
+    <div class="flex flex-1 justify-center items-center">
       <div class="option-list" ref="optionListRef">
         <transition name="slide-side-r2l">
           <div key="1" v-if="!displayMoreInfo" class="global-content">
             <div class="row">
               <span class="label">Ville</span>
               <span>
-                <Select
-                  :value="citySelected"
-                  :open="isCitySelectOpen"
-                  @update:model-value="handleSelectCity"
-                  @update:open="isCitySelectOpen = $event"
-                >
+                <Select :value="citySelected" :open="isCitySelectOpen" @update:model-value="handleSelectCity"
+                  @update:open="isCitySelectOpen = $event">
                   <SelectTrigger :open="isCitySelectOpen">
                     <SelectValue :placeholder="'Entre le nom de ta ville'" />
                   </SelectTrigger>
+
                   <SelectContent>
-                    <SelectGroup
-                      v-for="group in cityDropdownOptions"
-                      :key="group.groupBy"
-                    >
+                    <SelectGroup :key="group.groupBy" v-for="group in cityDropdownOptions">
                       <SelectLabel>{{ group.groupBy }}</SelectLabel>
-                      <SelectItem :value="group.value" :key="group.value">
-                        {{ group.label }}
+                      <SelectItem :key="value" v-for="{ label, value } in group.options" :value="value">
+                        {{ label }}
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -33,34 +27,22 @@
             <div class="row" v-if="districtDropdownOptions.length">
               <span class="label">Localisation</span>
               <span>
-                <Input
-                  class="dropdown address"
-                  :placeholder="'Entre ton adresse...'"
-                  :options="addressDropdownOptions"
-                  :currentValue="optionValues.addressValue"
-                  :textTyped="optionValues.addressTyped"
-                  @onTyping="handleSearchingAddress"
-                  @onSelect="handleAddressSelect($event)"
-                >
+                <Input class="dropdown address" :placeholder="'Entre ton adresse...'" :options="addressDropdownOptions"
+                  :currentValue="optionValues.addressValue" :textTyped="optionValues.addressTyped"
+                  @onTyping="handleSearchingAddress" @onSelect="handleAddressSelect($event)">
                 </Input>
-                <Select
-                  @update:model-value="
-                    setOptionValues({
-                      districtValue: $event.value,
-                      addressValue: undefined,
-                    })
-                  "
-                >
+                <Select @update:model-value="
+                  setOptionValues({
+                    districtValue: $event.value,
+                    addressValue: undefined,
+                  })
+                  ">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        v-for="option in addressDropdownOptions"
-                        :key="option.value"
-                        :value="option.value"
-                      >
+                      <SelectItem v-for="option in addressDropdownOptions" :key="option.value" :value="option.value">
                         {{ option.label }}
                       </SelectItem>
                     </SelectGroup>
@@ -71,22 +53,16 @@
             <div v-if="hasHouse" class="row">
               <span class="label">Maison</span>
               <span>
-                <Select
-                  v-model="optionValues.isHouseValue"
-                  @update:model-value="
-                    setOptionValues({ isHouseValue: $event })
-                  "
-                >
+                <Select v-model="optionValues.isHouseValue" @update:model-value="
+                  setOptionValues({ isHouseValue: $event })
+                  ">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        v-for="option in isHouseValueDropdownOptions"
-                        :key="option.value"
-                        :value="option.value"
-                      >
+                      <SelectItem v-for="option in isHouseValueDropdownOptions" :key="option.value"
+                        :value="option.value">
                         {{ option.label }}
                       </SelectItem>
                     </SelectGroup>
@@ -95,13 +71,8 @@
               </span>
             </div>
             <div class="row">
-              <span class="label"
-                >Prix (hors charges)
-                <div
-                  class="overlay"
-                  v-if="infoVisible"
-                  @click="infoVisible = false"
-                ></div>
+              <span class="label">Prix (hors charges)
+                <div class="overlay" v-if="infoVisible" @click="infoVisible = false"></div>
                 <button @click="infoVisible = true" class="info-btn">
                   i
                 </button>
@@ -111,35 +82,23 @@
                 </div>
               </span>
               <span>
-                <Input
-                  v-model="optionValues.priceValue"
-                  type="number"
-                  :placeholder="'Entre ton loyer'"
-                  :min="0"
-                  :max="10000"
-                  @update:modelValue="handleSelectPrice"
-                />
+                <Input v-model="optionValues.priceValue" type="number" :placeholder="'Entre ton loyer'" :min="0"
+                  :max="10000" @update:modelValue="handleSelectPrice" />
               </span>
             </div>
             <div class="row">
               <span class="label">Surface</span>
               <span>
-                <Select
-                  v-model="optionValues.surfaceValue"
-                  @update:model-value="
-                    setOptionValues({ surfaceValue: $event })
-                  "
-                >
+                <Select v-model="optionValues.surfaceValue" @update:model-value="
+                  setOptionValues({ surfaceValue: $event })
+                  ">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        v-for="option in surfaceValueDropdownOptions"
-                        :key="option.value"
-                        :value="option.value"
-                      >
+                      <SelectItem v-for="option in surfaceValueDropdownOptions" :key="option.value"
+                        :value="option.value">
                         {{ option.label }}
                       </SelectItem>
                     </SelectGroup>
@@ -150,20 +109,13 @@
             <div class="row">
               <span class="label">Nombre de pièce(s)</span>
               <span>
-                <Select
-                  v-model="optionValues.roomValue"
-                  @update:model-value="setOptionValues({ roomValue: $event })"
-                >
+                <Select v-model="optionValues.roomValue" @update:model-value="setOptionValues({ roomValue: $event })">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        v-for="option in roomValueDropdownOptions"
-                        :key="option.value"
-                        :value="option.value"
-                      >
+                      <SelectItem v-for="option in roomValueDropdownOptions" :key="option.value" :value="option.value">
                         {{ option.label }}
                       </SelectItem>
                     </SelectGroup>
@@ -174,22 +126,15 @@
             <div class="row">
               <span class="label">Meublé</span>
               <span>
-                <Select
-                  v-model="optionValues.furnishedValue"
-                  @update:model-value="
-                    setOptionValues({ furnishedValue: $event })
-                  "
-                >
+                <Select v-model="optionValues.furnishedValue" @update:model-value="
+                  setOptionValues({ furnishedValue: $event })
+                  ">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        v-for="option in furnishedDropdownOptions"
-                        :key="option.value"
-                        :value="option.value"
-                      >
+                      <SelectItem v-for="option in furnishedDropdownOptions" :key="option.value" :value="option.value">
                         {{ option.label }}
                       </SelectItem>
                     </SelectGroup>
@@ -200,21 +145,15 @@
             <div class="row">
               <span class="label">Date de construction</span>
               <span>
-                <Select
-                  v-model="optionValues.dateBuiltValue"
-                  @update:model-value="
-                    setOptionValues({ dateBuiltValue: $event })
-                  "
-                >
+                <Select v-model="optionValues.dateBuiltValue" @update:model-value="
+                  setOptionValues({ dateBuiltValue: $event })
+                  ">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem
-                      v-for="option in dateBuiltValueDropdownOptions"
-                      :key="option.value"
-                      :value="option.value"
-                    >
+                    <SelectItem v-for="option in dateBuiltValueDropdownOptions" :key="option.value"
+                      :value="option.value">
                       {{ option.label }}
                     </SelectItem>
                   </SelectContent>
@@ -225,41 +164,26 @@
         </transition>
         <transition name="slide-side-l2r">
           <div v-if="displayMoreInfo" class="global-content result">
-            <div
-              key="2"
-              class="grid"
-              v-bind:style="{
-                'grid-template-columns': `repeat(${
-                  simulationResults?.length + 1
+            <div key="2" class="grid" v-bind:style="{
+              'grid-template-columns': `repeat(${simulationResults?.length + 1
                 }, 2fr)`,
-              }"
-            >
+            }">
               <span class="label">Année de construction</span>
-              <span
-                v-for="simulationResult in simulationResults"
-                v-bind:key="simulationResult.yearBuilt"
-              >
+              <span v-for="simulationResult in simulationResults" v-bind:key="simulationResult.yearBuilt">
                 {{ simulationResult.yearBuilt }}
               </span>
               <span class="label">Prix maximum au m²</span>
-              <span
-                v-for="simulationResult in simulationResults"
-                v-bind:key="simulationResult.yearBuilt"
-                >{{ simulationResult.maxPrice }}€
+              <span v-for="simulationResult in simulationResults" v-bind:key="simulationResult.yearBuilt">{{
+                simulationResult.maxPrice }}€
               </span>
               <span class="label">Prix maximum hors charges</span>
-              <span
-                v-for="simulationResult in simulationResults"
-                v-bind:key="simulationResult.yearBuilt"
-                >{{ simulationResult.maxTotalPrice }}€
+              <span v-for="simulationResult in simulationResults" v-bind:key="simulationResult.yearBuilt">{{
+                simulationResult.maxTotalPrice }}€
               </span>
               <template v-if="!isLegal">
                 <span class="label">Dépassement</span>
-                <span
-                  v-for="simulationResult in simulationResults"
-                  class="exceeding"
-                  v-bind:key="simulationResult.yearBuilt"
-                  >+{{
+                <span v-for="simulationResult in simulationResults" class="exceeding"
+                  v-bind:key="simulationResult.yearBuilt">+{{
                     +(
                       optionValues.priceValue - simulationResult.maxTotalPrice
                     ).toFixed(2)
@@ -278,33 +202,24 @@
 
               <p>
                 Pour plus d’informations, voir le site de votre
-                <b
-                  ><a :href="simulationResults[0].moreInfo" target="_blank">
+                <b><a :href="simulationResults[0].moreInfo" target="_blank">
                     {{ isMultipleCities ? "agglomération" : "ville" }}
-                  </a></b
-                >.
+                  </a></b>.
               </p>
 
               <p v-if="optionValues.cityValue === 'paysBasque'">
-                Pour avoir de l'aide dans vos démarches, contactez l'<b
-                  ><a :href="'https://www.alda.eus/contact/'" target="_blank"
-                    >association de défense des locataires Alda</a
-                  ></b
-                >.
+                Pour avoir de l'aide dans vos démarches, contactez l'<b><a :href="'https://www.alda.eus/contact/'"
+                    target="_blank">association de défense des locataires Alda</a></b>.
               </p>
 
               <h4>Articles intéressants</h4>
               <div class="reference-links">
-                <a
-                  href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
-                  target="_blank"
-                >
+                <a href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
+                  target="_blank">
                   Le Parisien
                 </a>
-                <a
-                  href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
-                  target="_blank"
-                >
+                <a href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
+                  target="_blank">
                   Le Figaro Immo
                 </a>
               </div>
@@ -313,17 +228,10 @@
         </transition>
 
         <transition name="slide-fade">
-          <div
-            v-if="simulationResultsLoading || simulationResults !== null"
-            class="row result"
-          >
+          <div v-if="simulationResultsLoading || simulationResults !== null" class="row result">
             <template v-if="simulationResultsLoading">
-              <BounceLoader
-                class="spinner"
-                :loading="simulationResultsLoading"
-                color="#fdcd56"
-                :size="'20px'"
-              ></BounceLoader>
+              <BounceLoader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'">
+              </BounceLoader>
             </template>
             <template v-else>
               <span>{{ isLegal ? "Conforme" : "Non conforme" }} </span>
@@ -334,10 +242,7 @@
                 <template v-else>
                   <span>Cliquez pour plus d'info</span>
                 </template>
-                <span
-                  class="arrow-icon"
-                  :class="{ '-is-open': displayMoreInfo }"
-                >
+                <span class="arrow-icon" :class="{ '-is-open': displayMoreInfo }">
                   <ArrowIcon :iconColor="'white'"></ArrowIcon>
                 </span>
               </button>
@@ -348,13 +253,13 @@
           <button class="reset-btn" @click="onReset">Réinitialiser</button>
         </div>
       </div>
-      <div @click="handleClose">
-        <FixedButton>
-          <StrokeIcon :width="'18px'" :height="'18px'" />
-        </FixedButton>
-      </div>
-    </Page2Wrapper>
-  </div>
+    </div>
+    <div @click="handleClose">
+      <FixedButton>
+        <StrokeIcon :width="'18px'" :height="'18px'" />
+      </FixedButton>
+    </div>
+  </Page2Wrapper>
 </template>
 
 <script setup>
@@ -379,10 +284,11 @@ import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 
 const router = useRouter();
 
-const idkId = -1;
+const idkId = '-1';
 
 const optionListRef = ref(null);
 
+const isCitySelectOpen = ref(false);
 const isMounted = ref(false);
 const loading = ref(true);
 
@@ -436,11 +342,11 @@ const furnishedDropdownOptions = [
 
 const isHouseValueDropdownOptions = [
   {
-    value: 1,
+    value: '1',
     label: "Maison",
   },
   {
-    value: 0,
+    value: '0',
     label: "Appartement",
   },
 ];
@@ -449,7 +355,7 @@ const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()].map((x) => {
   x += 1;
 
   return {
-    value: x,
+    value: x.toString(),
     label: `${x} pièce${x > 1 ? "s" : ""}`,
   };
 });
@@ -457,7 +363,7 @@ const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()].map((x) => {
 const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()].map((x) => {
   const val = x + 9;
   return {
-    value: val,
+    value: val.toString(),
     label: `${val}m²`,
   };
 });
@@ -474,17 +380,17 @@ const setDateBuiltRangeDropdownOptions = (datesRange) => {
 
       if (dates[0] === null) {
         prev.push({
-          value: dates,
+          value: JSON.stringify(dates),
           label: `Avant ${dates[1]}`,
         });
       } else if (dates[1] === null) {
         prev.push({
-          value: dates,
+          value: JSON.stringify(dates),
           label: `Après ${dates[0]}`,
         });
       } else {
         prev.push({
-          value: dates,
+          value: JSON.stringify(dates),
           label: `${dates[0]}-${dates[1]}`,
         });
       }
@@ -498,17 +404,18 @@ const setDateBuiltRangeDropdownOptions = (datesRange) => {
 const setCityDropdownOptions = () => {
   cityDropdownOptions.value = cityInformation.reduce((prev, currentValue) => {
     currentValue.cities.forEach(({ value, label }) => {
+      const groupAlreadyThere = prev.find(({ groupBy }) => groupBy === currentValue.label);
+
       const currentCityTyped = optionValues.value.cityTyped?.toLowerCase();
-      if (currentCityTyped?.length) {
-        if (
-          label.toLowerCase().includes(currentCityTyped) ||
+      if (!currentCityTyped?.length || (label.toLowerCase().includes(currentCityTyped) ||
           value.toLowerCase().includes(currentCityTyped) ||
-          currentValue.label.toLowerCase().includes(currentCityTyped)
-        ) {
-          prev.push({ value, label, groupBy: currentValue.label });
+          currentValue.label.toLowerCase().includes(currentCityTyped))
+      ) {
+        if (groupAlreadyThere) {
+          groupAlreadyThere.options.push({ value, label })
+        } else {
+          prev.push({ options: [{ value, label }], groupBy: currentValue.label });
         }
-      } else {
-        prev.push({ value, label, groupBy: currentValue.label });
       }
     });
     return prev;
@@ -633,6 +540,7 @@ const handleSelectCity = (city) => {
   citySelected.value = city;
 
   if (!city) return;
+
   const mainCity = cityInformation.find((cityInfo) =>
     cityInfo.cities.map((c) => c.value).includes(city)
   )?.value;
@@ -646,8 +554,7 @@ const handleSelectCity = (city) => {
 const fetchDistricts = async () => {
   try {
     const rawResult = await fetch(
-      `${domain}districts/list/${
-        optionValues.value.cityValue
+      `${domain}districts/list/${optionValues.value.cityValue
       }?city=${citySelected.value.toLowerCase()}`
     );
     const res = await rawResult.json();
@@ -702,16 +609,15 @@ const fetchSimulatorResult = async () => {
 
     const strOptions = optionParams
       ? Object.keys(optionParams)
-          .map((key) => {
-            return key + "=" + optionParams[key];
-          })
-          .join("&")
+        .map((key) => {
+          return key + "=" + optionParams[key];
+        })
+        .join("&")
       : null;
 
     try {
       const rawResult = await fetch(
-        `${domain}simulator/${optionValues.value.cityValue}${
-          strOptions ? "?" + strOptions : ""
+        `${domain}simulator/${optionValues.value.cityValue}${strOptions ? "?" + strOptions : ""
         }`
       );
       const res = await rawResult.json();
@@ -746,6 +652,8 @@ const handleSearchingCity = async (city) => {
 };
 
 const handleSearchingAddress = async (address) => {
+  console.log('tamere')
+  console.log(address)
   optionValues.value = {
     ...optionValues.value,
     districtValue: undefined,
@@ -761,8 +669,7 @@ const handleSearchingAddress = async (address) => {
   searchingAddressTimeoutRef = setTimeout(async () => {
     try {
       const rawResult = await fetch(
-        `${domain}districts/address/${
-          optionValues.value.cityValue
+        `${domain}districts/address/${optionValues.value.cityValue
         }?q=${address.trim()}&city=${citySelected.value.toLowerCase()}`
       );
       const res = await rawResult.json();
@@ -812,17 +719,6 @@ onMounted(async () => {
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;
 
-#simulator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
 .overlay {
   background: rgba(19, 15, 64, 0.4);
   width: 100vw;
@@ -833,21 +729,6 @@ onMounted(async () => {
   cursor: pointer;
   z-index: 3;
   overflow: hidden;
-}
-
-:deep(.center-wrapper) {
-  align-items: flex-start;
-  box-sizing: border-box;
-  padding: 124px;
-  align-items: center;
-
-  @media screen and (max-width: $mobileSize) {
-    padding: 124px 1.25rem;
-  }
-
-  ul li {
-    list-style: inherit;
-  }
 }
 
 .option-list {
@@ -889,12 +770,12 @@ onMounted(async () => {
 .option-list .pushy-text .reference-links {
   display: flex;
 
-  > a {
+  >a {
     margin-right: 1rem;
   }
 }
 
-.option-list div.global-content .grid > span {
+.option-list div.global-content .grid>span {
   padding: 8px;
   justify-content: center;
   align-items: center;
@@ -902,37 +783,37 @@ onMounted(async () => {
   border: solid 1px;
 }
 
-.option-list div.global-content .grid > .label {
+.option-list div.global-content .grid>.label {
   font-weight: bold;
   text-align: left;
   line-height: normal;
 }
 
-.option-list div.global-content .grid > span.exceeding {
+.option-list div.global-content .grid>span.exceeding {
   font-weight: 500;
   color: red;
 }
 
-.option-list div > .row {
+.option-list div>.row {
   display: flex;
   align-items: center;
   width: 100%;
   margin: 16px 0;
 }
 
-.option-list div > .row > span:first-child {
+.option-list div>.row>span:first-child {
   width: 35%;
 }
 
-.option-list div > .row > span:last-child {
+.option-list div>.row>span:last-child {
   width: 65%;
 }
 
-.option-list div > .row .dropdown.input.address {
+.option-list div>.row .dropdown.input.address {
   margin-bottom: 0.625rem;
 }
 
-.option-list div > .row .info-btn {
+.option-list div>.row .info-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -965,7 +846,7 @@ onMounted(async () => {
   line-height: 1.25rem;
 }
 
-.option-list div > .row span.label {
+.option-list div>.row span.label {
   font-weight: 500;
   position: relative;
 }
@@ -991,7 +872,7 @@ onMounted(async () => {
   margin: 1rem;
   line-height: 1.25rem;
 
-  > span {
+  >span {
     font-weight: bold;
   }
 }
@@ -1082,7 +963,7 @@ onMounted(async () => {
 }
 
 @media screen and (max-width: $mobileSize) {
-  .dropfilters > button.mobile-back-btn.-is-open {
+  .dropfilters>button.mobile-back-btn.-is-open {
     z-index: 3;
     position: fixed;
     top: 1em;
@@ -1103,16 +984,16 @@ onMounted(async () => {
     overflow-y: auto;
   }
 
-  .option-list div > .row:not(.actions-btn) {
+  .option-list div>.row:not(.actions-btn) {
     flex-direction: column;
   }
 
-  .option-list div > .row > span:first-child {
+  .option-list div>.row>span:first-child {
     margin-bottom: 0.5rem;
   }
 
-  .option-list div > .row > span:first-child,
-  .option-list div > .row > span:last-child {
+  .option-list div>.row>span:first-child,
+  .option-list div>.row>span:last-child {
     width: 100%;
   }
 

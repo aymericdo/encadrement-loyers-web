@@ -12,13 +12,13 @@
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-screen md:absolute md:w-80 lg:w-96">
-      <form class="p-4 space-y-6" @submit.prevent="onSubmit">
-        <FormField name="surface">
+      <form class="p-4 space-y-6" @submit="onSubmit">
+        <FormField v-slot="{ componentField }" name="surface">
           <FormItem>
             <FormLabel>Surface (m²)</FormLabel>
             <FormControl>
               <DualRangeSlider
-                v-model="optionValues.surfaceValue"
+                v-bind="componentField"
                 :label="(value) => value"
                 labelPosition="bottom"
                 :min="9"
@@ -30,12 +30,12 @@
           </FormItem>
         </FormField>
 
-        <FormField name="rooms">
+        <FormField v-slot="{ componentField }"  name="rooms">
           <FormItem>
             <FormLabel>Nombre de pièce(s)</FormLabel>
             <FormControl>
               <DualRangeSlider
-                v-model="optionValues.roomValue"
+                v-bind="componentField"
                 :label="(value) => value"
                 labelPosition="bottom"
                 :min="1"
@@ -47,12 +47,11 @@
           </FormItem>
         </FormField>
 
-        <FormField name="furnished">
+        <FormField v-slot="{ componentField }" name="furnished">
           <FormItem>
             <FormLabel>Meublé</FormLabel>
             <Select
-              v-model="optionValues.furnishedValue"
-              :options="furnishedDropdownOptions"
+              v-bind="componentField"
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sélectionner..." />
@@ -70,12 +69,11 @@
           </FormItem>
         </FormField>
 
-        <FormField name="particulier">
+        <FormField v-slot="{ componentField }" name="particulier">
           <FormItem>
             <FormLabel>Particulier</FormLabel>
             <Select
-              v-model="optionValues.isParticulierValue"
-              :options="particulierDropdownOptions"
+              v-bind="componentField"
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sélectionner..." />
@@ -113,6 +111,9 @@ import {
 } from "@/shadcn/ui/dropdown-menu";
 import { DualRangeSlider } from "@/shadcn/ui/dual-range-slider";
 import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
+
 import {
   Select,
   SelectContent,
@@ -120,7 +121,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
-
+import { useForm } from 'vee-validate'
 import { ref, toRefs, watch } from "vue";
 
 import "@vueform/slider/themes/default.css";
@@ -132,14 +133,32 @@ const props = defineProps({
 });
 
 const emits = defineEmits([
-  "onDropFilterOpeningChanged",
   "onReset",
   "onSubmit",
 ]);
 
 const { options, filtersCount } = toRefs(props);
 
-const optionValues = ref({ ...options.value });
+// Les forms, c'était plus simple en 2015
+const formSchema = toTypedSchema(z.object({
+  surface: z.number().array(),
+  rooms: z.number().array(),
+  furnished: z.string(),
+  particulier: z.string(),
+}))
+
+const initialValues = {
+  surface: options.value.surfaceValue,
+  rooms: options.value.roomValue,
+  furnished: options.value.furnishedValue,
+  particulier: options.value.isParticulierValue,
+}
+
+const form = useForm({
+  initialValues,
+  validationSchema: formSchema,
+})
+
 const isOpen = ref(false);
 const furnishedDropdownOptions = ref([
   {
@@ -174,7 +193,8 @@ const particulierDropdownOptions = ref([
 watch(
   () => props.options,
   (newValue) => {
-    optionValues.value = newValue;
+    console.log(newValue);
+    // optionValues.value = newValue;
   }
 );
 
@@ -183,20 +203,18 @@ const onReset = () => {
   emits("onReset");
 };
 
-const onSubmit = () => {
+const onSubmit = form.handleSubmit((values) => {
   isOpen.value = false;
   emits("onSubmit", {
-    furnishedValue: optionValues.value.furnishedValue,
-    surfaceValue: optionValues.value.surfaceValue,
-    roomValue: optionValues.value.roomValue,
-    isParticulierValue: optionValues.value.isParticulierValue,
+    furnishedValue: values.furnished,
+    surfaceValue: values.surface,
+    roomValue: values.rooms,
+    isParticulierValue: values.particulier,
   });
-};
+})
 </script>
 
 <style lang="scss" scoped>
-@use "@/assets/scss/variables.scss" as *;
-
 .badge-count {
   @apply absolute -top-2 -left-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm font-medium text-black;
 }

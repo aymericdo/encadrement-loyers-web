@@ -98,7 +98,6 @@
           <Dropfilters
             @onSubmit="changeFilters($event)"
             @onReset="changeFilters()"
-            @onDropFilterOpeningChanged="showCloseButton = !$event"
             :city="city"
             :options="legalPercentageOptions"
             :filtersCount="legalPercentageFiltersCount"
