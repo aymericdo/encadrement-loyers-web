@@ -4,162 +4,228 @@
       <div class="option-list" ref="optionListRef">
         <transition name="slide-side-r2l">
           <div key="1" v-if="!displayMoreInfo" class="global-content">
-            <div class="row">
-              <span class="label">Ville</span>
-              <span>
-                <Select :value="citySelected" :open="isCitySelectOpen" @update:model-value="handleSelectCity"
-                  @update:open="isCitySelectOpen = $event">
-                  <SelectTrigger :open="isCitySelectOpen">
-                    <SelectValue :placeholder="'Entre le nom de ta ville'" />
-                  </SelectTrigger>
+            <form class="p-4 space-y-6" @submit="onSubmit">
+              <FormField v-slot="{ componentField }" name="city">
+                <FormItem>
+                  <FormLabel>Ville</FormLabel>
+                  <Select
+                    v-bind="componentField"
+                    :open="isCitySelectOpen"
+                    @update:open="isCitySelectOpen = $event"
+                    @update:modelValue="handleSelectCity"
+                  >
+                    <SelectTrigger :open="isCitySelectOpen">
+                      <SelectValue :placeholder="'Entre le nom de ta ville'" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup :key="group.groupBy" v-for="group in cityDropdownOptions">
+                        <SelectLabel>{{ group.groupBy }}</SelectLabel>
+                        <SelectItem :key="value" v-for="{ label, value } in group.options" :value="value">
+                          {{ label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              </FormField>
 
-                  <SelectContent>
-                    <SelectGroup :key="group.groupBy" v-for="group in cityDropdownOptions">
-                      <SelectLabel>{{ group.groupBy }}</SelectLabel>
-                      <SelectItem :key="value" v-for="{ label, value } in group.options" :value="value">
-                        {{ label }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </span>
-            </div>
-            <div class="row" v-if="districtDropdownOptions.length">
-              <span class="label">Localisation</span>
-              <span>
-                <Input class="dropdown address" :placeholder="'Entre ton adresse...'" :options="addressDropdownOptions"
-                  :currentValue="optionValues.addressValue" :textTyped="optionValues.addressTyped"
-                  @onTyping="handleSearchingAddress" @onSelect="handleAddressSelect($event)">
-                </Input>
-                <Select @update:model-value="
-                  setOptionValues({
-                    districtValue: $event.value,
-                    addressValue: undefined,
-                  })
-                  ">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem v-for="option in addressDropdownOptions" :key="option.value" :value="option.value">
-                        {{ option.label }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </span>
-            </div>
-            <div v-if="hasHouse" class="row">
-              <span class="label">Maison</span>
-              <span>
-                <Select v-model="optionValues.isHouseValue" @update:model-value="
-                  setOptionValues({ isHouseValue: $event })
-                  ">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem v-for="option in isHouseValueDropdownOptions" :key="option.value"
+              <template v-if="districtDropdownOptions.length">
+                <FormField v-slot="{ componentField }" name="district">
+                  <FormItem>
+                    <FormLabel>Localisation</FormLabel>
+                    <div class="space-y-6">
+                      <!-- <Input :placeholder="'Entre ton adresse'" :options="addressDropdownOptions"
+                        :currentValue="optionValues.addressValue" :textTyped="optionValues.addressTyped"
+                        @onTyping="handleSearchingAddress" @onSelect="handleAddressSelect($event)">
+                      </Input> -->
+                      <div>
+                        <!-- <div class="relative w-full items-center">
+                          <Input type="text" :placeholder="'Entre ton adresse'" class="pl-10" @update:model-value="handleSearchingAddress" />
+                          <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+                            <Search class="size-6 text-muted-foreground" />
+                          </span>
+                        </div> -->
+
+                        <!-- <Select v-if="!!addressDropdownOptions.length"> -->
+                        <Select>
+                          <!-- <SelectTrigger>
+                            <SelectValue :placeholder="'Choisis ton adresse'" />
+                          </SelectTrigger> -->
+                          <Input type="text" :placeholder="'Entre ton adresse'" class="pl-10" @update:model-value="handleSearchingAddress" />
+                          <SelectContent>
+                            <SelectGroup v-for="option in addressDropdownOptions">
+                              <SelectItem :key="option.value" :value="option.value">
+                                {{ option.label }}
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <Select v-bind="componentField">
+                        <SelectTrigger :open="isCitySelectOpen">
+                          <SelectValue :placeholder="'Choisis ta zone'" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <template v-if="districtGroupByDropdownOptions">
+                            <SelectGroup v-for="option in Object.keys(districtGroupByDropdownOptions)">
+                              <SelectLabel>{{ option }}</SelectLabel>
+                              <SelectItem :key="value" v-for="{ label, value } in districtGroupByDropdownOptions[option]" :value="value">
+                                {{ label }}
+                              </SelectItem>
+                            </SelectGroup>
+                          </template>
+                          <template v-else>
+                            <SelectGroup v-for="option in districtDropdownOptions">
+                              <SelectItem :key="option.value" :value="option.value">
+                                {{ option.label }}
+                              </SelectItem>
+                            </SelectGroup>
+                          </template>
+                        </SelectContent>
+                      </Select>
+                    </div> 
+                  </FormItem>
+                </FormField>
+              </template>
+
+              <!-- <div class="row" v-if="districtDropdownOptions.length">
+                <span class="label">Localisation</span>
+                <span class="space-y-4">
+                  <Input class="dropdown address" :placeholder="'Entre ton adresse...'" :options="addressDropdownOptions"
+                    :currentValue="optionValues.addressValue" :textTyped="optionValues.addressTyped"
+                    @onTyping="handleSearchingAddress" @onSelect="handleAddressSelect($event)">
+                  </Input>
+                  <Select @update:model-value="
+                    setOptionValues({
+                      districtValue: $event.value,
+                      addressValue: undefined,
+                    })
+                    ">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem v-for="option in addressDropdownOptions" :key="option.value" :value="option.value">
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </span>
+              </div> -->
+              <div v-if="hasHouse" class="row">
+                <span class="label">Maison</span>
+                <span>
+                  <Select v-model="optionValues.isHouseValue" @update:model-value="
+                    setOptionValues({ isHouseValue: $event })
+                    ">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem v-for="option in isHouseValueDropdownOptions" :key="option.value"
+                          :value="option.value">
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Prix (hors charges)
+                  <div class="overlay" v-if="infoVisible" @click="infoVisible = false"></div>
+                  <button @click="infoVisible = true" class="info-btn">
+                    i
+                  </button>
+                  <div v-if="infoVisible" class="info-section">
+                    Si vous ne connaissez pas votre loyer hors charges, vous
+                    pouvez enlever 10% à votre loyer total.
+                  </div>
+                </span>
+                <span>
+                  <Input v-model="optionValues.priceValue" type="number" :placeholder="'Entre ton loyer'" :min="0"
+                    :max="10000" @update:modelValue="handleSelectPrice" />
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Surface</span>
+                <span>
+                  <Select v-model="optionValues.surfaceValue" @update:model-value="
+                    setOptionValues({ surfaceValue: $event })
+                    ">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem v-for="option in surfaceValueDropdownOptions" :key="option.value"
+                          :value="option.value">
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Nombre de pièce(s)</span>
+                <span>
+                  <Select v-model="optionValues.roomValue" @update:model-value="setOptionValues({ roomValue: $event })">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem v-for="option in roomValueDropdownOptions" :key="option.value" :value="option.value">
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Meublé</span>
+                <span>
+                  <Select v-model="optionValues.furnishedValue" @update:model-value="
+                    setOptionValues({ furnishedValue: $event })
+                    ">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem v-for="option in furnishedDropdownOptions" :key="option.value" :value="option.value">
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </span>
+              </div>
+              <div class="row">
+                <span class="label">Date de construction</span>
+                <span>
+                  <Select v-model="optionValues.dateBuiltValue" @update:model-value="
+                    setOptionValues({ dateBuiltValue: $event })
+                    ">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem v-for="option in dateBuiltValueDropdownOptions" :key="option.value"
                         :value="option.value">
                         {{ option.label }}
                       </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </span>
-            </div>
-            <div class="row">
-              <span class="label">Prix (hors charges)
-                <div class="overlay" v-if="infoVisible" @click="infoVisible = false"></div>
-                <button @click="infoVisible = true" class="info-btn">
-                  i
-                </button>
-                <div v-if="infoVisible" class="info-section">
-                  Si vous ne connaissez pas votre loyer hors charges, vous
-                  pouvez enlever 10% à votre loyer total.
-                </div>
-              </span>
-              <span>
-                <Input v-model="optionValues.priceValue" type="number" :placeholder="'Entre ton loyer'" :min="0"
-                  :max="10000" @update:modelValue="handleSelectPrice" />
-              </span>
-            </div>
-            <div class="row">
-              <span class="label">Surface</span>
-              <span>
-                <Select v-model="optionValues.surfaceValue" @update:model-value="
-                  setOptionValues({ surfaceValue: $event })
-                  ">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem v-for="option in surfaceValueDropdownOptions" :key="option.value"
-                        :value="option.value">
-                        {{ option.label }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </span>
-            </div>
-            <div class="row">
-              <span class="label">Nombre de pièce(s)</span>
-              <span>
-                <Select v-model="optionValues.roomValue" @update:model-value="setOptionValues({ roomValue: $event })">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem v-for="option in roomValueDropdownOptions" :key="option.value" :value="option.value">
-                        {{ option.label }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </span>
-            </div>
-            <div class="row">
-              <span class="label">Meublé</span>
-              <span>
-                <Select v-model="optionValues.furnishedValue" @update:model-value="
-                  setOptionValues({ furnishedValue: $event })
-                  ">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem v-for="option in furnishedDropdownOptions" :key="option.value" :value="option.value">
-                        {{ option.label }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </span>
-            </div>
-            <div class="row">
-              <span class="label">Date de construction</span>
-              <span>
-                <Select v-model="optionValues.dateBuiltValue" @update:model-value="
-                  setOptionValues({ dateBuiltValue: $event })
-                  ">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem v-for="option in dateBuiltValueDropdownOptions" :key="option.value"
-                      :value="option.value">
-                      {{ option.label }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </span>
-            </div>
+                    </SelectContent>
+                  </Select>
+                </span>
+              </div>
+            </form>
           </div>
         </transition>
         <transition name="slide-side-l2r">
@@ -266,7 +332,9 @@
 import { domain } from "@/helper/config";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
+import { Search } from 'lucide-vue-next'
 import { Input } from "@/shadcn/ui/input";
+import { debounce } from '@/tools/debounce';
 import {
   Select,
   SelectContent,
@@ -281,19 +349,51 @@ import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import BounceLoader from "vue-spinner/src/BounceLoader.vue";
+import { FormControl, FormField, FormItem, FormLabel } from "@/shadcn/ui/form";
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
 
 const router = useRouter();
 
+const formSchema = toTypedSchema(z.object({
+  city: z.string(),
+  district: z.string(),
+  surface: z.number(),
+  rooms: z.number(),
+  furnished: z.string(),
+}))
+
 const idkId = '-1';
+
+const mainCitySelected = ref('bordeaux');
+const initialValues = {
+  surface: undefined,
+  price: undefined,
+  room: undefined,
+  dateBuilt: idkId,
+  furnished: undefined,
+  addressValue: undefined,
+  isHouseValue: 0,
+  cityTyped: "",
+  addressTyped: "",
+  district: undefined,
+  city: 'bordeaux',
+}
+
+const form = useForm({
+  initialValues,
+  validationSchema: formSchema,
+})
 
 const optionListRef = ref(null);
 
-const isCitySelectOpen = ref(false);
 const isMounted = ref(false);
 const loading = ref(true);
+const isCitySelectOpen = ref(false);
 
 const infoVisible = ref(false);
-const citySelected = ref(undefined);
+
 const cityDropdownOptions = ref([]);
 const dateBuiltValueDropdownOptions = ref([]);
 
@@ -301,33 +401,19 @@ const optionValues = ref({});
 const displayMoreInfo = ref(false);
 
 const districtDropdownOptions = ref([]);
+const districtGroupByDropdownOptions = ref(null);
 const addressDropdownOptions = ref([]);
 const simulationResults = ref(null);
 const isLegal = ref(null);
 const prevCity = ref(null);
 const simulationResultsLoading = ref(false);
 
-let searchingAddressTimeoutRef = null;
 let searchingCityTimeoutRef = null;
 let simulationTimeoutRef = null;
 
 const hasHouse = ref(false);
 const isMultipleCities = ref(false);
 let cityInformation = [];
-
-const initialOptionValues = {
-  surfaceValue: undefined,
-  priceValue: undefined,
-  roomValue: undefined,
-  dateBuiltValue: idkId,
-  furnishedValue: undefined,
-  addressValue: undefined,
-  isHouseValue: 0,
-  cityTyped: "",
-  addressTyped: "",
-  districtValue: undefined,
-  cityValue: citySelected.value,
-};
 
 const furnishedDropdownOptions = [
   {
@@ -428,6 +514,27 @@ const setDistrictDropdownOptions = (res) => {
     value: district.value,
     label: district.label,
   }));
+
+  if (districtDropdownOptions.value[0].groupBy) {
+    districtGroupByDropdownOptions.value = districtDropdownOptions.value.reduce((prev, district) => {
+      if (!prev[district.groupBy]) {
+        prev[district.groupBy] = [{
+          groupBy: district.groupBy,
+          value: district.value,
+          label: district.label,
+        }];
+      } else {
+        prev[district.groupBy].push({
+          groupBy: district.groupBy,
+          value: district.value,
+          label: district.label,
+        });
+      }
+      return prev;
+    }, {});
+  } else {
+    districtGroupByDropdownOptions.value = null;
+  }
 };
 
 const setAddressDropdownOptions = (res) => {
@@ -436,7 +543,24 @@ const setAddressDropdownOptions = (res) => {
     label: a.properties.label,
     district: a.districtName,
   }));
+  console.log(addressDropdownOptions.value)
 };
+
+const onReset = () => {
+  console.log('onReset')
+  // optionValues.value = {
+  //   ...optionValues.value,
+  //   ...initialOptionValues,
+  //   cityValue: undefined,
+  // };
+  // addressDropdownOptions.value = [];
+  // simulationResults.value = null;
+  // displayMoreInfo.value = false;
+};
+
+const onSubmit = form.handleSubmit((values) => {
+  setFiltersCount();
+})
 
 const setOptionValues = async (newOptionValues) => {
   optionValues.value = {
@@ -536,26 +660,37 @@ const handleCloseCity = () => {
   citySelected.value = initialOptionValues.cityValue;
 };
 
-const handleSelectCity = (city) => {
-  citySelected.value = city;
-
-  if (!city) return;
-
-  const mainCity = cityInformation.find((cityInfo) =>
+const handleSelectCity = async (city) => {
+  const currentCityInformation = cityInformation.find((cityInfo) =>
     cityInfo.cities.map((c) => c.value).includes(city)
-  )?.value;
+  );
 
-  initialOptionValues.cityValue = citySelected.value;
-  optionValues.value.cityValue = mainCity;
+  const mainCity = currentCityInformation.value;
 
-  cityChanged(mainCity);
+  mainCitySelected.value = mainCity;
+  await fetchDistricts();
+
+  // initialOptionValues.cityValue = citySelected.value;
+  // optionValues.value.cityValue = mainCity;
+
+  // cityChanged(mainCity);
+  isMultipleCities.value = currentCityInformation.cities.length > 1;
+  hasHouse.value = !!currentCityInformation?.hasHouse;
+  setDateBuiltRangeDropdownOptions([...currentCityInformation.dateBuiltRange]);
+  form.setValues({
+    ...initialValues,
+    city,
+  });
+
+  if (districtDropdownOptions.value.length === 1) {
+    form.setFieldValue('district', districtDropdownOptions.value[0].value);
+  }
 };
 
 const fetchDistricts = async () => {
   try {
     const rawResult = await fetch(
-      `${domain}districts/list/${optionValues.value.cityValue
-      }?city=${citySelected.value.toLowerCase()}`
+      `${domain}districts/list/${mainCitySelected.value}?city=${form.values.city}`
     );
     const res = await rawResult.json();
     if (res.message === "token expired") throw res;
@@ -632,12 +767,6 @@ const fetchSimulatorResult = async () => {
   }, 300);
 };
 
-const onLeaving = () => {
-  setTimeout(() => {
-    router.push({ path: "/" });
-  }, 400);
-};
-
 const handleSearchingCity = async (city) => {
   if (searchingCityTimeoutRef !== null) clearTimeout(searchingCityTimeoutRef);
 
@@ -651,34 +780,28 @@ const handleSearchingCity = async (city) => {
   }, 200);
 };
 
-const handleSearchingAddress = async (address) => {
-  console.log('tamere')
-  console.log(address)
-  optionValues.value = {
-    ...optionValues.value,
-    districtValue: undefined,
-    addressValue: undefined,
-    addressTyped: address,
-  };
+const handleSearchingAddress = debounce(async (address) => await fetchingAddress(address), 300);
+
+const fetchingAddress = async (address) => {
+  // optionValues.value = {
+  //   ...optionValues.value,
+  //   districtValue: undefined,
+  //   addressValue: undefined,
+  //   addressTyped: address,
+  // };
 
   if (address.trim().length < 4) return;
 
-  if (searchingAddressTimeoutRef !== null)
-    clearTimeout(searchingAddressTimeoutRef);
-
-  searchingAddressTimeoutRef = setTimeout(async () => {
-    try {
-      const rawResult = await fetch(
-        `${domain}districts/address/${optionValues.value.cityValue
-        }?q=${address.trim()}&city=${citySelected.value.toLowerCase()}`
-      );
-      const res = await rawResult.json();
-      if (res.message === "token expired") throw res;
-      setAddressDropdownOptions(res);
-    } catch (err) {
-      console.error(err);
-    }
-  }, 500);
+  try {
+    const rawResult = await fetch(
+      `${domain}districts/address/${mainCitySelected.value}?q=${address.trim()}&city=${form.values.city}`
+    );
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
+    setAddressDropdownOptions(res);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const handleAddressSelect = async (event) => {
@@ -688,17 +811,6 @@ const handleAddressSelect = async (event) => {
       districtValue: event.district,
     });
   }
-};
-
-const onReset = () => {
-  optionValues.value = {
-    ...optionValues.value,
-    ...initialOptionValues,
-    cityValue: undefined,
-  };
-  addressDropdownOptions.value = [];
-  simulationResults.value = null;
-  displayMoreInfo.value = false;
 };
 
 const onClickMoreInfo = () => {
@@ -713,6 +825,7 @@ const handleClose = () => {
 onMounted(async () => {
   await fetchCities();
   isMounted.value = true;
+  await handleSelectCity('bordeaux')
 });
 </script>
 
