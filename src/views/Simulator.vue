@@ -1,10 +1,10 @@
 <template>
   <Page2Wrapper :isMounted="isMounted">
     <div class="flex flex-1 justify-center items-center">
-      <div class="option-list" ref="optionListRef">
+      <div class="option-list">
         <transition name="slide-side-r2l">
           <div key="1" v-if="!displayMoreInfo" class="global-content">
-            <form class="p-4 space-y-6" @submit="onSubmit">
+            <form class="space-y-6">
               <FormField v-slot="{ componentField }" name="city">
                 <FormItem>
                   <FormLabel>Ville</FormLabel>
@@ -15,7 +15,7 @@
                     @update:modelValue="handleSelectCity"
                   >
                     <SelectTrigger :open="isCitySelectOpen">
-                      <SelectValue :placeholder="'Entre le nom de ta ville'" />
+                      <SelectValue :placeholder="'Entre ta ville'" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup :key="group.groupBy" v-for="group in cityDropdownOptions">
@@ -182,7 +182,7 @@
                         class="pr-10"
                         type="number" :placeholder="'Entre ta surface'"
                         :min="9"
-                        :max="200" />
+                        :max="400" />
                         <span class="absolute end-0 inset-y-0 flex items-center justify-center px-2">
                           <span class="flex items-center justify-center size-6 text-muted-foreground">m²</span>
                         </span>
@@ -233,26 +233,28 @@
                 </FormItem>
               </FormField>
 
-              <FormField v-slot="{ componentField }" name="dateBuilt">
-                <FormItem>
-                  <FormLabel class="flex items-center">
-                    Date de construction
-                  </FormLabel>
-                  <Select v-bind="componentField">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem v-for="option in dateBuiltValueDropdownOptions" :key="option.value"
-                          :value="option.value">
-                          {{ option.label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              </FormField>
+              <template v-if="dateBuiltValueDropdownOptions.length">
+                <FormField v-slot="{ componentField }" name="dateBuilt">
+                  <FormItem>
+                    <FormLabel class="flex items-center">
+                      Date de construction
+                    </FormLabel>
+                    <Select v-bind="componentField">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem v-for="option in dateBuiltValueDropdownOptions" :key="option.value"
+                            :value="option.value">
+                            {{ option.label }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                </FormField>
+              </template>
             </form>
           </div>
         </transition>
@@ -263,31 +265,40 @@
               'grid-template-columns': `repeat(${simulationResults?.length + 1
                 }, 2fr)`,
             }">
-              <span class="label">Année de construction</span>
-              <span v-for="simulationResult in simulationResults" v-bind:key="simulationResult.yearBuilt">
+              <span class="label rounded-tl-md">Année de construction</span>
+              <span v-for="(simulationResult, index) in simulationResults"
+                :class="{ 'rounded-tr-md': index === simulationResults.length - 1 }"
+                v-bind:key="simulationResult.yearBuilt">
                 {{ simulationResult.yearBuilt }}
               </span>
               <span class="label">Prix maximum au m²</span>
               <span v-for="simulationResult in simulationResults" v-bind:key="simulationResult.yearBuilt">{{
                 simulationResult.maxPrice }}€
               </span>
-              <span class="label">Prix maximum hors charges</span>
-              <span v-for="simulationResult in simulationResults" v-bind:key="simulationResult.yearBuilt">{{
+              <span class="label" :class="{ 'rounded-bl-md': isLegal }">Prix maximum hors charges</span>
+              <span v-for="(simulationResult, index) in simulationResults"
+                :class="{
+                  '-last-before-exceeding-section': !isLegal,
+                  'rounded-br-md': isLegal && index === simulationResults.length - 1
+                }"
+                v-bind:key="simulationResult.yearBuilt">{{
                 simulationResult.maxTotalPrice }}€
               </span>
               <template v-if="!isLegal">
-                <span class="label">Dépassement</span>
-                <span v-for="simulationResult in simulationResults" class="exceeding"
+                <span class="label -exceeding-label rounded-bl-md">Dépassement</span>
+                <span v-for="(simulationResult, index) in simulationResults"
+                  class="exceeding"
+                  :class="{ 'rounded-br-md': index === simulationResults.length - 1 }"
                   v-bind:key="simulationResult.yearBuilt">+{{
                     +(
-                      form.values.price - simulationResult.maxTotalPrice
+                      currentFormValues.price - simulationResult.maxTotalPrice
                     ).toFixed(2)
                   }}€
                 </span>
               </template>
             </div>
             <div class="pushy-text" v-if="!isLegal">
-              <h4>Et maintenant ?</h4>
+              <h4 class="font-bold text-lg my-4">Et maintenant ?</h4>
               <p>
                 Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et
                 qu'aucune <b>mention justificative</b> n'apparait dans les
@@ -308,7 +319,7 @@
               </p>
 
               <h4>Articles intéressants</h4>
-              <div class="reference-links">
+              <div class="flex space-x-4">
                 <a href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
                   target="_blank">
                   Le Parisien
@@ -323,30 +334,33 @@
         </transition>
 
         <transition name="slide-fade">
-          <div v-if="simulationResultsLoading || simulationResults !== null" class="row result">
+          <div v-if="simulationResultsLoading || simulationResults !== null" class="result-section flex flex-wrap items-center justify-around m-4">
             <template v-if="simulationResultsLoading">
               <BounceLoader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'">
               </BounceLoader>
             </template>
             <template v-else>
-              <span>{{ isLegal ? "Conforme" : "Non conforme" }} </span>
-              <button class="more-info-btn" @click="onClickMoreInfo">
+              <span class="flex flex-1 justify-center py-2">{{ isLegal ? "Conforme" : "Non conforme" }} </span>
+              <Button class="my-2" variant="secondary" @click="onClickMoreInfo">
                 <template v-if="displayMoreInfo">
+                  <span class="rotate-[90deg]">
+                    <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                  </span>
                   <span>Retour</span>
                 </template>
                 <template v-else>
                   <span>Cliquez pour plus d'info</span>
+                  <span class="rotate-[270deg]">
+                    <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                  </span>
                 </template>
-                <span class="arrow-icon" :class="{ '-is-open': displayMoreInfo }">
-                  <ArrowIcon :iconColor="'white'"></ArrowIcon>
-                </span>
-              </button>
+              </Button>
             </template>
           </div>
         </transition>
 
         <div class="w-full flex items-center justify-end pb-4 px-8">
-          <Button class="reset-btn" @click="onReset">Réinitialiser</Button>
+          <Button @click="onReset">Réinitialiser</Button>
         </div>
       </div>
     </div>
@@ -395,7 +409,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/shadcn/ui/hover-card'
-import { CheckIcon, InfoCircledIcon } from "@radix-icons/vue";
+import { CheckIcon, InfoCircledIcon, ChevronLeftIcon } from "@radix-icons/vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import { onMounted, ref, watch } from "vue";
@@ -410,8 +424,8 @@ const formSchema = toTypedSchema(z.object({
   city: z.string(),
   district: z.string(),
   house: z.string().optional(),
-  price: z.number(),
-  surface: z.number(),
+  price: z.number().min(0).max(10000),
+  surface: z.number().min(9).max(400),
   rooms: z.string(),
   furnished: z.string(),
   dateBuilt: z.string(),
@@ -437,8 +451,6 @@ const form = useForm({
 })
 
 const currentFormValues = ref({ ...initialValues });
-
-const optionListRef = ref(null);
 
 const isMounted = ref(false);
 const loading = ref(true);
@@ -672,7 +684,21 @@ const fetchCities = async () => {
 };
 
 const onReset = () => {
-  console.log('onReset')
+  currentFormValues.value = { ...initialValues };
+  form.setValues({
+    ...currentFormValues.value,
+  });
+  displayMoreInfo.value = false;
+  mainCitySelected.value = '';
+
+  dateBuiltValueDropdownOptions.value = [];
+  districtDropdownOptions.value = [];
+  districtGroupByDropdownOptions.value = null;
+  simulationResults.value = null;
+  isLegal.value = null;
+
+  hasHouse.value = false;
+  isMultipleCities.value = false;
 };
 
 watch(
@@ -752,7 +778,6 @@ const fetchSimulatorResult = async () => {
 };
 
 const onClickMoreInfo = () => {
-  optionListRef.value.querySelector("div").scrollIntoView(true);
   displayMoreInfo.value = !displayMoreInfo.value;
 };
 
@@ -769,18 +794,6 @@ onMounted(async () => {
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;
 
-.overlay {
-  background: rgba(19, 15, 64, 0.4);
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  cursor: pointer;
-  z-index: 3;
-  overflow: hidden;
-}
-
 .option-list {
   position: relative;
   box-sizing: border-box;
@@ -792,61 +805,59 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   max-height: 100%;
-}
 
-.option-list div.global-content {
-  display: block;
-  padding: 1.25rem;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
+  div.global-content {
+    display: block;
+    padding: 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
 
-.option-list div.global-content .grid {
-  overflow-x: auto;
+  a {
+    color: $yellow;
+  }
 }
 
 .option-list div.global-content .grid {
   display: grid;
-}
+  overflow-x: auto;
 
-.option-list .pushy-text .reference-links {
-  display: flex;
+  > span {
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border: solid 1px;
+  }
 
-  >a {
-    margin-right: 1rem;
+  > .label {
+    font-weight: bold;
+    text-align: left;
+    line-height: normal;
+
+    &.-exceeding-label {
+      border-right-color: red; 
+    }
+  }
+
+  .-last-before-exceeding-section {
+    border-bottom-color: red; 
+  }
+
+  > .exceeding {
+    font-weight: 500;
+    color: red;
   }
 }
 
-.option-list div.global-content .grid>span {
-  padding: 8px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  border: solid 1px;
-}
-
-.option-list div.global-content .grid>.label {
-  font-weight: bold;
-  text-align: left;
-  line-height: normal;
-}
-
-.option-list div.global-content .grid>span.exceeding {
-  font-weight: 500;
-  color: red;
-}
-
-.row.result {
-  display: flex;
-  justify-content: space-around;
+.result-section {
   padding: 0.625rem;
   box-sizing: border-box;
   border: 1px solid white;
   position: relative;
-  align-items: center;
   border-radius: 2px;
-  margin: 0 2rem 1rem;
+  margin: 0 1.25rem 2rem;
   line-height: 1.25rem;
 
   > span {
@@ -860,71 +871,7 @@ onMounted(async () => {
   }
 }
 
-.more-info-btn {
-  display: flex;
-  align-items: center;
-  border: 2px solid $yellow;
-  border-radius: 2px;
-  background: transparent;
-  color: white;
-  font-size: 0.825rem;
-  font-weight: bold;
-  padding: 0 1rem;
-  transition: all ease 0.3s;
-  margin-left: 0.5rem;
-
-  &:hover {
-    border: solid white 2px;
-  }
-}
-
-.arrow-icon {
-  transition: transform ease 0.3s;
-  height: 30px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform: rotate(-90deg);
-}
-
-.arrow-icon.-is-open {
-  transform: rotate(90deg);
-}
-
-.submit-btn {
-  display: flex;
-  align-self: flex-end;
-  color: $deepblack;
-  display: flex;
-  justify-content: center;
-  font-weight: 400;
-  background-color: $yellow;
-  cursor: pointer;
-  font-weight: 600;
-  border-radius: 4px;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-color: transparent;
-  transition: all ease 0.3s;
-  float: right;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border: solid white 2px;
-    }
-  }
-}
-
 @media screen and (max-width: $mobileSize) {
-  .dropfilters>button.mobile-back-btn.-is-open {
-    z-index: 3;
-    position: fixed;
-    top: 1em;
-    right: 1em;
-    display: block;
-  }
-
   .option-list {
     width: 100vw;
     height: 100vh;
@@ -936,23 +883,6 @@ onMounted(async () => {
     margin-top: 0;
     border: none;
     overflow-y: auto;
-  }
-
-  .option-list div>.row:not(.actions-btn) {
-    flex-direction: column;
-  }
-
-  .option-list div>.row>span:first-child {
-    margin-bottom: 0.5rem;
-  }
-
-  .option-list div>.row>span:first-child,
-  .option-list div>.row>span:last-child {
-    width: 100%;
-  }
-
-  .option-list .info-section {
-    transform: translate(0, -90%);
   }
 }
 
