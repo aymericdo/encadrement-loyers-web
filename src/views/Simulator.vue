@@ -1,6 +1,6 @@
 <template>
   <Page2Wrapper :isMounted="isMounted">
-    <div class="flex flex-1 justify-center items-center">
+    <div class="flex items-center justify-center flex-1">
       <div class="option-list">
         <transition name="slide-side-r2l">
           <div key="1" v-if="!displayMoreInfo" class="global-content">
@@ -18,9 +18,16 @@
                       <SelectValue :placeholder="'Entre ta ville'" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectGroup :key="group.groupBy" v-for="group in cityDropdownOptions">
+                      <SelectGroup
+                        :key="group.groupBy"
+                        v-for="group in cityDropdownOptions"
+                      >
                         <SelectLabel>{{ group.groupBy }}</SelectLabel>
-                        <SelectItem :key="value" v-for="{ label, value } in group.options" :value="value">
+                        <SelectItem
+                          :key="value"
+                          v-for="{ label, value } in group.options"
+                          :value="value"
+                        >
                           {{ label }}
                         </SelectItem>
                       </SelectGroup>
@@ -41,19 +48,38 @@
                             role="combobox"
                             :aria-expanded="isAddressPopoverOpen"
                           >
-                            {{ addressSelected
-                              ? addressDropdownOptions.find((option) => option.value === addressSelected)?.label
-                              : "Entre ton adresse" }}
+                            {{
+                              addressSelected
+                                ? addressDropdownOptions.find(
+                                    (option) => option.value === addressSelected
+                                  )?.label
+                                : "Entre ton adresse"
+                            }}
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent class="popover-content" v-bind:style="{
-                          'width': 'var(--radix-popover-trigger-width)',
-                        }">
+                        <PopoverContent
+                          class="popover-content"
+                          v-bind:style="{
+                            width: 'var(--radix-popover-trigger-width)',
+                          }"
+                        >
                           <Command
-                            @update:searchTerm="handleSearchingAddress" :filterFunction="(list) => list"
-                            @update:modelValue="(addressSelected) => form.setFieldValue('district', addressDropdownOptions.find((option) => option.value === addressSelected)?.district)"
+                            @update:searchTerm="handleSearchingAddress"
+                            :filterFunction="(list) => list"
+                            @update:modelValue="
+                              (addressSelected) =>
+                                form.setFieldValue(
+                                  'district',
+                                  addressDropdownOptions.find(
+                                    (option) => option.value === addressSelected
+                                  )?.district
+                                )
+                            "
                           >
-                            <CommandInput class="h-9" placeholder="Rechercher..." />
+                            <CommandInput
+                              class="h-9"
+                              placeholder="Rechercher..."
+                            />
                             <CommandEmpty>Pas d'adresse trouvée.</CommandEmpty>
                             <CommandList>
                               <CommandGroup>
@@ -61,19 +87,25 @@
                                   v-for="option in addressDropdownOptions"
                                   :key="option.value"
                                   :value="option.value"
-                                  @select="(ev) => {
-                                    if (typeof ev.detail.value === 'string') {
-                                      addressSelected = ev.detail.value
+                                  @select="
+                                    (ev) => {
+                                      if (typeof ev.detail.value === 'string') {
+                                        addressSelected = ev.detail.value;
+                                      }
+                                      isAddressPopoverOpen = false;
                                     }
-                                    isAddressPopoverOpen = false
-                                  }"
+                                  "
                                 >
-                                <CheckIcon
-                                  :class="cn(
-                                    'mr-2 h-4 w-4',
-                                    addressSelected === option.value ? 'opacity-100' : 'opacity-0',
-                                  )"
-                                />
+                                  <CheckIcon
+                                    :class="
+                                      cn(
+                                        'mr-2 h-4 w-4',
+                                        addressSelected === option.value
+                                          ? 'opacity-100'
+                                          : 'opacity-0'
+                                      )
+                                    "
+                                  />
                                   {{ option.label }}
                                 </CommandItem>
                               </CommandGroup>
@@ -88,23 +120,39 @@
                         </SelectTrigger>
                         <SelectContent>
                           <template v-if="districtGroupByDropdownOptions">
-                            <SelectGroup v-for="option in Object.keys(districtGroupByDropdownOptions)">
+                            <SelectGroup
+                              v-for="option in Object.keys(
+                                districtGroupByDropdownOptions
+                              )"
+                            >
                               <SelectLabel>{{ option }}</SelectLabel>
-                              <SelectItem :key="value" v-for="{ label, value } in districtGroupByDropdownOptions[option]" :value="value">
+                              <SelectItem
+                                :key="value"
+                                v-for="{
+                                  label,
+                                  value,
+                                } in districtGroupByDropdownOptions[option]"
+                                :value="value"
+                              >
                                 {{ label }}
                               </SelectItem>
                             </SelectGroup>
                           </template>
                           <template v-else>
-                            <SelectGroup v-for="option in districtDropdownOptions">
-                              <SelectItem :key="option.value" :value="option.value">
+                            <SelectGroup
+                              v-for="option in districtDropdownOptions"
+                            >
+                              <SelectItem
+                                :key="option.value"
+                                :value="option.value"
+                              >
                                 {{ option.label }}
                               </SelectItem>
                             </SelectGroup>
                           </template>
                         </SelectContent>
                       </Select>
-                    </div> 
+                    </div>
                   </FormItem>
                 </FormField>
               </template>
@@ -120,8 +168,11 @@
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem v-for="option in isHouseValueDropdownOptions" :key="option.value"
-                            :value="option.value">
+                          <SelectItem
+                            v-for="option in isHouseValueDropdownOptions"
+                            :key="option.value"
+                            :value="option.value"
+                          >
                             {{ option.label }}
                           </SelectItem>
                         </SelectGroup>
@@ -144,7 +195,8 @@
                       <HoverCardContent class="w-80">
                         <div class="flex justify-between space-x-4">
                           <p class="text-sm">
-                            Si vous ne connaissez pas votre loyer hors charges, vous pouvez enlever 10% à votre loyer total.
+                            Si vous ne connaissez pas votre loyer hors charges,
+                            vous pouvez enlever 10% à votre loyer total.
                           </p>
                         </div>
                       </HoverCardContent>
@@ -152,41 +204,51 @@
                   </FormLabel>
 
                   <FormControl>
-                    <div class="relative w-full items-center">
+                    <div class="relative items-center w-full">
                       <Input
                         v-bind="componentField"
                         class="pr-10"
-                        type="number" :placeholder="'Entre ton loyer'"
+                        type="number"
+                        :placeholder="'Entre ton loyer'"
                         :min="0"
-                        :max="10000" />
-                        <span class="absolute end-0 inset-y-0 flex items-center justify-center px-2">
-                          <span class="flex items-center justify-center size-6 text-muted-foreground">€</span>
-                        </span>
-                      </div>
+                        :max="10000"
+                      />
+                      <span
+                        class="absolute inset-y-0 flex items-center justify-center px-2 end-0"
+                      >
+                        <span
+                          class="flex items-center justify-center size-6 text-muted-foreground"
+                          >€</span
+                        >
+                      </span>
+                    </div>
                   </FormControl>
-                  <FormDescription>
-                    Loyer hors charges
-                  </FormDescription>
+                  <FormDescription> Loyer hors charges </FormDescription>
                 </FormItem>
               </FormField>
 
               <FormField v-slot="{ componentField }" name="surface">
                 <FormItem>
-                  <FormLabel class="flex items-center">
-                    Surface
-                  </FormLabel>
+                  <FormLabel class="flex items-center"> Surface </FormLabel>
                   <FormControl>
-                    <div class="relative w-full items-center">
+                    <div class="relative items-center w-full">
                       <Input
                         v-bind="componentField"
                         class="pr-10"
-                        type="number" :placeholder="'Entre ta surface'"
+                        type="number"
+                        :placeholder="'Entre ta surface'"
                         :min="9"
-                        :max="400" />
-                        <span class="absolute end-0 inset-y-0 flex items-center justify-center px-2">
-                          <span class="flex items-center justify-center size-6 text-muted-foreground">m²</span>
-                        </span>
-                      </div>
+                        :max="400"
+                      />
+                      <span
+                        class="absolute inset-y-0 flex items-center justify-center px-2 end-0"
+                      >
+                        <span
+                          class="flex items-center justify-center size-6 text-muted-foreground"
+                          >m²</span
+                        >
+                      </span>
+                    </div>
                   </FormControl>
                 </FormItem>
               </FormField>
@@ -202,8 +264,11 @@
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem v-for="option in roomValueDropdownOptions" :key="option.value"
-                          :value="option.value">
+                        <SelectItem
+                          v-for="option in roomValueDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
                           {{ option.label }}
                         </SelectItem>
                       </SelectGroup>
@@ -214,17 +279,18 @@
 
               <FormField v-slot="{ componentField }" name="furnished">
                 <FormItem>
-                  <FormLabel class="flex items-center">
-                    Meublé
-                  </FormLabel>
+                  <FormLabel class="flex items-center"> Meublé </FormLabel>
                   <Select v-bind="componentField">
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem v-for="option in furnishedDropdownOptions" :key="option.value"
-                          :value="option.value">
+                        <SelectItem
+                          v-for="option in furnishedDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
                           {{ option.label }}
                         </SelectItem>
                       </SelectGroup>
@@ -245,8 +311,11 @@
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem v-for="option in dateBuiltValueDropdownOptions" :key="option.value"
-                            :value="option.value">
+                          <SelectItem
+                            v-for="option in dateBuiltValueDropdownOptions"
+                            :key="option.value"
+                            :value="option.value"
+                          >
                             {{ option.label }}
                           </SelectItem>
                         </SelectGroup>
@@ -261,35 +330,56 @@
 
         <transition name="slide-side-l2r">
           <div v-if="displayMoreInfo" class="global-content">
-            <div key="2" class="grid" v-bind:style="{
-              'grid-template-columns': `repeat(${simulationResults?.length + 1
+            <div
+              key="2"
+              class="grid"
+              v-bind:style="{
+                'grid-template-columns': `repeat(${
+                  simulationResults?.length + 1
                 }, 2fr)`,
-            }">
+              }"
+            >
               <span class="label rounded-tl-md">Année de construction</span>
-              <span v-for="(simulationResult, index) in simulationResults"
-                :class="{ 'rounded-tr-md': index === simulationResults.length - 1 }"
-                v-bind:key="simulationResult.yearBuilt">
+              <span
+                v-for="(simulationResult, index) in simulationResults"
+                :class="{
+                  'rounded-tr-md': index === simulationResults.length - 1,
+                }"
+                v-bind:key="simulationResult.yearBuilt"
+              >
                 {{ simulationResult.yearBuilt }}
               </span>
               <span class="label">Prix maximum au m²</span>
-              <span v-for="simulationResult in simulationResults" v-bind:key="simulationResult.yearBuilt">{{
-                simulationResult.maxPrice }}€
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxPrice }}€
               </span>
-              <span class="label" :class="{ 'rounded-bl-md': isLegal }">Prix maximum hors charges</span>
-              <span v-for="(simulationResult, index) in simulationResults"
+              <span class="label" :class="{ 'rounded-bl-md': isLegal }"
+                >Prix maximum hors charges</span
+              >
+              <span
+                v-for="(simulationResult, index) in simulationResults"
                 :class="{
                   '-last-before-exceeding-section': !isLegal,
-                  'rounded-br-md': isLegal && index === simulationResults.length - 1
+                  'rounded-br-md':
+                    isLegal && index === simulationResults.length - 1,
                 }"
-                v-bind:key="simulationResult.yearBuilt">{{
-                simulationResult.maxTotalPrice }}€
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxTotalPrice }}€
               </span>
               <template v-if="!isLegal">
-                <span class="label -exceeding-label rounded-bl-md">Dépassement</span>
-                <span v-for="(simulationResult, index) in simulationResults"
+                <span class="label -exceeding-label rounded-bl-md"
+                  >Dépassement</span
+                >
+                <span
+                  v-for="(simulationResult, index) in simulationResults"
                   class="exceeding"
-                  :class="{ 'rounded-br-md': index === simulationResults.length - 1 }"
-                  v-bind:key="simulationResult.yearBuilt">+{{
+                  :class="{
+                    'rounded-br-md': index === simulationResults.length - 1,
+                  }"
+                  v-bind:key="simulationResult.yearBuilt"
+                  >+{{
                     +(
                       currentFormValues.price - simulationResult.maxTotalPrice
                     ).toFixed(2)
@@ -298,7 +388,7 @@
               </template>
             </div>
             <div class="pushy-text" v-if="!isLegal">
-              <h4 class="font-bold text-lg my-4">Et maintenant ?</h4>
+              <h4 class="my-4 text-lg font-bold">Et maintenant ?</h4>
               <p>
                 Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et
                 qu'aucune <b>mention justificative</b> n'apparait dans les
@@ -308,24 +398,33 @@
 
               <p>
                 Pour plus d’informations, voir le site de votre
-                <b><a :href="simulationResults[0].moreInfo" target="_blank">
+                <b
+                  ><a :href="simulationResults[0].moreInfo" target="_blank">
                     {{ isMultipleCities ? "agglomération" : "ville" }}
-                  </a></b>.
+                  </a></b
+                >.
               </p>
 
               <p v-if="mainCitySelected === 'paysBasque'">
-                Pour avoir de l'aide dans vos démarches, contactez l'<b><a :href="'https://www.alda.eus/contact/'"
-                    target="_blank">association de défense des locataires Alda</a></b>.
+                Pour avoir de l'aide dans vos démarches, contactez l'<b
+                  ><a :href="'https://www.alda.eus/contact/'" target="_blank"
+                    >association de défense des locataires Alda</a
+                  ></b
+                >.
               </p>
 
               <h4>Articles intéressants</h4>
               <div class="flex space-x-4">
-                <a href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
-                  target="_blank">
+                <a
+                  href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
+                  target="_blank"
+                >
                   Le Parisien
                 </a>
-                <a href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
-                  target="_blank">
+                <a
+                  href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
+                  target="_blank"
+                >
                   Le Figaro Immo
                 </a>
               </div>
@@ -334,13 +433,23 @@
         </transition>
 
         <transition name="slide-fade">
-          <div v-if="simulationResultsLoading || simulationResults !== null" class="result-section flex flex-wrap items-center justify-around m-4">
+          <div
+            v-if="simulationResultsLoading || simulationResults !== null"
+            class="flex flex-wrap items-center justify-around m-4 result-section"
+          >
             <template v-if="simulationResultsLoading">
-              <BounceLoader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'">
+              <BounceLoader
+                class="spinner"
+                :loading="simulationResultsLoading"
+                color="#fdcd56"
+                :size="'20px'"
+              >
               </BounceLoader>
             </template>
             <template v-else>
-              <span class="flex flex-1 justify-center py-2">{{ isLegal ? "Conforme" : "Non conforme" }} </span>
+              <span class="flex justify-center flex-1 py-2"
+                >{{ isLegal ? "Conforme" : "Non conforme" }}
+              </span>
               <Button class="my-2" variant="secondary" @click="onClickMoreInfo">
                 <template v-if="displayMoreInfo">
                   <span class="rotate-[90deg]">
@@ -359,7 +468,7 @@
           </div>
         </transition>
 
-        <div class="w-full flex items-center justify-end pb-4 px-8">
+        <div class="flex items-center justify-end w-full px-8 pb-4">
           <Button @click="onReset">Réinitialiser</Button>
         </div>
       </div>
@@ -378,7 +487,7 @@ import { domain } from "@/helper/config";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import { Input } from "@/shadcn/ui/input";
-import { debounce } from '@/tools/debounce';
+import { debounce } from "@/tools/debounce";
 import {
   Select,
   SelectContent,
@@ -388,67 +497,69 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/shadcn/ui/popover'
-import {
-  Button,
-} from '@/shadcn/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
+import { Button } from "@/shadcn/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList
-} from '@/shadcn/ui/command'
+  CommandList,
+} from "@/shadcn/ui/command";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@/shadcn/ui/hover-card'
+} from "@/shadcn/ui/hover-card";
 import { CheckIcon, InfoCircledIcon, ChevronLeftIcon } from "@radix-icons/vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import { onMounted, ref, watch } from "vue";
 import BounceLoader from "vue-spinner/src/BounceLoader.vue";
-import { FormControl, FormField, FormItem, FormLabel, FormDescription } from "@/shadcn/ui/form";
-import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
-import { cn } from '@/lib/utils';
-import * as z from 'zod'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormDescription,
+} from "@/shadcn/ui/form";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import { cn } from "@/lib/utils";
+import * as z from "zod";
 
-const formSchema = toTypedSchema(z.object({
-  city: z.string(),
-  district: z.string(),
-  house: z.string().optional(),
-  price: z.number().min(0).max(10000),
-  surface: z.number().min(9).max(400),
-  rooms: z.string(),
-  furnished: z.string(),
-  dateBuilt: z.string(),
-}))
+const formSchema = toTypedSchema(
+  z.object({
+    city: z.string(),
+    district: z.string(),
+    house: z.string().optional(),
+    price: z.number().min(0).max(10000),
+    surface: z.number().min(9).max(400),
+    rooms: z.string(),
+    furnished: z.string(),
+    dateBuilt: z.string(),
+  })
+);
 
-const idkId = '-1';
+const idkId = "-1";
 
-const mainCitySelected = ref('');
+const mainCitySelected = ref("");
 const initialValues = {
   city: undefined,
   district: undefined,
-  house: '0',
+  house: "0",
   price: undefined,
   surface: undefined,
   rooms: undefined,
   furnished: undefined,
   dateBuilt: idkId,
-}
+};
 
 const form = useForm({
   initialValues,
   validationSchema: formSchema,
-})
+});
 
 const currentFormValues = ref({ ...initialValues });
 
@@ -456,8 +567,8 @@ const isMounted = ref(false);
 const loading = ref(true);
 
 const isCitySelectOpen = ref(false);
-const isAddressPopoverOpen = ref(false)
-const addressSelected = ref('')
+const isAddressPopoverOpen = ref(false);
+const addressSelected = ref("");
 
 const cityDropdownOptions = ref([]);
 const dateBuiltValueDropdownOptions = ref([]);
@@ -490,31 +601,31 @@ const furnishedDropdownOptions = [
 
 const isHouseValueDropdownOptions = [
   {
-    value: '1',
+    value: "1",
     label: "Maison",
   },
   {
-    value: '0',
+    value: "0",
     label: "Appartement",
   },
 ];
 
 const roomValueDropdownOptions = [
   {
-    value: '1',
-    label: '1 pièce',
+    value: "1",
+    label: "1 pièce",
   },
   {
-    value: '2',
-    label: '2 pièces',
+    value: "2",
+    label: "2 pièces",
   },
   {
-    value: '3',
-    label: '3 pièces',
+    value: "3",
+    label: "3 pièces",
   },
   {
-    value: '4',
-    label: '4 pièces et plus',
+    value: "4",
+    label: "4 pièces et plus",
   },
 ];
 
@@ -554,10 +665,12 @@ const setDateBuiltRangeDropdownOptions = (datesRange) => {
 const setCityDropdownOptions = () => {
   cityDropdownOptions.value = cityInformation.reduce((prev, currentValue) => {
     currentValue.cities.forEach(({ value, label }) => {
-      const groupAlreadyThere = prev.find(({ groupBy }) => groupBy === currentValue.label);
+      const groupAlreadyThere = prev.find(
+        ({ groupBy }) => groupBy === currentValue.label
+      );
 
       if (groupAlreadyThere) {
-        groupAlreadyThere.options.push({ value, label })
+        groupAlreadyThere.options.push({ value, label });
       } else {
         prev.push({ options: [{ value, label }], groupBy: currentValue.label });
       }
@@ -574,22 +687,27 @@ const setDistrictDropdownOptions = (res) => {
   }));
 
   if (districtDropdownOptions.value[0].groupBy) {
-    districtGroupByDropdownOptions.value = districtDropdownOptions.value.reduce((prev, district) => {
-      if (!prev[district.groupBy]) {
-        prev[district.groupBy] = [{
-          groupBy: district.groupBy,
-          value: district.value,
-          label: district.label,
-        }];
-      } else {
-        prev[district.groupBy].push({
-          groupBy: district.groupBy,
-          value: district.value,
-          label: district.label,
-        });
-      }
-      return prev;
-    }, {});
+    districtGroupByDropdownOptions.value = districtDropdownOptions.value.reduce(
+      (prev, district) => {
+        if (!prev[district.groupBy]) {
+          prev[district.groupBy] = [
+            {
+              groupBy: district.groupBy,
+              value: district.value,
+              label: district.label,
+            },
+          ];
+        } else {
+          prev[district.groupBy].push({
+            groupBy: district.groupBy,
+            value: district.value,
+            label: district.label,
+          });
+        }
+        return prev;
+      },
+      {}
+    );
   } else {
     districtGroupByDropdownOptions.value = null;
   }
@@ -651,7 +769,7 @@ const handleSelectCity = async (city) => {
   });
 
   if (districtDropdownOptions.value.length === 1) {
-    form.setFieldValue('district', districtDropdownOptions.value[0].value);
+    form.setFieldValue("district", districtDropdownOptions.value[0].value);
   }
 };
 
@@ -689,7 +807,8 @@ const onReset = () => {
     ...currentFormValues.value,
   });
   displayMoreInfo.value = false;
-  mainCitySelected.value = '';
+  mainCitySelected.value = "";
+  addressSelected.value = "";
 
   dateBuiltValueDropdownOptions.value = [];
   districtDropdownOptions.value = [];
@@ -705,7 +824,7 @@ watch(
   () => form.meta.value.valid,
   (isValid) => {
     if (isValid) {
-      handleFetchSimulatorResult()
+      handleFetchSimulatorResult();
     }
   }
 );
@@ -723,8 +842,14 @@ watch(
   }
 );
 
-const handleSearchingAddress = debounce(async (address) => await fetchingAddress(address), 300);
-const handleFetchSimulatorResult = debounce(async () => await fetchSimulatorResult(), 300);
+const handleSearchingAddress = debounce(
+  async (address) => await fetchingAddress(address),
+  300
+);
+const handleFetchSimulatorResult = debounce(
+  async () => await fetchSimulatorResult(),
+  300
+);
 
 const fetchingAddress = async (address) => {
   if (address.trim().length < 4) {
@@ -733,7 +858,9 @@ const fetchingAddress = async (address) => {
 
   try {
     const rawResult = await fetch(
-      `${domain}districts/address/${mainCitySelected.value}?q=${address.trim()}&city=${form.values.city}`
+      `${domain}districts/address/${
+        mainCitySelected.value
+      }?q=${address.trim()}&city=${form.values.city}`
     );
     const res = await rawResult.json();
     if (res.message === "token expired") throw res;
@@ -753,14 +880,14 @@ const fetchSimulatorResult = async () => {
     furnishedValue: form.values.furnished,
     dateBuiltValueStr: form.values.dateBuilt,
     districtValue: form.values.district,
-    isHouseValue: form.values.house || '0',
+    isHouseValue: form.values.house || "0",
   };
 
   const strOptions = Object.keys(optionParams)
     .map((key) => {
       return key + "=" + optionParams[key];
     })
-    .join("&")
+    .join("&");
 
   try {
     const rawResult = await fetch(
@@ -837,12 +964,12 @@ onMounted(async () => {
     line-height: normal;
 
     &.-exceeding-label {
-      border-right-color: red; 
+      border-right-color: red;
     }
   }
 
   .-last-before-exceeding-section {
-    border-bottom-color: red; 
+    border-bottom-color: red;
   }
 
   > .exceeding {
