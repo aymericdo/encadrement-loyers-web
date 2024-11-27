@@ -8,31 +8,80 @@
               <FormField v-slot="{ componentField }" name="city">
                 <FormItem>
                   <FormLabel>Ville</FormLabel>
-                  <Select
-                    v-bind="componentField"
-                    :open="isCitySelectOpen"
-                    @update:open="isCitySelectOpen = $event"
-                    @update:modelValue="handleSelectCity"
-                  >
-                    <SelectTrigger :open="isCitySelectOpen">
-                      <SelectValue :placeholder="'Entre ta ville'" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup
-                        :key="group.groupBy"
-                        v-for="group in cityDropdownOptions"
-                      >
-                        <SelectLabel>{{ group.groupBy }}</SelectLabel>
-                        <SelectItem
-                          :key="value"
-                          v-for="{ label, value } in group.options"
-                          :value="value"
+                  <div class="space-y-6">
+                    <Popover v-model:open="isCityPopoverOpen">
+                      <PopoverTrigger as-child>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          :aria-expanded="isCityPopoverOpen"
                         >
-                          {{ label }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                          {{
+                            form.values.city
+                              ? cityDropdownOptions
+                                  .flatMap((group) => group.options)
+                                  .find(
+                                    (option) =>
+                                      option.value === form.values.city
+                                  )?.label
+                              : "Entre ta ville"
+                          }}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        class="popover-content"
+                        v-bind:style="{
+                          width: 'var(--radix-popover-trigger-width)',
+                        }"
+                      >
+                        <Command @update:modelValue="handleSelectCity">
+                          <CommandInput
+                            class="h-9"
+                            placeholder="Rechercher une ville..."
+                          />
+                          <CommandEmpty>Pas de ville trouvée.</CommandEmpty>
+                          <CommandList>
+                            <CommandGroup
+                              v-for="group in cityDropdownOptions"
+                              :key="group.groupBy"
+                            >
+                              <CommandItem>
+                                <SelectLabel>{{ group.groupBy }}</SelectLabel>
+                              </CommandItem>
+                              <CommandItem
+                                v-for="option in group.options"
+                                :key="option.value"
+                                :value="option.value"
+                                @select="
+                                  (ev) => {
+                                    if (typeof ev.detail.value === 'string') {
+                                      form.setFieldValue(
+                                        'city',
+                                        ev.detail.value
+                                      );
+                                    }
+                                    isCityPopoverOpen = false;
+                                  }
+                                "
+                              >
+                                <CheckIcon
+                                  :class="
+                                    cn(
+                                      'mr-2 h-4 w-4',
+                                      form.values.city === option.value
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )
+                                  "
+                                />
+                                {{ option.label }}
+                              </CommandItem>
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </FormItem>
               </FormField>
 
@@ -486,18 +535,7 @@
 import { domain } from "@/helper/config";
 import ArrowIcon from "@/icons/ArrowIcon.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
-import { Input } from "@/shadcn/ui/input";
-import { debounce } from "@/tools/debounce";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/shadcn/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
+import { cn } from "@/lib/utils";
 import { Button } from "@/shadcn/ui/button";
 import {
   Command,
@@ -508,25 +546,36 @@ import {
   CommandList,
 } from "@/shadcn/ui/command";
 import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/shadcn/ui/form";
+import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/shadcn/ui/hover-card";
-import { CheckIcon, InfoCircledIcon, ChevronLeftIcon } from "@radix-icons/vue";
+import { Input } from "@/shadcn/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+import { debounce } from "@/tools/debounce";
+import { CheckIcon, InfoCircledIcon } from "@radix-icons/vue";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
 import { onMounted, ref, watch } from "vue";
 import BounceLoader from "vue-spinner/src/BounceLoader.vue";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormDescription,
-} from "@/shadcn/ui/form";
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
-import { cn } from "@/lib/utils";
 import * as z from "zod";
 
 const formSchema = toTypedSchema(
@@ -911,6 +960,8 @@ const onClickMoreInfo = () => {
 const handleClose = () => {
   isMounted.value = false;
 };
+
+const isCityPopoverOpen = ref(false);
 
 onMounted(async () => {
   await fetchCities();
