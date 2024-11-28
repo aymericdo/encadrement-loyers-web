@@ -985,8 +985,14 @@ watch(
     overflow-y: auto;
   }
 
-  a {
+  a,
+  a:visited {
     color: $yellow;
+    transition: color ease 0.3s;
+
+    &:hover {
+      color: $darkeryellow;
+    }
   }
 }
 

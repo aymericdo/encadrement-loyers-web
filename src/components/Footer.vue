@@ -58,4 +58,14 @@ p.social {
   margin-left: 8px;
   width: 2.5rem;
 }
+
+a,
+a:visited {
+  color: $yellow;
+  transition: color ease 0.3s;
+
+  &:hover {
+    color: $darkeryellow;
+  }
+}
 </style>
