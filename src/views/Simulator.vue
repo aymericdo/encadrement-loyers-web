@@ -447,10 +447,10 @@
               </p>
 
               <p>
-                Pour plus d’informations, voir le site de votre
+                Pour plus d’informations,
                 <b
                   ><a :href="simulationResults[0].moreInfo" target="_blank">
-                    {{ isMultipleCities ? "agglomération" : "ville" }}
+                    voir le site de votre {{ isMultipleCities ? "agglomération" : "ville" }}
                   </a></b
                 >.
               </p>
