@@ -503,7 +503,7 @@
                 {{ isLegal ? "Conforme" : "Non conforme" }}
               </template>
             </span>
-            <Button class="my-2" variant="secondary" @click="onClickMoreInfo">
+            <Button type="button" class="my-2" variant="secondary" @click="onClickMoreInfo">
               <template v-if="displayMoreInfo">
                 <span class="rotate-[90deg]">
                   <ArrowIcon :iconColor="'black'"></ArrowIcon>
@@ -521,7 +521,7 @@
         </transition>
 
         <div class="flex items-center justify-end w-full px-5 pb-4">
-          <Button @click="onReset">Réinitialiser</Button>
+          <Button type="button" @click="onReset">Réinitialiser</Button>
         </div>
       </div>
     </div>
@@ -815,10 +815,7 @@ const handleSelectCity = async (city) => {
   isMultipleCities.value = currentCityInformation.cities.length > 1;
   hasHouse.value = !!currentCityInformation?.hasHouse;
   setDateBuiltRangeDropdownOptions([...currentCityInformation.dateBuiltRange]);
-  form.setValues({
-    ...initialValues,
-    city,
-  });
+  form.setFieldValue('city', city);
 
   if (districtDropdownOptions.value.length === 1) {
     form.setFieldValue("district", districtDropdownOptions.value[0].value);
@@ -853,12 +850,7 @@ const fetchCities = async () => {
   }
 };
 
-const onReset = () => {
-  currentFormValues.value = { ...initialValues };
-  form.setValues({
-    ...currentFormValues.value,
-  });
-  displayMoreInfo.value = false;
+const onReset = async () => {
   mainCitySelected.value = "";
   addressSelected.value = "";
 
@@ -870,16 +862,27 @@ const onReset = () => {
 
   hasHouse.value = false;
   isMultipleCities.value = false;
+
+  displayMoreInfo.value = false;
+
+  currentFormValues.value = { ...initialValues };
+  form.setValues({
+    ...currentFormValues.value,
+  });
 };
 
 watch(
   () => form.meta.value,
-  () => {
-    if (form.meta.value.valid) {
-      simulationResultsLoading.value = true;
+  async () => {
+    if (!displayMoreInfo.value) {
+      if (!form.meta.value.valid) {
+        simulationResults.value = null;
+        isLegal.value = null;
+        simulationResultsLoading.value = false;
+      } else {
+        handleFetchSimulatorResult();
+      }
     }
-
-    handleFetchSimulatorResult();
   }
 );
 
@@ -927,13 +930,6 @@ const fetchingAddress = async (address) => {
 
 const fetchSimulatorResult = async () => {
   simulationResultsLoading.value = true;
-
-  if (!form.meta.value.valid) {
-    simulationResults.value = null;
-    isLegal.value = null;
-    simulationResultsLoading.value = false;
-    return;
-  }
 
   const optionParams = {
     surfaceValue: form.values.surface,
