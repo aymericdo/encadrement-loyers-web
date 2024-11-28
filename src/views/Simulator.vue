@@ -5,7 +5,7 @@
         <transition name="slide-side-r2l">
           <div key="1" v-if="!displayMoreInfo" class="global-content">
             <form class="space-y-6">
-              <FormField v-slot="{ componentField }" name="city">
+              <FormField name="city">
                 <FormItem>
                   <FormLabel>Ville</FormLabel>
                   <div class="space-y-6">
@@ -45,9 +45,7 @@
                               v-for="group in cityDropdownOptions"
                               :key="group.groupBy"
                             >
-                              <CommandItem>
-                                <SelectLabel>{{ group.groupBy }}</SelectLabel>
-                              </CommandItem>
+                              <SelectLabel>{{ group.groupBy }}</SelectLabel>
                               <CommandItem
                                 v-for="option in group.options"
                                 :key="option.value"
@@ -86,10 +84,10 @@
               </FormField>
 
               <template v-if="districtDropdownOptions.length">
-                <FormField v-slot="{ componentField }" name="district">
-                  <FormItem>
-                    <FormLabel>Localisation</FormLabel>
-                    <div class="space-y-6">
+                <div>
+                  <FormField name="district">
+                    <FormItem>
+                      <FormLabel>Localisation</FormLabel>
                       <Popover v-model:open="isAddressPopoverOpen">
                         <PopoverTrigger as-child>
                           <Button
@@ -162,9 +160,14 @@
                           </Command>
                         </PopoverContent>
                       </Popover>
+                    </FormItem>
+                  </FormField>
 
+                  <FormField v-slot="{ componentField }" name="district">
+                    <FormItem>
+                      <FormLabel>Ou</FormLabel>
                       <Select v-bind="componentField">
-                        <SelectTrigger :open="isCitySelectOpen">
+                        <SelectTrigger :open="isCitySelectOpen" :disabled="districtDropdownOptions.length === 1">
                           <SelectValue :placeholder="'Choisis ta zone'" />
                         </SelectTrigger>
                         <SelectContent>
@@ -201,9 +204,9 @@
                           </template>
                         </SelectContent>
                       </Select>
-                    </div>
-                  </FormItem>
-                </FormField>
+                    </FormItem>
+                  </FormField>
+                </div>
               </template>
 
               <template v-if="hasHouse">
@@ -486,38 +489,38 @@
             v-if="simulationResultsLoading || simulationResults !== null"
             class="flex flex-wrap items-center justify-around m-4 result-section"
           >
-            <template v-if="simulationResultsLoading">
-              <BounceLoader
-                class="spinner"
-                :loading="simulationResultsLoading"
-                color="#fdcd56"
-                :size="'20px'"
-              >
-              </BounceLoader>
-            </template>
-            <template v-else>
-              <span class="flex justify-center flex-1 py-2"
-                >{{ isLegal ? "Conforme" : "Non conforme" }}
-              </span>
-              <Button class="my-2" variant="secondary" @click="onClickMoreInfo">
-                <template v-if="displayMoreInfo">
-                  <span class="rotate-[90deg]">
-                    <ArrowIcon :iconColor="'black'"></ArrowIcon>
-                  </span>
-                  <span>Retour</span>
-                </template>
-                <template v-else>
-                  <span>Cliquez pour plus d'info</span>
-                  <span class="rotate-[270deg]">
-                    <ArrowIcon :iconColor="'black'"></ArrowIcon>
-                  </span>
-                </template>
-              </Button>
-            </template>
+            <span class="flex justify-center flex-1 py-2">
+              <template v-if="simulationResultsLoading">
+                <BounceLoader
+                  class="spinner"
+                  :loading="simulationResultsLoading"
+                  color="#fdcd56"
+                  :size="'20px'"
+                >
+                </BounceLoader>
+              </template>
+              <template v-else>
+                {{ isLegal ? "Conforme" : "Non conforme" }}
+              </template>
+            </span>
+            <Button class="my-2" variant="secondary" @click="onClickMoreInfo">
+              <template v-if="displayMoreInfo">
+                <span class="rotate-[90deg]">
+                  <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                </span>
+                <span>Retour</span>
+              </template>
+              <template v-else>
+                <span>Cliquez pour plus d'info</span>
+                <span class="rotate-[270deg]">
+                  <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                </span>
+              </template>
+            </Button>
           </div>
         </transition>
 
-        <div class="flex items-center justify-end w-full px-8 pb-4">
+        <div class="flex items-center justify-end w-full px-5 pb-4">
           <Button @click="onReset">Réinitialiser</Button>
         </div>
       </div>
@@ -690,17 +693,17 @@ const setDateBuiltRangeDropdownOptions = (datesRange) => {
 
       if (dates[0] === null) {
         prev.push({
-          value: JSON.stringify(dates),
+          value: dates.join(','),
           label: `Avant ${dates[1]}`,
         });
       } else if (dates[1] === null) {
         prev.push({
-          value: JSON.stringify(dates),
+          value: dates.join(','),
           label: `Après ${dates[0]}`,
         });
       } else {
         prev.push({
-          value: JSON.stringify(dates),
+          value: dates.join(','),
           label: `${dates[0]}-${dates[1]}`,
         });
       }
@@ -870,11 +873,13 @@ const onReset = () => {
 };
 
 watch(
-  () => form.meta.value.valid,
-  (isValid) => {
-    if (isValid) {
-      handleFetchSimulatorResult();
+  () => form.meta.value,
+  () => {
+    if (form.meta.value.valid) {
+      simulationResultsLoading.value = true;
     }
+
+    handleFetchSimulatorResult();
   }
 );
 
@@ -895,6 +900,7 @@ const handleSearchingAddress = debounce(
   async (address) => await fetchingAddress(address),
   300
 );
+
 const handleFetchSimulatorResult = debounce(
   async () => await fetchSimulatorResult(),
   300
@@ -921,6 +927,13 @@ const fetchingAddress = async (address) => {
 
 const fetchSimulatorResult = async () => {
   simulationResultsLoading.value = true;
+
+  if (!form.meta.value.valid) {
+    simulationResults.value = null;
+    isLegal.value = null;
+    simulationResultsLoading.value = false;
+    return;
+  }
 
   const optionParams = {
     surfaceValue: form.values.surface,
