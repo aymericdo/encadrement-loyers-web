@@ -3,7 +3,7 @@
     <div class="flex items-center justify-center flex-1">
       <div class="option-list">
         <transition name="slide-side-r2l">
-          <div key="1" v-if="!displayMoreInfo" class="global-content">
+          <div key="1" v-show="!displayMoreInfo" class="global-content">
             <form class="space-y-6">
               <FormField name="city">
                 <FormItem>
@@ -83,133 +83,131 @@
                 </FormItem>
               </FormField>
 
-              <template v-if="districtDropdownOptions.length">
-                <div>
-                  <FormField name="district">
-                    <FormItem>
-                      <FormLabel>Localisation</FormLabel>
-                      <Popover v-model:open="isAddressPopoverOpen">
-                        <PopoverTrigger as-child>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            :aria-expanded="isAddressPopoverOpen"
-                          >
-                            {{
-                              addressSelected
-                                ? addressDropdownOptions.find(
-                                    (option) => option.value === addressSelected
-                                  )?.label
-                                : "Entre ton adresse"
-                            }}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          class="popover-content"
-                          v-bind:style="{
-                            width: 'var(--radix-popover-trigger-width)',
-                          }"
+              <div v-show="districtDropdownOptions.length">
+                <FormField name="district">
+                  <FormItem>
+                    <FormLabel>Localisation</FormLabel>
+                    <Popover v-model:open="isAddressPopoverOpen">
+                      <PopoverTrigger as-child>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          :aria-expanded="isAddressPopoverOpen"
                         >
-                          <Command
-                            @update:searchTerm="handleSearchingAddress"
-                            :filterFunction="(list) => list"
-                            @update:modelValue="
-                              (addressSelected) =>
-                                form.setFieldValue(
-                                  'district',
-                                  addressDropdownOptions.find(
-                                    (option) => option.value === addressSelected
-                                  )?.district
-                                )
-                            "
-                          >
-                            <CommandInput
-                              class="h-9"
-                              placeholder="Rechercher..."
-                            />
-                            <CommandEmpty>Pas d'adresse trouvée.</CommandEmpty>
-                            <CommandList>
-                              <CommandGroup>
-                                <CommandItem
-                                  v-for="option in addressDropdownOptions"
-                                  :key="option.value"
-                                  :value="option.value"
-                                  @select="
-                                    (ev) => {
-                                      if (typeof ev.detail.value === 'string') {
-                                        addressSelected = ev.detail.value;
-                                      }
-                                      isAddressPopoverOpen = false;
-                                    }
-                                  "
-                                >
-                                  <CheckIcon
-                                    :class="
-                                      cn(
-                                        'mr-2 h-4 w-4',
-                                        addressSelected === option.value
-                                          ? 'opacity-100'
-                                          : 'opacity-0'
-                                      )
-                                    "
-                                  />
-                                  {{ option.label }}
-                                </CommandItem>
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormItem>
-                  </FormField>
-
-                  <FormField v-slot="{ componentField }" name="district">
-                    <FormItem>
-                      <FormLabel>Ou</FormLabel>
-                      <Select v-bind="componentField">
-                        <SelectTrigger :open="isCitySelectOpen" :disabled="districtDropdownOptions.length === 1">
-                          <SelectValue :placeholder="'Choisis ta zone'" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <template v-if="districtGroupByDropdownOptions">
-                            <SelectGroup
-                              v-for="option in Object.keys(
-                                districtGroupByDropdownOptions
-                              )"
-                            >
-                              <SelectLabel>{{ option }}</SelectLabel>
-                              <SelectItem
-                                :key="value"
-                                v-for="{
-                                  label,
-                                  value,
-                                } in districtGroupByDropdownOptions[option]"
-                                :value="value"
-                              >
-                                {{ label }}
-                              </SelectItem>
-                            </SelectGroup>
-                          </template>
-                          <template v-else>
-                            <SelectGroup
-                              v-for="option in districtDropdownOptions"
-                            >
-                              <SelectItem
+                          {{
+                            addressSelected
+                              ? addressDropdownOptions.find(
+                                  (option) => option.value === addressSelected
+                                )?.label
+                              : "Entre ton adresse"
+                          }}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        class="popover-content"
+                        v-bind:style="{
+                          width: 'var(--radix-popover-trigger-width)',
+                        }"
+                      >
+                        <Command
+                          @update:searchTerm="handleSearchingAddress"
+                          :filterFunction="(list) => list"
+                          @update:modelValue="
+                            (addressSelected) =>
+                              form.setFieldValue(
+                                'district',
+                                addressDropdownOptions.find(
+                                  (option) => option.value === addressSelected
+                                )?.district
+                              )
+                          "
+                        >
+                          <CommandInput
+                            class="h-9"
+                            placeholder="Rechercher..."
+                          />
+                          <CommandEmpty>Pas d'adresse trouvée.</CommandEmpty>
+                          <CommandList>
+                            <CommandGroup>
+                              <CommandItem
+                                v-for="option in addressDropdownOptions"
                                 :key="option.value"
                                 :value="option.value"
+                                @select="
+                                  (ev) => {
+                                    if (typeof ev.detail.value === 'string') {
+                                      addressSelected = ev.detail.value;
+                                    }
+                                    isAddressPopoverOpen = false;
+                                  }
+                                "
                               >
+                                <CheckIcon
+                                  :class="
+                                    cn(
+                                      'mr-2 h-4 w-4',
+                                      addressSelected === option.value
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )
+                                  "
+                                />
                                 {{ option.label }}
-                              </SelectItem>
-                            </SelectGroup>
-                          </template>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  </FormField>
-                </div>
-              </template>
+                              </CommandItem>
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                </FormField>
 
-              <template v-if="hasHouse">
+                <FormField v-slot="{ componentField }" name="district">
+                  <FormItem>
+                    <FormLabel>Ou</FormLabel>
+                    <Select v-bind="componentField">
+                      <SelectTrigger :open="isCitySelectOpen" :disabled="districtDropdownOptions.length === 1">
+                        <SelectValue :placeholder="'Choisis ta zone'" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <template v-if="districtGroupByDropdownOptions">
+                          <SelectGroup
+                            v-for="option in Object.keys(
+                              districtGroupByDropdownOptions
+                            )"
+                          >
+                            <SelectLabel>{{ option }}</SelectLabel>
+                            <SelectItem
+                              :key="value"
+                              v-for="{
+                                label,
+                                value,
+                              } in districtGroupByDropdownOptions[option]"
+                              :value="value"
+                            >
+                              {{ label }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </template>
+                        <template v-else>
+                          <SelectGroup
+                            v-for="option in districtDropdownOptions"
+                          >
+                            <SelectItem
+                              :key="option.value"
+                              :value="option.value"
+                            >
+                              {{ option.label }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </template>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                </FormField>
+              </div>
+
+              <div v-show="hasHouse">
                 <FormField v-slot="{ componentField }" name="house">
                   <FormItem>
                     <FormLabel>Maison</FormLabel>
@@ -232,7 +230,7 @@
                     </Select>
                   </FormItem>
                 </FormField>
-              </template>
+              </div>
 
               <FormField v-slot="{ componentField }" name="price">
                 <FormItem>
@@ -351,7 +349,7 @@
                 </FormItem>
               </FormField>
 
-              <template v-if="dateBuiltValueDropdownOptions.length">
+              <div v-show="dateBuiltValueDropdownOptions.length">
                 <FormField v-slot="{ componentField }" name="dateBuilt">
                   <FormItem>
                     <FormLabel class="flex items-center">
@@ -375,7 +373,7 @@
                     </Select>
                   </FormItem>
                 </FormField>
-              </template>
+              </div>
             </form>
           </div>
         </transition>
@@ -433,7 +431,7 @@
                   v-bind:key="simulationResult.yearBuilt"
                   >+{{
                     +(
-                      currentFormValues.price - simulationResult.maxTotalPrice
+                      form.values.price - simulationResult.maxTotalPrice
                     ).toFixed(2)
                   }}€
                 </span>
@@ -503,7 +501,7 @@
                 {{ isLegal ? "Conforme" : "Non conforme" }}
               </template>
             </span>
-            <Button type="button" class="my-2" variant="secondary" @click="onClickMoreInfo">
+            <Button type="button" class="my-2" variant="secondary" @click="onClickMoreInfo" :disabled="simulationResultsLoading">
               <template v-if="displayMoreInfo">
                 <span class="rotate-[90deg]">
                   <ArrowIcon :iconColor="'black'"></ArrowIcon>
@@ -576,7 +574,7 @@ import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import { debounce } from "@/tools/debounce";
 import { CheckIcon, InfoCircledIcon } from "@radix-icons/vue";
 import { toTypedSchema } from "@vee-validate/zod";
-import { useForm } from "vee-validate";
+import { useForm } from 'vee-validate'
 import { onMounted, ref, watch } from "vue";
 import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 import * as z from "zod";
@@ -612,8 +610,6 @@ const form = useForm({
   initialValues,
   validationSchema: formSchema,
 });
-
-const currentFormValues = ref({ ...initialValues });
 
 const isMounted = ref(false);
 const loading = ref(true);
@@ -865,39 +861,10 @@ const onReset = async () => {
 
   displayMoreInfo.value = false;
 
-  currentFormValues.value = { ...initialValues };
   form.setValues({
-    ...currentFormValues.value,
+    ...initialValues,
   });
 };
-
-watch(
-  () => form.meta.value,
-  async () => {
-    if (!displayMoreInfo.value) {
-      if (!form.meta.value.valid) {
-        simulationResults.value = null;
-        isLegal.value = null;
-        simulationResultsLoading.value = false;
-      } else {
-        handleFetchSimulatorResult();
-      }
-    }
-  }
-);
-
-watch(
-  () => displayMoreInfo.value,
-  (displayMoreInfo) => {
-    if (displayMoreInfo) {
-      currentFormValues.value = { ...form.values };
-    } else {
-      form.setValues({
-        ...currentFormValues.value,
-      });
-    }
-  }
-);
 
 const handleSearchingAddress = debounce(
   async (address) => await fetchingAddress(address),
@@ -929,8 +896,6 @@ const fetchingAddress = async (address) => {
 };
 
 const fetchSimulatorResult = async () => {
-  simulationResultsLoading.value = true;
-
   const optionParams = {
     surfaceValue: form.values.surface,
     priceValue: form.values.price,
@@ -976,6 +941,18 @@ onMounted(async () => {
   await fetchCities();
   isMounted.value = true;
 });
+
+watch(
+  () => form.controlledValues.value,
+  async () => {
+    setTimeout(() => {
+      if (form.meta.value.valid) {
+        simulationResultsLoading.value = true;
+        handleFetchSimulatorResult();
+      }
+    }, 10)
+  }
+);
 </script>
 
 <style lang="scss" scoped>
