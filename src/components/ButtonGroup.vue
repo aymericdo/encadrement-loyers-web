@@ -38,7 +38,7 @@ const isFirefox = ref(typeof InstallTrigger !== "undefined")
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 .button-group {
   display: flex;

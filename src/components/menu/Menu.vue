@@ -9,7 +9,7 @@
     <Sidebar :isPanelOpen="isPanelOpen" @toggleClosing="togglingSidebar(false)">
       <ul class="sidebar-panel-nav">
         <li>
-          <router-link to="/">Encadrement</router-link>
+          <router-link to="/" @click="togglingSidebar(false)">Encadrement</router-link>
         </li>
         <li>
           <a
@@ -19,50 +19,33 @@
           >
         </li>
         <li>
-          <router-link to="/stats">Stats</router-link>
+          <router-link to="/stats" @click="togglingSidebar(false)">Stats</router-link>
         </li>
         <li>
-          <router-link to="/observatoire">Observatoire</router-link>
+          <router-link to="/observatoire" @click="togglingSidebar(false)">Observatoire</router-link>
         </li>
         <li>
-          <router-link to="/simulator">Vérifiez votre loyer</router-link>
+          <router-link to="/simulator" @click="togglingSidebar(false)">Vérifiez votre loyer</router-link>
         </li>
       </ul>
     </Sidebar>
   </div>
 </template>
 
-<script>
-import Burger from "@/components/menu/Burger.vue";
-import Sidebar from "@/components/menu/Sidebar.vue";
-import { defineComponent, ref } from "vue";
+<script setup>
+  import Burger from "@/components/menu/Burger.vue";
+  import Sidebar from "@/components/menu/Sidebar.vue";
+  import { ref } from "vue";
 
-export default defineComponent({
-  name: "Menu",
-  components: {
-    Burger,
-    Sidebar,
-  },
-  setup() {
-    return {
-      isPanelOpen: ref(false),
-    };
-  },
-  methods: {
-    togglingSidebar(isOpen) {
-      this.isPanelOpen = isOpen;
-    },
-  },
-  watch: {
-    $route() {
-      this.isPanelOpen = false;
-    },
-  },
-});
+  const isPanelOpen = ref(false);
+
+  const togglingSidebar = (isOpen) => {
+    isPanelOpen.value = isOpen;
+  }
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 .menu {
   width: 0;

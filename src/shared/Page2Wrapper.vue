@@ -1,27 +1,45 @@
 <template>
-  <div class="center-wrapper">
-    <slot />
+  <div class="wrapper h-screen w-full flex overflow-y-auto">
+    <transition name="slide-fade" v-on:leave="leave">
+      <div class="center-wrapper w-full flex flex-col flex-1 p-4" v-if="isMounted">
+        <slot />
+      </div>
+    </transition>
   </div>
 </template>
 
-<script>
-export default {
-  name: "Page2Wrapper",
-};
+<script setup>
+  import { useRouter } from "vue-router";
+
+  const router = useRouter();
+
+  const { isMounted } = defineProps({
+    isMounted: Boolean,
+  });
+
+  const leave = () => {
+    setTimeout(() => {
+      router.push({ path: "/" });
+    }, 400);
+  };
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
+.wrapper,
 .center-wrapper {
-  align-items: center;
   background: #050505;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
-  padding: 0 24px;
-  position: relative;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all ease 150ms;
 }
 </style>

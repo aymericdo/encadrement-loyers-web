@@ -77,14 +77,11 @@
   </ul>
 </template>
 
-<script>
-export default {
-  name: "WebsiteList"
-};
+<script setup>
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 .website-list {
   margin: 0;

@@ -8,25 +8,19 @@
         extraordinaires, etc). Les annonces notées non conformes ne le sont donc
         peut-être pas.
       </p>
-      <p><router-link to="/justification">En savoir plus</router-link></p>
+      <router-link to="/justification">
+        <span class="justification">En savoir plus</span>
+      </router-link>
     </SectionRightPart>
   </Section>
 </template>
-<script>
-import SectionRightPart from "@/shared/SectionRightPart";
-import SectionTitle from "@/shared/SectionTitle";
-import Section from "@/shared/Section";
-export default {
-  name: "SectionDisclaimer",
-  components: {
-    SectionRightPart,
-    SectionTitle,
-    Section,
-  },
-};
+<script setup>
+import Section from "@/shared/Section.vue";
+import SectionRightPart from "@/shared/SectionRightPart.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
 </script>
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 :deep(.section-title h3) {
   color: $darkeryellow;

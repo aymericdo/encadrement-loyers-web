@@ -1,312 +1,640 @@
 <template>
-  <div id="simulator">
-    <transition name="slide-fade" v-on:leave="onLeaving">
-      <Page2Wrapper v-if="isMounted">
-        <div class="option-list" ref="optionListRef">
-          <transition name="slide-side-r2l">
-            <div key="1" v-if="!displayMoreInfo" class="global-content">
-              <div class="row">
-                <span class="label">Ville</span>
-                <span>
-                  <Input
-                    class="dropdown"
-                    :placeholder="'Entre le nom de ta ville'"
-                    :options="cityDropdownOptions"
-                    :currentValue="citySelected"
-                    :textTyped="optionValues.cityTyped"
-                    @onTyping="handleSearchingCity"
-                    @onSelect="handleSelectCity($event)"
-                    @onClose="handleCloseCity()"
-                  >
-                  </Input>
-                </span>
-              </div>
-              <div class="row" v-if="districtDropdownOptions.length">
-                <span class="label">Localisation</span>
-                <span>
-                  <Input
-                    class="dropdown address"
-                    :placeholder="'Entre ton adresse...'"
-                    :options="addressDropdownOptions"
-                    :currentValue="optionValues.addressValue"
-                    :textTyped="optionValues.addressTyped"
-                    @onTyping="handleSearchingAddress"
-                    @onSelect="handleAddressSelect($event)"
-                  >
-                  </Input>
-                  <Dropdown
-                    class="dropdown"
-                    :options="districtDropdownOptions"
-                    :currentValue="optionValues.districtValue"
-                    @onSelect="setOptionValues({ districtValue: $event.value, addressValue: undefined })"
-                  >
-                  </Dropdown>
-                </span>
-              </div>
-              <div v-if="hasHouse" class="row">
-                <span class="label">Maison</span>
-                <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="isHouseValueDropdownOptions"
-                    :currentValue="optionValues.isHouseValue"
-                    @onSelect="setOptionValues({ isHouseValue: $event.value })"
-                  >
-                  </Dropdown>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Prix (hors charges)
-                  <div class="overlay" v-if="infoVisible" @click="infoVisible = false"></div>
-                  <button @click="infoVisible = true" class="info-btn">i</button>
-                  <div v-if="infoVisible" class="info-section">Si vous ne connaissez pas votre loyer hors charges, vous pouvez enlever 10% à votre loyer total.</div> 
-                </span>
-                <span>
-                  <ClassicInput
-                    class="dropdown"
-                    :type="'number'"
-                    :placeholder="'Entre ton loyer'"
-                    :min="0"
-                    :max="10000"
-                    :currentValue="+optionValues.priceValue"
-                    @onTyping="handleSelectPrice"
-                    :suffix="'€'"
-                  >
-                  </ClassicInput>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Surface</span>
-                <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="surfaceValueDropdownOptions"
-                    :currentValue="optionValues.surfaceValue"
-                    @onSelect="setOptionValues({ surfaceValue: $event.value })"
-                  >
-                  </Dropdown>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Nombre de pièce(s)</span>
-                <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="roomValueDropdownOptions"
-                    :currentValue="optionValues.roomValue"
-                    @onSelect="setOptionValues({ roomValue: $event.value })"
-                  >
-                  </Dropdown>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Meublé</span>
-                <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="furnishedDropdownOptions"
-                    :currentValue="optionValues.furnishedValue"
-                    @onSelect="setOptionValues({ furnishedValue: $event.value })"
-                  >
-                  </Dropdown>
-                </span>
-              </div>
-              <div class="row">
-                <span class="label">Date de construction</span>
-                <span>
-                  <Dropdown
-                    class="dropdown"
-                    :options="dateBuiltValueDropdownOptions"
-                    :currentValue="optionValues.dateBuiltValue"
-                    @onSelect="setOptionValues({ dateBuiltValue: $event.value })"
-                  >
-                  </Dropdown>
-                </span>
-              </div>
-            </div>
-          </transition>
-          <transition name="slide-side-l2r">
-            <div v-if="displayMoreInfo" class="global-content result">
-              <div
-                key="2"
-                class="grid"
-                v-bind:style="{
-                  'grid-template-columns': `repeat(${simulationResults.length +
-                    1}, 2fr)`,
-                }"
-              >
-                <span class="label">Année de construction</span>
-                <span
-                  v-for="simulationResult in simulationResults"
-                  v-bind:key="simulationResult.yearBuilt"
-                >
-                  {{ simulationResult.yearBuilt }}
-                </span>
-                <span class="label">Prix maximum au m²</span>
-                <span
-                  v-for="simulationResult in simulationResults"
-                  v-bind:key="simulationResult.yearBuilt"
-                  >{{ simulationResult.maxPrice }}€
-                </span>
-                <span class="label">Prix maximum hors charges</span>
-                <span
-                  v-for="simulationResult in simulationResults"
-                  v-bind:key="simulationResult.yearBuilt"
-                  >{{ simulationResult.maxTotalPrice }}€
-                </span>
-                <template v-if="!isLegal">
-                  <span class="label">Dépassement</span>
-                  <span
-                    v-for="simulationResult in simulationResults"
-                    class="exceeding"
-                    v-bind:key="simulationResult.yearBuilt"
-                    >+{{ +(optionValues.priceValue - simulationResult.maxTotalPrice).toFixed(2) }}€
-                  </span>
-                </template>
-              </div>
-              <div
-              class="pushy-text"
-                v-if="!isLegal"
-              >
-                <h4>Et maintenant ?</h4>
-                <p>
-                  Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et qu'aucune
-                  <b>mention justificative</b> n'apparait dans les documents, vous
-                  pouvez vous renseigner afin de <b>faire valoir vos droits.</b>
-                </p>
+  <Page2Wrapper :isMounted="isMounted">
+    <div class="flex items-center justify-center flex-1">
+      <div class="option-list">
+        <transition name="slide-side-r2l">
+          <div key="1" v-show="!displayMoreInfo" class="global-content">
+            <form class="space-y-6">
+              <FormField name="city">
+                <FormItem>
+                  <FormLabel>Ville</FormLabel>
+                  <div class="space-y-6">
+                    <Popover v-model:open="isCityPopoverOpen">
+                      <PopoverTrigger as-child>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          :aria-expanded="isCityPopoverOpen"
+                        >
+                          {{
+                            form.values.city
+                              ? cityDropdownOptions
+                                  .flatMap((group) => group.options)
+                                  .find(
+                                    (option) =>
+                                      option.value === form.values.city
+                                  )?.label
+                              : "Entre ta ville"
+                          }}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        class="popover-content"
+                        v-bind:style="{
+                          width: 'var(--radix-popover-trigger-width)',
+                        }"
+                      >
+                        <Command @update:modelValue="handleSelectCity">
+                          <CommandInput
+                            class="h-9"
+                            placeholder="Rechercher une ville..."
+                          />
+                          <CommandEmpty>Pas de ville trouvée.</CommandEmpty>
+                          <CommandList>
+                            <CommandGroup
+                              v-for="group in cityDropdownOptions"
+                              :key="group.groupBy"
+                            >
+                              <SelectLabel>{{ group.groupBy }}</SelectLabel>
+                              <CommandItem
+                                v-for="option in group.options"
+                                :key="option.value"
+                                :value="option.value"
+                                @select="
+                                  (ev) => {
+                                    if (typeof ev.detail.value === 'string') {
+                                      form.setFieldValue(
+                                        'city',
+                                        ev.detail.value
+                                      );
+                                    }
+                                    isCityPopoverOpen = false;
+                                  }
+                                "
+                              >
+                                <CheckIcon
+                                  :class="
+                                    cn(
+                                      'mr-2 h-4 w-4',
+                                      form.values.city === option.value
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )
+                                  "
+                                />
+                                {{ option.label }}
+                              </CommandItem>
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </FormItem>
+              </FormField>
 
-                <p>
-                  Pour plus d’informations, voir le site de votre 
-                  <b><a :href="simulationResults[0].moreInfo" target="_blank">
-                    {{ isMultipleCities ? 'agglomération' : 'ville' }}
-                  </a></b>.
-                </p>
-                
-                <p v-if="optionValues.cityValue === 'paysBasque'">
-                  Pour avoir de l'aide dans vos démarches, contactez l'<b><a :href="'https://www.alda.eus/contact/'" target="_blank">association de défense des locataires Alda</a></b>.
-                </p>
-                
-                <h4>Articles intéressants</h4>
-                <div class="reference-links">
-                  <a
-                    href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
-                    target="_blank"
-                  >
-                    Le Parisien
-                  </a>
-                  <a
-                    href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
-                    target="_blank"
-                  >
-                    Le Figaro Immo
-                  </a>
-                </div>
-              </div>
-            </div>
-          </transition>
+              <div v-show="districtDropdownOptions.length">
+                <FormField name="district">
+                  <FormItem>
+                    <FormLabel>Localisation</FormLabel>
+                    <Popover v-model:open="isAddressPopoverOpen">
+                      <PopoverTrigger as-child>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          :aria-expanded="isAddressPopoverOpen"
+                        >
+                          {{
+                            addressSelected
+                              ? addressDropdownOptions.find(
+                                  (option) => option.value === addressSelected
+                                )?.label
+                              : "Entre ton adresse"
+                          }}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        class="popover-content"
+                        v-bind:style="{
+                          width: 'var(--radix-popover-trigger-width)',
+                        }"
+                      >
+                        <Command
+                          @update:searchTerm="handleSearchingAddress"
+                          :filterFunction="(list) => list"
+                          @update:modelValue="
+                            (addressSelected) =>
+                              form.setFieldValue(
+                                'district',
+                                addressDropdownOptions.find(
+                                  (option) => option.value === addressSelected
+                                )?.district
+                              )
+                          "
+                        >
+                          <CommandInput
+                            class="h-9"
+                            placeholder="Rechercher..."
+                          />
+                          <CommandEmpty>Pas d'adresse trouvée.</CommandEmpty>
+                          <CommandList>
+                            <CommandGroup>
+                              <CommandItem
+                                v-for="option in addressDropdownOptions"
+                                :key="option.value"
+                                :value="option.value"
+                                @select="
+                                  (ev) => {
+                                    if (typeof ev.detail.value === 'string') {
+                                      addressSelected = ev.detail.value;
+                                    }
+                                    isAddressPopoverOpen = false;
+                                  }
+                                "
+                              >
+                                <CheckIcon
+                                  :class="
+                                    cn(
+                                      'mr-2 h-4 w-4',
+                                      addressSelected === option.value
+                                        ? 'opacity-100'
+                                        : 'opacity-0'
+                                    )
+                                  "
+                                />
+                                {{ option.label }}
+                              </CommandItem>
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                </FormField>
 
-          <transition name="slide-fade">
+                <FormField v-slot="{ componentField }" name="district">
+                  <FormItem>
+                    <FormLabel>Ou</FormLabel>
+                    <Select v-bind="componentField">
+                      <SelectTrigger :open="isCitySelectOpen" :disabled="districtDropdownOptions.length === 1">
+                        <SelectValue :placeholder="'Choisis ta zone'" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <template v-if="districtGroupByDropdownOptions">
+                          <SelectGroup
+                            v-for="option in Object.keys(
+                              districtGroupByDropdownOptions
+                            )"
+                          >
+                            <SelectLabel>{{ option }}</SelectLabel>
+                            <SelectItem
+                              :key="value"
+                              v-for="{
+                                label,
+                                value,
+                              } in districtGroupByDropdownOptions[option]"
+                              :value="value"
+                            >
+                              {{ label }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </template>
+                        <template v-else>
+                          <SelectGroup
+                            v-for="option in districtDropdownOptions"
+                          >
+                            <SelectItem
+                              :key="option.value"
+                              :value="option.value"
+                            >
+                              {{ option.label }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </template>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                </FormField>
+              </div>
+
+              <div v-show="hasHouse">
+                <FormField v-slot="{ componentField }" name="house">
+                  <FormItem>
+                    <FormLabel>Maison</FormLabel>
+
+                    <Select v-bind="componentField">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            v-for="option in isHouseValueDropdownOptions"
+                            :key="option.value"
+                            :value="option.value"
+                          >
+                            {{ option.label }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                </FormField>
+              </div>
+
+              <FormField v-slot="{ componentField }" name="price">
+                <FormItem>
+                  <FormLabel class="flex items-center">
+                    Loyer
+                    <HoverCard>
+                      <HoverCardTrigger as-child>
+                        <Button variant="primary" type="button">
+                          <InfoCircledIcon />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent class="w-80">
+                        <div class="flex justify-between space-x-4">
+                          <p class="text-sm">
+                            Si vous ne connaissez pas votre loyer hors charges,
+                            vous pouvez enlever 10% à votre loyer total.
+                          </p>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FormLabel>
+
+                  <FormControl>
+                    <div class="relative items-center w-full">
+                      <Input
+                        v-bind="componentField"
+                        class="pr-10"
+                        type="number"
+                        :placeholder="'Entre ton loyer'"
+                        :min="0"
+                        :max="10000"
+                      />
+                      <span
+                        class="absolute inset-y-0 flex items-center justify-center px-2 end-0"
+                      >
+                        <span
+                          class="flex items-center justify-center size-6 text-muted-foreground"
+                          >€</span
+                        >
+                      </span>
+                    </div>
+                  </FormControl>
+                  <FormDescription> Loyer hors charges </FormDescription>
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="surface">
+                <FormItem>
+                  <FormLabel class="flex items-center"> Surface </FormLabel>
+                  <FormControl>
+                    <div class="relative items-center w-full">
+                      <Input
+                        v-bind="componentField"
+                        class="pr-10"
+                        type="number"
+                        :placeholder="'Entre ta surface'"
+                        :min="9"
+                        :max="400"
+                      />
+                      <span
+                        class="absolute inset-y-0 flex items-center justify-center px-2 end-0"
+                      >
+                        <span
+                          class="flex items-center justify-center size-6 text-muted-foreground"
+                          >m²</span
+                        >
+                      </span>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="rooms">
+                <FormItem>
+                  <FormLabel class="flex items-center">
+                    Nombre de pièce(s)
+                  </FormLabel>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="option in roomValueDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField }" name="furnished">
+                <FormItem>
+                  <FormLabel class="flex items-center"> Meublé </FormLabel>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="option in furnishedDropdownOptions"
+                          :key="option.value"
+                          :value="option.value"
+                        >
+                          {{ option.label }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              </FormField>
+
+              <div v-show="dateBuiltValueDropdownOptions.length">
+                <FormField v-slot="{ componentField }" name="dateBuilt">
+                  <FormItem>
+                    <FormLabel class="flex items-center">
+                      Date de construction
+                    </FormLabel>
+                    <Select v-bind="componentField">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            v-for="option in dateBuiltValueDropdownOptions"
+                            :key="option.value"
+                            :value="option.value"
+                          >
+                            {{ option.label }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                </FormField>
+              </div>
+            </form>
+          </div>
+        </transition>
+
+        <transition name="slide-side-l2r">
+          <div v-if="displayMoreInfo" class="global-content">
             <div
-              v-if="simulationResultsLoading || simulationResults !== null"
-              class="row result"
+              key="2"
+              class="grid"
+              v-bind:style="{
+                'grid-template-columns': `repeat(${
+                  simulationResults?.length + 1
+                }, 2fr)`,
+              }"
             >
+              <span class="label rounded-tl-md">Année de construction</span>
+              <span
+                v-for="(simulationResult, index) in simulationResults"
+                :class="{
+                  'rounded-tr-md': index === simulationResults.length - 1,
+                }"
+                v-bind:key="simulationResult.yearBuilt"
+              >
+                {{ simulationResult.yearBuilt }}
+              </span>
+              <span class="label">Prix maximum au m²</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxPrice }}€
+              </span>
+              <span class="label" :class="{ 'rounded-bl-md': isLegal }"
+                >Prix maximum hors charges</span
+              >
+              <span
+                v-for="(simulationResult, index) in simulationResults"
+                :class="{
+                  '-last-before-exceeding-section': !isLegal,
+                  'rounded-br-md':
+                    isLegal && index === simulationResults.length - 1,
+                }"
+                v-bind:key="simulationResult.yearBuilt"
+                >{{ simulationResult.maxTotalPrice }}€
+              </span>
+              <template v-if="!isLegal">
+                <span class="label -exceeding-label rounded-bl-md"
+                  >Dépassement</span
+                >
+                <span
+                  v-for="(simulationResult, index) in simulationResults"
+                  class="exceeding"
+                  :class="{
+                    'rounded-br-md': index === simulationResults.length - 1,
+                  }"
+                  v-bind:key="simulationResult.yearBuilt"
+                  >+{{
+                    +(
+                      form.values.price - simulationResult.maxTotalPrice
+                    ).toFixed(2)
+                  }}€
+                </span>
+              </template>
+            </div>
+            <div class="pushy-text" v-if="!isLegal">
+              <h4 class="my-4 text-lg font-bold">Et maintenant ?</h4>
+              <p>
+                Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et
+                qu'aucune <b>mention justificative</b> n'apparait dans les
+                documents, vous pouvez vous renseigner afin de
+                <b>faire valoir vos droits.</b>
+              </p>
+
+              <p>
+                Pour plus d’informations,
+                <b
+                  ><a :href="simulationResults[0].moreInfo" target="_blank">
+                    voir le site de votre {{ isMultipleCities ? "agglomération" : "ville" }}
+                  </a></b
+                >.
+              </p>
+
+              <p v-if="mainCitySelected === 'paysBasque'">
+                Pour avoir de l'aide dans vos démarches, contactez l'<b
+                  ><a :href="'https://www.alda.eus/contact/'" target="_blank"
+                    >association de défense des locataires Alda</a
+                  ></b
+                >.
+              </p>
+
+              <h4>Articles intéressants</h4>
+              <div class="flex space-x-4">
+                <a
+                  href="https://www.leparisien.fr/economie/encadrement-des-loyers-locataires-faites-valoir-vos-droits-19-08-2021-GZAVHO5OVFH6XPACXPXMZ4YNMM.php"
+                  target="_blank"
+                >
+                  Le Parisien
+                </a>
+                <a
+                  href="https://immobilier.lefigaro.fr/article/condamne-a-rembourser-son-locataire-pour-un-bien-loue-51-euros-le-m2_68bddef4-3ed0-11eb-9ae8-33572115708c/"
+                  target="_blank"
+                >
+                  Le Figaro Immo
+                </a>
+              </div>
+            </div>
+          </div>
+        </transition>
+
+        <transition name="slide-fade">
+          <div
+            v-if="simulationResultsLoading || simulationResults !== null"
+            class="flex flex-wrap items-center justify-around m-4 result-section"
+          >
+            <span class="flex justify-center flex-1 py-2">
               <template v-if="simulationResultsLoading">
-                <bounce-loader class="spinner" :loading="simulationResultsLoading" color="#fdcd56" :size="'20px'"></bounce-loader>
+                <BounceLoader
+                  class="spinner"
+                  :loading="simulationResultsLoading"
+                  color="#fdcd56"
+                  :size="'20px'"
+                >
+                </BounceLoader>
               </template>
               <template v-else>
-                <span>{{
-                  isLegal
-                    ? "Conforme"
-                    : "Non conforme"
-                }}
-                </span>
-                <button
-                  class="more-info-btn"
-                  @click="onClickMoreInfo"
-                >
-                  <template v-if="displayMoreInfo">
-                    <span>Retour</span>
-                  </template>
-                  <template v-else>
-                    <span>Cliquez pour plus d'info</span>
-                  </template>
-                  <span class="arrow-icon" :class="{ '-is-open': displayMoreInfo }">
-                    <ArrowIcon :iconColor="'white'"></ArrowIcon>
-                  </span>
-                </button>
+                {{ isLegal ? "Conforme" : "Non conforme" }}
               </template>
-            </div>
-          </transition>
-          <div class="row actions-btn">
-            <button class="reset-btn" @click="onReset">Réinitialiser</button>
+            </span>
+            <Button type="button" class="my-2" variant="secondary" @click="onClickMoreInfo" :disabled="simulationResultsLoading">
+              <template v-if="displayMoreInfo">
+                <span class="rotate-[90deg]">
+                  <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                </span>
+                <span>Retour</span>
+              </template>
+              <template v-else>
+                <span>Cliquez pour plus d'info</span>
+                <span class="rotate-[270deg]">
+                  <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                </span>
+              </template>
+            </Button>
           </div>
+        </transition>
+
+        <div class="flex items-center justify-end w-full px-5 pb-4">
+          <Button type="button" @click="onReset">Réinitialiser</Button>
         </div>
-      </Page2Wrapper>
-    </transition>
+      </div>
+    </div>
+
     <div @click="handleClose">
       <FixedButton>
-        <StrokeIcon :width="'20px'" :height="'20px'" />
+        <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
-  </div>
+  </Page2Wrapper>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import Dropdown from "@/shared/Dropdown.vue";
-import Input from "@/shared/Input.vue";
-import ClassicInput from "@/shared/ClassicInput.vue";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import ArrowIcon from "@/icons/ArrowIcon.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
 import { domain } from "@/helper/config";
-import router from "@/router";
+import ArrowIcon from "@/icons/ArrowIcon.vue";
+import StrokeIcon from "@/icons/StrokeIcon.vue";
+import { cn } from "@/lib/utils";
+import { Button } from "@/shadcn/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/shadcn/ui/command";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/shadcn/ui/form";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/shadcn/ui/hover-card";
+import { Input } from "@/shadcn/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
+import FixedButton from "@/shared/FixedButton.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+import { debounce } from "@/tools/debounce";
+import { CheckIcon, InfoCircledIcon } from "@radix-icons/vue";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from 'vee-validate'
+import { onMounted, ref, watch } from "vue";
+import BounceLoader from "vue-spinner/src/BounceLoader.vue";
+import * as z from "zod";
 
-const idkId = -1;
+const formSchema = toTypedSchema(
+  z.object({
+    city: z.string(),
+    district: z.string(),
+    house: z.string().optional(),
+    price: z.number().min(0).max(10000),
+    surface: z.number().min(9).max(400),
+    rooms: z.string(),
+    furnished: z.string(),
+    dateBuilt: z.string(),
+  })
+);
 
-const optionListRef = ref(null);
+const idkId = "-1";
+
+const mainCitySelected = ref("");
+const initialValues = {
+  city: undefined,
+  district: undefined,
+  house: "0",
+  price: undefined,
+  surface: undefined,
+  rooms: undefined,
+  furnished: undefined,
+  dateBuilt: idkId,
+};
+
+const form = useForm({
+  initialValues,
+  validationSchema: formSchema,
+});
 
 const isMounted = ref(false);
-const loading = ref(true)
+const loading = ref(true);
 
-const infoVisible = ref(false);
-const citySelected = ref(undefined);
-const cityDropdownOptions = ref([])
-const dateBuiltValueDropdownOptions = ref([])
+const isCitySelectOpen = ref(false);
+const isAddressPopoverOpen = ref(false);
+const addressSelected = ref("");
 
-const optionValues = ref({});
+const cityDropdownOptions = ref([]);
+const dateBuiltValueDropdownOptions = ref([]);
+
 const displayMoreInfo = ref(false);
 
 const districtDropdownOptions = ref([]);
+const districtGroupByDropdownOptions = ref(null);
 const addressDropdownOptions = ref([]);
-const simulationResults = ref(null);
-const isLegal = ref(null);
-const prevCity = ref(null);
-const simulationResultsLoading = ref(false);
 
-let searchingAddressTimeoutRef = null
-let searchingCityTimeoutRef = null
-let simulationTimeoutRef = null;
+const simulationResults = ref(null);
+const simulationResultsLoading = ref(false);
+const isLegal = ref(null);
 
 const hasHouse = ref(false);
 const isMultipleCities = ref(false);
-let cityInformation = []
 
-const initialOptionValues = {
-  surfaceValue: undefined,
-  priceValue: undefined,
-  roomValue: undefined,
-  dateBuiltValue: idkId,
-  furnishedValue: undefined,
-  addressValue: undefined,
-  isHouseValue: 0,
-  cityTyped: '',
-  addressTyped: '',
-  districtValue: undefined,
-  cityValue: citySelected.value,
-};
+let cityInformation = [];
 
 const furnishedDropdownOptions = [
   {
@@ -317,85 +645,87 @@ const furnishedDropdownOptions = [
     value: "nonFurnished",
     label: "Non meublé",
   },
-]
-      
+];
+
 const isHouseValueDropdownOptions = [
   {
-    value: 1,
+    value: "1",
     label: "Maison",
   },
   {
-    value: 0,
+    value: "0",
     label: "Appartement",
   },
-]
+];
 
-const roomValueDropdownOptions = [...Array(6 - 1 + 1).keys()]
-  .map(x => {
-    x += 1;
-
-    return {
-      value: x,
-      label: `${x} pièce${x > 1 ? "s" : ""}`,
-    }
-  });
-
-const surfaceValueDropdownOptions = [...Array(100 - 9 + 1).keys()]
-  .map(x => {
-    const val = x + 9;
-    return {
-      value: val,
-      label: `${val}m²`,
-    }
-  });
+const roomValueDropdownOptions = [
+  {
+    value: "1",
+    label: "1 pièce",
+  },
+  {
+    value: "2",
+    label: "2 pièces",
+  },
+  {
+    value: "3",
+    label: "3 pièces",
+  },
+  {
+    value: "4",
+    label: "4 pièces et plus",
+  },
+];
 
 const setDateBuiltRangeDropdownOptions = (datesRange) => {
-  dateBuiltValueDropdownOptions.value = datesRange.reduce((prev, dates, index) => {
-    if (index === 0) {
-      prev.push({
-        value: idkId,
-        label: "Je ne sais pas",
-      })
-    }
+  dateBuiltValueDropdownOptions.value = datesRange.reduce(
+    (prev, dates, index) => {
+      if (index === 0) {
+        prev.push({
+          value: idkId,
+          label: "Je ne sais pas",
+        });
+      }
 
-    if (dates[0] === null) {
-      prev.push({
-        value: dates,
-        label: `Avant ${dates[1]}`,
-      })
-    } else if (dates[1] === null) {
-      prev.push({
-        value: dates,
-        label: `Après ${dates[0]}`,
-      })
-    } else {
-      prev.push({
-        value: dates,
-        label: `${dates[0]}-${dates[1]}`,
-      })
-    }
+      if (dates[0] === null) {
+        prev.push({
+          value: dates.join(','),
+          label: `Avant ${dates[1]}`,
+        });
+      } else if (dates[1] === null) {
+        prev.push({
+          value: dates.join(','),
+          label: `Après ${dates[0]}`,
+        });
+      } else {
+        prev.push({
+          value: dates.join(','),
+          label: `${dates[0]}-${dates[1]}`,
+        });
+      }
 
-    return prev
-  }, [])
-}
+      return prev;
+    },
+    []
+  );
+};
 
 const setCityDropdownOptions = () => {
   cityDropdownOptions.value = cityInformation.reduce((prev, currentValue) => {
     currentValue.cities.forEach(({ value, label }) => {
-      const currentCityTyped = optionValues.value.cityTyped?.toLowerCase();
-      if (currentCityTyped?.length) {
-        if (label.toLowerCase().includes(currentCityTyped)
-          || value.toLowerCase().includes(currentCityTyped)
-          || currentValue.label.toLowerCase().includes(currentCityTyped)) {
-          prev.push({ value, label, groupBy: currentValue.label })
-        }
+      const groupAlreadyThere = prev.find(
+        ({ groupBy }) => groupBy === currentValue.label
+      );
+
+      if (groupAlreadyThere) {
+        groupAlreadyThere.options.push({ value, label });
       } else {
-        prev.push({ value, label, groupBy: currentValue.label })
+        prev.push({ options: [{ value, label }], groupBy: currentValue.label });
       }
-    })
+    });
     return prev;
   }, []);
-}
+};
 
 const setDistrictDropdownOptions = (res) => {
   districtDropdownOptions.value = res.map((district) => ({
@@ -403,7 +733,33 @@ const setDistrictDropdownOptions = (res) => {
     value: district.value,
     label: district.label,
   }));
-}
+
+  if (districtDropdownOptions.value[0].groupBy) {
+    districtGroupByDropdownOptions.value = districtDropdownOptions.value.reduce(
+      (prev, district) => {
+        if (!prev[district.groupBy]) {
+          prev[district.groupBy] = [
+            {
+              groupBy: district.groupBy,
+              value: district.value,
+              label: district.label,
+            },
+          ];
+        } else {
+          prev[district.groupBy].push({
+            groupBy: district.groupBy,
+            value: district.value,
+            label: district.label,
+          });
+        }
+        return prev;
+      },
+      {}
+    );
+  } else {
+    districtGroupByDropdownOptions.value = null;
+  }
+};
 
 const setAddressDropdownOptions = (res) => {
   addressDropdownOptions.value = res.map((a) => ({
@@ -411,121 +767,66 @@ const setAddressDropdownOptions = (res) => {
     label: a.properties.label,
     district: a.districtName,
   }));
-}
-
-const setOptionValues = async (newOptionValues) => {
-  optionValues.value = {
-    ...optionValues.value,
-    ...newOptionValues,
-  }
-
-  await fetchSimulatorResult()
-}
+};
 
 const setCityInformation = async (res) => {
-  const cities = Object.keys(res)
-  cityInformation = cities.reduce((prev, city) => {
-    const currentCity = res[city]
-    const mainCity = currentCity.mainCity
-    if (prev.some(({ value }) => value === mainCity)) return prev
+  const cities = Object.keys(res);
+  cityInformation = cities
+    .reduce((prev, city) => {
+      const currentCity = res[city];
+      const mainCity = currentCity.mainCity;
+      if (prev.some(({ value }) => value === mainCity)) return prev;
 
-    prev.push({
-      value: mainCity,
-      label: currentCity.displayName.mainCity,
-      cities: cities.reduce((cityList, c) => {
-        if (mainCity === res[c].mainCity) {
-          cityList.push({ label: res[c].displayName.city, value: c })
-        }
-        return cityList
-      }, []),
-      dateBuiltRange: currentCity.dateBuiltRange,
-      hasHouse: currentCity.hasHouse,
-    })
-    return prev;
-  }, []).sort((a, b) => {
-    return a.value.localeCompare(b.value);
-  })
-
-  setCityDropdownOptions()
-}
-
-const cityChanged = async (newMainCity) => {
-  optionValues.value = {
-    ...optionValues.value,
-    districtValue: undefined,
-    addressValue: undefined,
-    cityTyped: '',
-    addressTyped: '',
-    dateBuiltValue: idkId,
-  }
-
-  const currentCityOption = cityInformation.find((c) => c.value === newMainCity);
-  isMultipleCities.value = currentCityOption.cities.length > 1
-  hasHouse.value = !!currentCityOption?.hasHouse;
-
-  setDateBuiltRangeDropdownOptions([...currentCityOption.dateBuiltRange])
-
-  if (citySelected.value !== prevCity.value) {
-    prevCity.value = citySelected.value
-    await fetchDistricts();
-    addressDropdownOptions.value = [];
-    simulationResults.value = null;
-    isLegal.value = null;
-
-    if (!hasHouse.value) {
-      optionValues.value.isHouseValue = 0;
-    }
-
-    if (!optionValues.value.furnishedValue) {
-      optionValues.value.furnishedValue = initialOptionValues.furnishedValue;
-    }
-
-    if (districtDropdownOptions.value.length === 1) {
-      optionValues.value.districtValue = districtDropdownOptions.value[0].value;
-    }
-
-    await setOptionValues({
-      addressValue: undefined,
-      cityTyped: '',
-      addressTyped: '',
-      dateBuiltValue: idkId,
+      prev.push({
+        value: mainCity,
+        label: currentCity.displayName.mainCity,
+        cities: cities.reduce((cityList, c) => {
+          if (mainCity === res[c].mainCity) {
+            cityList.push({ label: res[c].displayName.city, value: c });
+          }
+          return cityList;
+        }, []),
+        dateBuiltRange: currentCity.dateBuiltRange,
+        hasHouse: currentCity.hasHouse,
+      });
+      return prev;
+    }, [])
+    .sort((a, b) => {
+      return a.value.localeCompare(b.value);
     });
-  }
-}
 
-const handleSelectPrice = async (price) => {
-  optionValues.value.priceValue = price;
-  if (!price) return;
-  
-  // initialOptionValues.priceValue = price;
-  await setOptionValues({ priceValue: price })
-}
-
-const handleCloseCity = () => {
-  optionValues.value.cityTyped = '';
   setCityDropdownOptions();
-  citySelected.value = initialOptionValues.cityValue;
-}
+};
 
-const handleSelectCity = (city) => {
-  citySelected.value = city.value;
+const handleSelectCity = async (city) => {
+  const currentCityInformation = cityInformation.find((cityInfo) =>
+    cityInfo.cities.map((c) => c.value).includes(city)
+  );
 
-  if (!city) return;
-  const mainCity = cityInformation.find((cityInfo) => cityInfo.cities.map((c) => c.value).includes(city.value))?.value
+  const mainCity = currentCityInformation.value;
 
-  initialOptionValues.cityValue = citySelected.value;
-  optionValues.value.cityValue = mainCity
+  mainCitySelected.value = mainCity;
+  await fetchDistricts();
 
-  cityChanged(mainCity)
-}
+  isMultipleCities.value = currentCityInformation.cities.length > 1;
+  hasHouse.value = !!currentCityInformation?.hasHouse;
+  setDateBuiltRangeDropdownOptions([...currentCityInformation.dateBuiltRange]);
+  form.setFieldValue('city', city);
+
+  if (districtDropdownOptions.value.length === 1) {
+    form.setFieldValue("district", districtDropdownOptions.value[0].value);
+  }
+};
 
 const fetchDistricts = async () => {
   try {
-    const rawResult = await fetch(`${domain}districts/list/${optionValues.value.cityValue}?city=${citySelected.value.toLowerCase()}`)
-    const res = await rawResult.json()
-    if (res.message === "token expired") throw res
+    const rawResult = await fetch(
+      `${domain}districts/list/${mainCitySelected.value}?city=${form.values.city}`
+    );
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
 
-    setDistrictDropdownOptions(res)
+    setDistrictDropdownOptions(res);
   } catch (err) {
     console.error(err);
   }
@@ -533,192 +834,132 @@ const fetchDistricts = async () => {
 
 const fetchCities = async () => {
   try {
-    const rawResult = await fetch(`${domain}cities/list`)
-    const res = await rawResult.json()
-    if (res.message === "token expired") throw res
+    const rawResult = await fetch(`${domain}cities/list`);
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
 
-    await setCityInformation(res)
+    await setCityInformation(res);
 
-    loading.value = false
+    loading.value = false;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const onReset = async () => {
+  mainCitySelected.value = "";
+  addressSelected.value = "";
+
+  dateBuiltValueDropdownOptions.value = [];
+  districtDropdownOptions.value = [];
+  districtGroupByDropdownOptions.value = null;
+  simulationResults.value = null;
+  isLegal.value = null;
+
+  hasHouse.value = false;
+  isMultipleCities.value = false;
+
+  displayMoreInfo.value = false;
+
+  form.setValues({
+    ...initialValues,
+  });
+};
+
+const handleSearchingAddress = debounce(
+  async (address) => await fetchingAddress(address),
+  300
+);
+
+const handleFetchSimulatorResult = debounce(
+  async () => await fetchSimulatorResult(),
+  300
+);
+
+const fetchingAddress = async (address) => {
+  if (address.trim().length < 4) {
+    return;
+  }
+
+  try {
+    const rawResult = await fetch(
+      `${domain}districts/address/${
+        mainCitySelected.value
+      }?q=${address.trim()}&city=${form.values.city}`
+    );
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
+    setAddressDropdownOptions(res);
   } catch (err) {
     console.error(err);
   }
 };
 
 const fetchSimulatorResult = async () => {
-  if (optionValues.value.cityValue === undefined
-    || optionValues.value.surfaceValue === undefined
-    || optionValues.value.roomValue === undefined
-    || optionValues.value.isHouseValue === undefined
-    || optionValues.value.furnishedValue === undefined
-    || optionValues.value.districtValue === undefined
-    || optionValues.value.priceValue === undefined) return;
+  const optionParams = {
+    surfaceValue: form.values.surface,
+    priceValue: form.values.price,
+    roomValue: form.values.rooms,
+    furnishedValue: form.values.furnished,
+    dateBuiltValueStr: form.values.dateBuilt,
+    districtValue: form.values.district,
+    isHouseValue: form.values.house || "0",
+  };
 
-  simulationResultsLoading.value = true;
-
-  if (simulationTimeoutRef !== null) clearTimeout(simulationTimeoutRef);
-
-  simulationTimeoutRef = setTimeout(async () => {
-    const optionParams = {
-      surfaceValue: optionValues.value.surfaceValue,
-      priceValue: optionValues.value.priceValue,
-      roomValue: optionValues.value.roomValue,
-      furnishedValue: optionValues.value.furnishedValue,
-      dateBuiltValueStr: optionValues.value.dateBuiltValue,
-      districtValue: optionValues.value.districtValue,
-      isHouseValue: optionValues.value.isHouseValue,
-    };
-
-    const strOptions = optionParams
-      ? Object.keys(optionParams)
-          .map((key) => {
-            return key + "=" + optionParams[key];
-          })
-          .join("&")
-      : null;
-
-    try {
-      const rawResult = await fetch(
-        `${domain}simulator/${optionValues.value.cityValue}${
-          strOptions ? "?" + strOptions : ""
-        }`
-      )
-      const res = await rawResult.json()
-      if (res.message === "token expired") throw res
-
-      simulationResults.value = res;
-      isLegal.value = res.length && res.some((r) => r.isLegal);
-      simulationResultsLoading.value = false;
-    } catch (err) {
-      console.error(err);
-    }
-  }, 300);
-}
-
-const onLeaving = () => {
-  setTimeout(() => {
-    router.push({ path: "/" });
-  }, 400);
-}
-
-const handleSearchingCity = async (city) => {
-  if (searchingCityTimeoutRef !== null) clearTimeout(searchingCityTimeoutRef)
-
-  optionValues.value = {
-    ...optionValues.value,
-    cityTyped: city,
-  }
-  
-  searchingCityTimeoutRef = setTimeout(async () => {
-    setCityDropdownOptions()
-  }, 200);
-}
-
-const handleSearchingAddress = async (address) => {
-  optionValues.value = {
-    ...optionValues.value,
-    districtValue: undefined,
-    addressValue: undefined,
-    addressTyped: address,
-  }
-
-  if (address.trim().length < 4) return
-
-  if (searchingAddressTimeoutRef !== null) clearTimeout(searchingAddressTimeoutRef)
-
-  searchingAddressTimeoutRef = setTimeout(async () => {
-    try {
-      const rawResult = await fetch(
-        `${domain}districts/address/${optionValues.value.cityValue}?q=${address.trim()}&city=${citySelected.value.toLowerCase()}`,
-      )
-      const res = await rawResult.json()
-      if (res.message === "token expired") throw res
-      setAddressDropdownOptions(res)
-    } catch (err) {
-      console.error(err);
-    }
-  }, 500);
-}
-
-const handleAddressSelect = async (event) => {
-  if (event.district) {
-    await setOptionValues({
-      addressValue: event.value,
-      districtValue: event.district,
+  const strOptions = Object.keys(optionParams)
+    .map((key) => {
+      return key + "=" + optionParams[key];
     })
-  }
-}
+    .join("&");
 
-const onReset = () => {
-  optionValues.value = {
-    ...optionValues.value,
-    ...initialOptionValues,
-    cityValue: undefined,
+  try {
+    const rawResult = await fetch(
+      `${domain}simulator/${mainCitySelected.value}?${strOptions}`
+    );
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
+
+    simulationResults.value = res;
+    isLegal.value = res.some((r) => r.isLegal);
+    simulationResultsLoading.value = false;
+  } catch (err) {
+    console.error(err);
   }
-  addressDropdownOptions.value = [];
-  simulationResults.value = null;
-  displayMoreInfo.value = false;
-}
+};
 
 const onClickMoreInfo = () => {
-  optionListRef.value.querySelector('div').scrollIntoView(true)
   displayMoreInfo.value = !displayMoreInfo.value;
-}
+};
 
 const handleClose = () => {
   isMounted.value = false;
 };
 
+const isCityPopoverOpen = ref(false);
+
 onMounted(async () => {
   await fetchCities();
   isMounted.value = true;
 });
+
+watch(
+  () => form.controlledValues.value,
+  async () => {
+    setTimeout(() => {
+      if (form.meta.value.valid) {
+        simulationResultsLoading.value = true;
+        handleFetchSimulatorResult();
+      }
+    }, 10)
+  }
+);
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
-
-#simulator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
-.overlay {
-  background: rgba(19, 15, 64, 0.4);
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  cursor: pointer;
-  z-index: 3;
-  overflow: hidden;
-}
-
-:deep(.center-wrapper) {
-  align-items: flex-start;
-  box-sizing: border-box;
-  padding: 124px;
-  align-items: center;
-
-  @media screen and (max-width: $mobileSize) {
-    padding: 124px 1.25rem;
-  }
-
-  ul li {
-    list-style: inherit;
-  }
-}
+@use "@/assets/scss/variables.scss" as *;
 
 .option-list {
   position: relative;
-  margin-top: 4px;
   box-sizing: border-box;
   width: 100%;
   max-width: 800px;
@@ -728,240 +969,73 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   max-height: 100%;
-}
 
-.option-list div.global-content {
-  display: block;
-  padding: 1rem;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
+  div.global-content {
+    display: block;
+    padding: 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
 
-.option-list div.global-content.result {
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 8px #fdcd5a57;
-}
-
-.option-list div.global-content.result .grid {
-  overflow-x: auto;
+  a {
+    color: $yellow;
+  }
 }
 
 .option-list div.global-content .grid {
   display: grid;
-}
+  overflow-x: auto;
 
-.option-list .pushy-text .reference-links {
-  display: flex;
-  
-  > a {
-    margin-right: 1rem;
+  > span {
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border: solid 1px;
+  }
+
+  > .label {
+    font-weight: bold;
+    text-align: left;
+    line-height: normal;
+
+    &.-exceeding-label {
+      border-right-color: red;
+    }
+  }
+
+  .-last-before-exceeding-section {
+    border-bottom-color: red;
+  }
+
+  > .exceeding {
+    font-weight: 500;
+    color: red;
   }
 }
 
-.option-list div.global-content .grid > span {
-  padding: 8px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  border: solid 1px;
-}
-
-.option-list div.global-content .grid > .label {
-  font-weight: bold;
-  text-align: left;
-  line-height: normal;
-}
-
-.option-list div.global-content .grid > span.exceeding {
-  font-weight: 500;
-  color: red;
-}
-
-.option-list div > .row {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin: 16px 0;
-}
-
-.option-list div > .row > span:first-child {
-  width: 35%;
-}
-
-.option-list div > .row > span:last-child {
-  width: 65%;
-}
-
-.option-list div > .row .dropdown {
-  display: flex;
-  justify-content: center;
-}
-
-.option-list div > .row .dropdown.input.address {
-  margin-bottom: 0.625rem;
-}
-
-.option-list div > .row .dropdown :deep(button) {
-  width: 100%;
-}
-
-.option-list div > .row .info-btn {
-  position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 1rem;
-    z-index: 4;
-    background: white;
-    color: black;
-    border: solid 1px white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-}
-
-.option-list .info-section {
-  position: absolute;
-  top: 0;
-  right: 0;
-  transform: translate(90%, -90%);
-  z-index: 4;
-  background: white;
-  color: black;
-  box-shadow: 0 0 10px 1px black;
-  border-radius: 8px;
-  padding: 1rem;
-  font-size: 0.875rem;
-  text-align: left;
-  line-height: 1.25rem;
-}
-
-.option-list div > .row span.label {
-  font-weight: 500;
-  position: relative;
-}
-
-.row.actions-btn {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.row.result {
-  display: flex;
-  justify-content: space-around;
+.result-section {
   padding: 0.625rem;
-  min-height: 50px;
   box-sizing: border-box;
   border: 1px solid white;
   position: relative;
-  align-items: center;
   border-radius: 2px;
-  margin: 1rem;
+  margin: 0 1.25rem 2rem;
   line-height: 1.25rem;
 
   > span {
     font-weight: bold;
   }
-}
 
-.row.result .spinner {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.reset-btn {
-  display: flex;
-  align-self: flex-end;
-  color: white;
-  display: flex;
-  justify-content: center;
-  font-weight: 400;
-  background-color: black;
-  cursor: pointer;
-  font-weight: 600;
-  border-radius: 4px;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-color: transparent;
-  transition: all ease 0.3s;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border: solid white 2px;
-    }
-  }
-}
-
-.more-info-btn {
-  display: flex;
-  align-items: center;
-  border: 2px solid $yellow;
-  border-radius: 2px;
-  background: transparent;
-  color: white;
-  font-size: 0.825rem;
-  font-weight: bold;
-  padding: 0 1rem;
-  transition: all ease 0.3s;
-  margin-left: 0.5rem;
-
-  &:hover {
-    border: solid white 2px;
-  }
-}
-
-.arrow-icon {
-  transition: transform ease 0.3s;
-  height: 30px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform: rotate(-90deg);
-}
-
-.arrow-icon.-is-open {
-  transform: rotate(90deg);
-}
-
-.submit-btn {
-  display: flex;
-  align-self: flex-end;
-  color: $deepblack;
-  display: flex;
-  justify-content: center;
-  font-weight: 400;
-  background-color: $yellow;
-  cursor: pointer;
-  font-weight: 600;
-  border-radius: 4px;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-color: transparent;
-  transition: all ease 0.3s;
-  float: right;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border: solid white 2px;
-    }
+  .spinner {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
 @media screen and (max-width: $mobileSize) {
-  .dropfilters > button.mobile-back-btn.-is-open {
-    z-index: 3;
-    position: fixed;
-    top: 1em;
-    right: 1em;
-    display: block;
-  }
-
   .option-list {
     width: 100vw;
     height: 100vh;
@@ -974,37 +1048,12 @@ onMounted(async () => {
     border: none;
     overflow-y: auto;
   }
-
-  .option-list div > .row:not(.actions-btn) {
-    flex-direction: column;
-  }
-
-  .option-list div > .row > span:first-child {
-    margin-bottom: 0.5rem;
-  }
-
-  .option-list div > .row > span:first-child,
-  .option-list div > .row > span:last-child {
-    width: 100%;
-  }
-
-  .option-list .info-section {
-    transform: translate(0, -90%);
-  }
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: scale(0);
 }
 
 .slide-side-l2r-enter-active,
 .slide-side-l2r-leave-active,
 .slide-side-r2l-enter-active,
-.slide-side-r2l-leave-active,
-.slide-fade-enter-active,
-.slide-fade-leave-active {
+.slide-side-r2l-leave-active {
   transition: all ease 400ms;
 }
 

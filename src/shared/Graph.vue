@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <bounce-loader class="spinner" :loading="!isGraphLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
+    <BounceLoader class="spinner" :loading="!isGraphLoaded" color="#fdcd56" :size="'60px'"></BounceLoader>
     <div v-if="isGraphLoaded && !errorMessage.length" :id="id" class="graph"></div>
     <div class="error-message" v-if="isGraphLoaded && errorMessage.length">
       <span v-if="errorMessage === 'not_enough_data'">
@@ -10,24 +10,20 @@
   </div>
 </template>
 
-<script>
-import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
-import { timeFormatLocale, formatLocale } from "../tools/vegaFormatLocale";
-import vegaEmbed from "vega-embed";
-import { domain } from "@/helper/config";
+<script setup>
+  import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
+  import { timeFormatLocale, formatLocale } from "@/tools/vegaFormatLocale";
+  import vegaEmbed from "vega-embed";
+  import { domain } from "@/helper/config";
+  import {
+    onMounted,
+    onBeforeUnmount,
+    ref,
+    toRefs,
+    watch,
+  } from "vue";
 
-const VEGA_COMMON = {
-  tooltip: {
-    theme: "dark",
-  },
-  actions: false,
-  // not working héhé
-  // width: 'container',
-};
-
-export default {
-  name: "Graph",
-  props: {
+  const props = defineProps({
     id: {
       type: String,
       required: true,
@@ -44,97 +40,114 @@ export default {
       type: Object,
       default: null,
     },
-  },
-  components: {
-    BounceLoader,
-  },
-  mounted: function() {
-    this.onFetchGraph();
-  },
-  watch: {
-    city: function() {
-      this.onFetchGraph();
+  });
+
+  const emits = defineEmits([
+    'errorOutput',
+  ])
+
+  const {
+    id,
+    city,
+    date,
+    options,
+  } = toRefs(props);
+
+  const isGraphLoaded = ref(false);
+  const errorMessage = ref('');
+
+  const controller = ref(new AbortController());
+
+  const VEGA_COMMON = {
+    tooltip: {
+      theme: "dark",
     },
-    date: function() {
-      this.onFetchGraph();
-    },
-    options: function() {
-      this.onFetchGraph();
-    },
-  },
-  beforeUnmount: function() {
-    this.controller.abort();
-  },
-  data() {
-    return {
-      controller: new AbortController(),
-      isGraphLoaded: false,
-      errorMessage: '',
+    actions: false,
+  };
+
+  watch(
+    () => city.value,
+    () => onFetchGraph()
+  );
+
+  watch(
+    () => date.value,
+    () => onFetchGraph()
+  );
+
+  watch(
+    () => options.value,
+    () => onFetchGraph()
+  );
+
+  onMounted(() => {
+    onFetchGraph();
+  });
+
+  onBeforeUnmount(() => {
+    controller.value.abort();
+  });
+
+  const onFetchGraph = () => {
+    errorMessage.value = '';
+    isGraphLoaded.value = false;
+    controller.value.abort();
+    controller.value = new AbortController();
+
+    const optionParams = {
+      ...options.value,
     };
-  },
-  methods: {
-    onFetchGraph: function() {
-      this.errorMessage = '';
-      this.isGraphLoaded = false;
-      this.controller.abort();
-      this.controller = new AbortController();
 
-      const optionParams = {
-        ...this.options,
-      };
+    if (date.value) {
+      optionParams["dateValue"] = date.value;
+    }
 
-      if (this.date) {
-        optionParams["dateValue"] = this.date;
+    const strOptions = optionParams
+      ? Object.keys(optionParams)
+          .map((key) => {
+            return key + "=" + optionParams[key];
+          })
+          .join("&")
+      : null;
+
+    fetch(
+      `${domain}stats/${id.value}/${city.value}${
+        strOptions ? "?" + strOptions : ""
+      }`,
+      {
+        signal: controller.value.signal,
       }
-
-      const strOptions = optionParams
-        ? Object.keys(optionParams)
-            .map((key) => {
-              return key + "=" + optionParams[key];
-            })
-            .join("&")
-        : null;
-
-      fetch(
-        `${domain}stats/${this.id}/${this.city}${
-          strOptions ? "?" + strOptions : ""
-        }`,
-        {
-          signal: this.controller.signal,
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.message === "token expired") {
+          throw res;
+        } else if (res.message === 'not_enough_data') {
+          errorMessage.value = res.message
+        } else {
+          return res;
         }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else if (res.message === 'not_enough_data') {
-            this.errorMessage = res.message
-          } else {
-            return res;
-          }
-        })
-        .then((spec) => {
-          if (this.controller.signal.aborted) return;
+      })
+      .then((spec) => {
+        if (controller.value.signal.aborted) return;
 
-          this.isGraphLoaded = true;
-          setTimeout(() => {
-            const width = document.getElementById(this.id).clientWidth;
-            const height = document.getElementById(this.id).clientHeight;
-            vegaEmbed(`#${this.id}`, spec, {
-              ...VEGA_COMMON,
-              width: width < 500 ? 500 : width,
-              height,
-              formatLocale,
-              timeFormatLocale,
-            });
+        isGraphLoaded.value = true;
+        setTimeout(() => {
+          const width = document.getElementById(id.value).clientWidth;
+          const height = document.getElementById(id.value).clientHeight;
+          vegaEmbed(`#${id.value}`, spec, {
+            ...VEGA_COMMON,
+            width: width < 500 ? 500 : width,
+            height,
+            formatLocale,
+            timeFormatLocale,
           });
-        })
-        .catch((err) => {
-          this.$emit("errorOutput", err);
         });
-    },
-  },
-};
+      })
+      .catch((err) => {
+        emits("errorOutput", err);
+      });
+  }
 </script>
 
 <style scoped>

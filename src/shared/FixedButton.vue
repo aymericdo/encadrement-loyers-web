@@ -4,20 +4,23 @@
   </button>
 </template>
 
-<script>
-export default {
-  name: "FixedButton",
-  props: {
+<script setup>
+  import { toRefs } from "vue";
+
+  const props = defineProps({
     bounce: {
-      type: [Boolean],
+      type: Boolean,
       default: false,
     },
-  },
-};
+  });
+
+  const {
+    bounce,
+  } = toRefs(props);
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 button {
   position: fixed;
@@ -28,8 +31,8 @@ button {
   font-weight: 600;
   top: 20px;
   right: 20px;
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border-color: transparent;
   cursor: pointer;

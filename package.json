@@ -2,40 +2,50 @@
   "name": "loyer-paris-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "22.x",
     "npm": "10.x"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/eslint-parser": "^7.18.9",
+    "@radix-icons/vue": "^1.0.0",
     "@sentry/vue": "^8.37.1",
-    "@vueform/slider": "^1.0.3",
-    "@vue/cli-service": "~5.0.8",
-    "@vue/cli-plugin-babel": "~5.0.8",
-    "@vue/cli-plugin-eslint": "^5.0.8",
-    "@vue/cli-plugin-router": "~5.0.8",
-    "core-js": "^3.4.8",
-    "eslint-plugin-vue": "^7.0.0-alpha.0",
-    "swiper": "^6.5.0",
+    "@vee-validate/zod": "^4.14.7",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "@vueform/slider": "^2.1.10",
+    "@vueuse/core": "^11.3.0",
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.456.0",
+    "radix-vue": "^1.9.9",
     "sass-loader": "^8.0.0",
+    "swiper": "^11.1.14",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7",
+    "vee-validate": "^4.14.7",
     "vega": "^5.20.2",
     "vega-embed": "^6.17.0",
     "vega-lite": "^5.0.0",
+    "vite": "^5.4.10",
     "vue": "^3.2.37",
     "vue-eslint-parser": "^9.0.3",
     "vue-router": "^4.0.0-alpha.6",
-    "vue-spinner": "^1.0.4"
+    "vue-spinner": "^1.0.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.2.37",
     "eslint": "^8.22.0",
-    "sass": "^1.32.8"
+    "eslint-plugin-vue": "^9.31.0",
+    "sass": "^1.32.8",
+    "tailwindcss": "^3.4.14"
   },
   "postcss": {
     "plugins": {

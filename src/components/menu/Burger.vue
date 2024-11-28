@@ -15,12 +15,10 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+  import { toRefs } from "vue";
 
-export default defineComponent({
-  name: "Burger",
-  props: {
+  const props = defineProps({
     isBurgerActive: {
       type: Boolean,
     },
@@ -28,13 +26,20 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-  },
-  methods: {
-    toggle() {
-      this.$emit("togglingSidebar", !this.isBurgerActive);
-    },
-  },
-});
+  });
+
+  const emits = defineEmits([
+    'togglingSidebar',
+  ]);
+
+  const {
+    isBurgerActive,
+    isFixed,
+  } = toRefs(props);
+
+  const toggle = () => {
+    emits("togglingSidebar", !isBurgerActive.value);
+  }
 </script>
 <style>
 button {

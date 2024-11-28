@@ -3,6 +3,12 @@
     <div class="col">
       <SectionTitle class="title">Remerciements</SectionTitle>
       <div class="data-provider">
+        <div class="image alda">
+          <a href="https://www.alda.eus/" target="_blank">
+            <img src="@/assets/images/alda_logo.png" alt="Photo logo Alda" />
+          </a>
+          <span>Alda</span>
+        </div>
         <div class="image">
           <a href="https://opendata.paris.fr/pages/home/" target="_blank">
             <img
@@ -41,21 +47,13 @@
   </Section>
 </template>
 
-<script>
-import Section from "@/shared/Section";
-import SectionTitle from "@/shared/SectionTitle";
-
-export default {
-  name: "SectionThanks",
-  components: {
-    Section,
-    SectionTitle,
-  },
-};
+<script setup>
+import Section from "@/shared/Section.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 .title {
   max-width: inherit;
 }
@@ -87,6 +85,10 @@ export default {
 
 .data-provider > .image.mel img {
   width: 150px;
+}
+
+.data-provider > .image.alda img {
+  background-color: white;
 }
 
 .data-provider {

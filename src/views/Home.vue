@@ -3,8 +3,8 @@
     <Menu></Menu>
     <router-view />
     <div
-      class="center-wrapper inactivable"
-      v-bind:class="{ inactive: $route.name !== 'home' }"
+      class="center-wrapper"
+      v-bind:class="{ inactive: route.name !== 'home' }"
     >
       <div>
         <Hero />
@@ -21,48 +21,35 @@
   </div>
 </template>
 
-<script>
-import Hero from "@/components/Hero.vue";
-import SectionWhy from "@/components/SectionWhy.vue";
-import SectionWhere from "@/components/SectionWhere.vue";
-import SectionHow from "@/components/SectionHow.vue";
-import SectionDisclaimer from "@/components/SectionDisclaimer.vue";
-import SectionThanks from "@/components/SectionThanks.vue";
-import SectionBlog from "@/components/SectionBlog.vue";
-import SectionUs from "@/components/SectionUs.vue";
-import Footer from "@/components/Footer.vue";
-import Menu from "@/components/menu/Menu.vue";
+<script setup>
+  import Hero from "@/components/Hero.vue";
+  import SectionWhy from "@/components/SectionWhy.vue";
+  import SectionWhere from "@/components/SectionWhere.vue";
+  import SectionHow from "@/components/SectionHow.vue";
+  import SectionDisclaimer from "@/components/SectionDisclaimer.vue";
+  import SectionThanks from "@/components/SectionThanks.vue";
+  import SectionBlog from "@/components/SectionBlog.vue";
+  import SectionUs from "@/components/SectionUs.vue";
+  import Footer from "@/components/Footer.vue";
+  import Menu from "@/components/menu/Menu.vue";
 
-export default {
-  name: "Home",
-  components: {
-    Footer,
-    Hero,
-    SectionDisclaimer,
-    SectionBlog,
-    SectionHow,
-    SectionThanks,
-    SectionWhere,
-    SectionUs,
-    SectionWhy,
-    Menu,
-  },
-  data: function() {
-    return {
-      isFirstVisitDone: false,
-    };
-  },
-  mounted() {
-    if (this.$route.name === "home" && !localStorage.isFirstVisitDone) {
-      this.$router.push({ path: "video" });
-      localStorage.isFirstVisitDone = true;
+  import { onMounted } from "vue";
+
+  import { useRouter, useRoute } from "vue-router";
+
+  const router = useRouter()
+  const route = useRoute()
+
+  onMounted(() => {
+    if (route.name === "home" && !localStorage.getItem('isFirstVisitDone')) {
+      router.push({ path: "video" });
+      localStorage.setItem('isFirstVisitDone', true);
     }
-  },
-};
+  })
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 #home {
   min-width: 100%;
@@ -76,7 +63,7 @@ export default {
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 8% 24px 0;
+  padding: 4rem 1.25rem 0;
   box-sizing: border-box;
 }
 
@@ -118,13 +105,15 @@ export default {
   transition: opacity ease 400ms;
 }
 
-.inactivable {
+.center-wrapper{
   transition: filter ease 400ms;
   pointer-events: auto;
 
   &.inactive {
+    height: 100vh;
     filter: blur(4px);
     pointer-events: none;
+    overflow-y: hidden;
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="sidebar">
     <div
       class="sidebar-backdrop"
-      @click="closeSidebarPanel"
+      @click="emits('toggleClosing', false)"
       v-if="isPanelOpen"
     ></div>
     <transition name="slide">
@@ -11,7 +11,7 @@
           class="sidebar-burger"
           :isBurgerActive="isPanelOpen"
           :isFixed="false"
-          @togglingSidebar="closeSidebarPanel"
+          @togglingSidebar="emits('toggleClosing', false)"
           ><span></span
         ></Burger>
         <slot></slot>
@@ -20,30 +20,25 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-import Burger from "@/components/menu/Burger.vue";
+<script setup>
+  import Burger from "@/components/menu/Burger.vue";
+  import { toRefs } from 'vue'
 
-export default defineComponent({
-  name: "Sidebar",
-  props: {
-    isPanelOpen: {
-      type: Boolean,
-    },
-  },
-  components: {
-    Burger,
-  },
-  methods: {
-    closeSidebarPanel() {
-      this.$emit("toggleClosing", false);
-    },
-  },
-});
+  const props = defineProps({
+    isPanelOpen: Boolean,
+  });
+
+  const emits = defineEmits([
+    'toggleClosing',
+  ])
+
+  const {
+    isPanelOpen,
+  } = toRefs(props);
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 200ms ease;

@@ -6,21 +6,11 @@
     </SectionRightPart>
   </Section>
 </template>
-<script>
-import Section from "@/shared/Section";
-import SectionTitle from "@/shared/SectionTitle";
-import SectionRightPart from "@/shared/SectionRightPart";
-import WebsiteList from "./WebsiteList.vue";
-
-export default {
-  name: "SectionWhere",
-  components: {
-    SectionTitle,
-    SectionRightPart,
-    Section,
-    WebsiteList
-  }
-};
+<script setup>
+  import Section from "@/shared/Section.vue";
+  import SectionRightPart from "@/shared/SectionRightPart.vue";
+  import SectionTitle from "@/shared/SectionTitle.vue";
+  import WebsiteList from "@/components/WebsiteList.vue";
 </script>
 
 <style scoped>

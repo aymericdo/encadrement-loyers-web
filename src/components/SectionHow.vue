@@ -26,25 +26,15 @@
   </Section>
 </template>
 
-<script>
-import Section from "@/shared/Section";
-import SectionTitle from "@/shared/SectionTitle";
-import SectionRightPart from "@/shared/SectionRightPart";
-import Carousel from "./Carousel";
-
-export default {
-  name: "SectionHow",
-  components: {
-    Carousel,
-    Section,
-    SectionRightPart,
-    SectionTitle,
-  },
-};
+<script setup>
+import Section from "@/shared/Section.vue";
+import SectionRightPart from "@/shared/SectionRightPart.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
+import Carousel from "./Carousel.vue";
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 h4 {
   margin: 0;

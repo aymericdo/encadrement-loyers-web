@@ -32,10 +32,12 @@
   </svg>
 </template>
 
-<script>
-export default {
-  name: "ArrowIcon",
-  props: {
+<script setup>
+  import {
+    toRefs,
+  } from "vue";
+
+  const props = defineProps({
     width: {
       type: [Number, String],
       default: 18,
@@ -48,6 +50,11 @@ export default {
       type: String,
       default: "#050505",
     },
-  },
-};
+  });
+
+  const {
+    width,
+    height,
+    iconColor,
+  } = toRefs(props);
 </script>

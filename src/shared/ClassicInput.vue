@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, toRefs } from "vue";
+import { toRefs } from "vue";
 
 const props = defineProps({
   type: String,
@@ -27,7 +27,7 @@ const props = defineProps({
   suffix: String,
 });
 
-const emit = defineEmits([
+const emits = defineEmits([
   'onTyping',
 ])
 
@@ -47,13 +47,13 @@ const onTyping = (opt) => {
     opt.target.value = min.value;
   }
 
-  emit('onTyping', opt.target.value)
+  emits('onTyping', opt.target.value)
 }
 
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
 .input {
   position: relative;
@@ -94,8 +94,8 @@ input[type=number]::-webkit-outer-spin-button {
   padding-right: 1em;
   border: 0;
   background: transparent;
-  font-weight: bold;
   font-size: 1rem;
+  color: black;
 
   &:focus {
     outline: none;

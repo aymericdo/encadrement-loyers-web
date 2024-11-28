@@ -10,34 +10,39 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "App",
-  data: function() {
-    return {
-      hits: [],
-    };
-  },
-  mounted: function() {
+<script setup>
+  import {
+    onMounted,
+    ref,
+  } from "vue";
+  import { useRoute } from "vue-router";
+  
+  const route = useRoute();
+
+  const hits = ref([]);
+  const asymetrie = ref(null);
+  const gstaad = ref(null);
+
+  onMounted(() => {
     const sounds = {
-      a: this.$refs.asymetrie,
-      g: this.$refs.gstaad,
+      a: asymetrie.value,
+      g: gstaad.value,
     };
 
     document.addEventListener("keydown", (event) => {
       const eventCode = event.key;
-      this.hits.push({
+      hits.value.push({
         event: eventCode,
         date: Date.now(),
       });
 
       if (
-        this.hits.length > 4 &&
-        this.hits.every((hit) => hit.event === eventCode) &&
-        this.hits[4].date - this.hits[0].date < 600
+        hits.value.length > 4 &&
+        hits.value.every((hit) => hit.event === eventCode) &&
+        hits.value[4].date - hits.value[0].date < 600
       ) {
         if (eventCode === "g") {
-          this.$route.name === "statsCity" &&
+          route.name === "statsCity" &&
             sounds[eventCode] &&
             sounds[eventCode].play();
         } else {
@@ -45,17 +50,16 @@ export default {
         }
       }
 
-      if (this.hits.length > 5) {
-        this.hits.shift();
+      if (hits.value.length > 5) {
+        hits.value.shift();
       }
     });
-  },
-};
+  });
 </script>
 
 <style lang="scss">
-@import "@/assets/scss/garnett.scss";
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/garnett.scss" as *;
+@use "@/assets/scss/variables.scss" as *;
 
 #app-component {
   font-family: "Garnett", "Avenir", Helvetica, Arial, sans-serif;
@@ -90,10 +94,6 @@ a:visited {
   &:hover {
     color: $darkeryellow;
   }
-}
-
-p {
-  margin: 0;
 }
 
 button:focus {

@@ -1,543 +1,414 @@
 <template>
-  <div id="stats">
-    <transition name="slide-fade" v-on:leave="leave">
-      <Page2Wrapper class="page2-wrapper" v-if="isMounted">
-        <div v-if="status !== 'ok'" class="entire-page-centered">
-          <GoogleRecaptcha
-            siteKey="6Le2wcEUAAAAACry2m3rkq5LHx9H0DmphXXU8BNw"
-            class="recaptcha"
-            ref="vueRecaptcha"
-            v-if="status !== 'submitting'"
-            size="normal"
-            theme="light"
-            :tabindex="0"
-            @verify="onCaptchaVerified"
-            @expire="onCaptchaExpired"
-          />
-          <bounce-loader class="spinner" :loading="status === 'submitting'" color="#fdcd56" :size="'120px'"></bounce-loader>
-        </div>
+  <Page2Wrapper :isMounted="isMounted">
+    <div class="welcome-section">
+      <SectionTitle class="title">Stats</SectionTitle>
 
-        <div class="welcome-section" v-if="welcomeData">
-          <SectionTitle class="title">Stats</SectionTitle>
-
-          <div class="row">
-            <div class="welcome">
-              <div v-if="!isWelcomeTextLoaded" class="welcome-spinner">
-                <bounce-loader class="spinner" :loading="!isWelcomeTextLoaded" color="#fdcd56" :size="'60px'"></bounce-loader>
-              </div>
-              <template v-if="isWelcomeTextLoaded">
-                <div>
-                  <span>Sur les</span>
-                  <span class="yellow"
-                    >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
-                  >
-                  <span>annonces étudiées au total</span>
-                  <template v-if="city !== 'all'">
-                    à
-                    <span class="yellow">
-                      &nbsp;{{
-                        cityDropdownOptions.find((c) => c.value === city).label
-                      }}</span
-                    >
-                  </template>
-                  <span>,</span>
-                  <span class="yellow">
-                    &nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;
-                  </span>
-                  <span>sont non conformes.</span>
-                </div>
-                <div>
-                  <span>Pour les annonces d'une surface inférieure à</span>
-                  <span class="yellow">
-                    &nbsp;{{ welcomeData.pivotSurface }}m²
-                  </span>
-                  <span>, il y a</span>
-                  <span class="yellow">
-                    &nbsp;{{
-                      welcomeData.isIllegalPercentageUnderPivot
-                    }}%&nbsp;
-                  </span>
-                  <span>d'annonces non conformes.</span>
-                </div>
+      <div class="row">
+        <div class="welcome">
+          <div v-if="!isWelcomeTextLoaded" class="flex justify-center">
+            <BounceLoader
+              class="spinner"
+              :loading="!isWelcomeTextLoaded"
+              color="#fdcd56"
+              :size="'60px'"
+            ></BounceLoader>
+          </div>
+          <template v-if="isWelcomeTextLoaded">
+            <div>
+              <span>Sur les</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
+              >
+              <span>annonces étudiées au total</span>
+              <template v-if="city !== 'all'">
+                à<span class="yellow"
+                  >&nbsp;{{
+                    cityDropdownOptions.find((c) => c.value === city).label
+                  }}</span
+                >
               </template>
+              <span>,</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
+              >
+              <span>sont non conformes.</span>
             </div>
-
-            <div class="city-dropdown">
-              <Dropdown
-                :options="cityDropdownOptions"
-                :currentValue="city"
-                @onSelect="changeCity($event)"
-              ></Dropdown>
+            <div>
+              <span>Pour les annonces d'une surface inférieure à</span>
+              <span class="yellow"
+                >&nbsp;{{ welcomeData.pivotSurface }}m²</span
+              ><span>, il y a</span>
+              <span class="yellow"
+                >&nbsp;{{
+                  welcomeData.isIllegalPercentageUnderPivot
+                }}%&nbsp;</span
+              >
+              <span>d'annonces non conformes.</span>
             </div>
-          </div>
-          <div class="row">
-            <Slider
-              class="slider"
-              v-model="dateValue"
-              :min="0"
-              :max="maxDateValue"
-              :format="dateValueFct"
-              @change="setDateValueStr"
-            />
-          </div>
+          </template>
         </div>
 
-        <div class="graph-list" v-if="status === 'ok'">
-          <div class="stats-section -large">
-            <Graph
-              ref="isLegalVariation"
-              :id="'is-legal-variation'"
-              :city="city"
-              :date="getDatesFromValues"
-              :options="legalPercentageOptions"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-            <div class="is-legal-variation-dropdown">
-              <Dropfilters
-                @onSubmit="changeFilters($event)"
-                @onReset="changeFilters()"
-                @onDropFilterOpeningChanged="showCloseButton = !$event"
-                :city="city"
-                :options="legalPercentageOptions"
-                :filtersCount="legalPercentageFiltersCount"
-              ></Dropfilters>
-            </div>
-          </div>
-
-          <div class="stats-section-row" v-if="city !== 'all'">
-            <div class="stats-section">
-              <Graph
-                :id="'chloropleth-map'"
-                :date="getDatesFromValues"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-
-            <div class="stats-section">
-              <Graph
-                :id="'map'"
-                :date="getDatesFromValues"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-          </div>
-
-          <div class="stats-section -large" v-if="city !== 'all' && cityDropdownOptions.find((value) => value.value === city)?.multipleCities">
-            <Graph
-              :id="'chloropleth-cities-map'"
-              :date="getDatesFromValues"
-              :city="city"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </div>
-
-          <div class="stats-section -large">
-            <Graph
-              :id="'is-legal-per-surface'"
-              :date="getDatesFromValues"
-              :city="city"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </div>
-
-          <div v-if="city === 'all'" class="stats-section -large">
-            <Graph
-              :id="'price-variation'"
-              :date="getDatesFromValues"
-              :city="city"
-              @errorOutput="getErrorMessage($event)"
-            ></Graph>
-          </div>
-
-          <div v-if="city !== 'all'" class="stats-section-row">
-            <div class="stats-section">
-              <Graph
-                :id="'price-difference'"
-                :date="getDatesFromValues"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-
-            <div class="stats-section">
-              <Graph
-                :id="'price-variation'"
-                :date="getDatesFromValues"
-                :city="city"
-                @errorOutput="getErrorMessage($event)"
-              ></Graph>
-            </div>
-          </div>
+        <div class="city-dropdown">
+          <Select
+            v-model="city"
+            :open="isCitySelectOpen"
+            @update:model-value="changeCity"
+            @update:open="isCitySelectOpen = $event"
+          >
+            <SelectTrigger :open="isCitySelectOpen">
+              <SelectValue placeholder="Choisir une ville..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  v-for="{ label, value } in cityDropdownOptions"
+                  :value="value"
+                  :key="value"
+                >
+                  {{ label }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
-      </Page2Wrapper>
-    </transition>
+      </div>
+      <div class="row">
+        <Slider
+          class="slider"
+          v-model="dateValue"
+          :min="0"
+          :max="maxDateValue"
+          :format="dateValueFct"
+          @change="setDateValueStr"
+        />
+      </div>
+    </div>
+
+    <div class="graph-list">
+      <div class="stats-section -large">
+        <Graph
+          ref="isLegalVariation"
+          :id="'is-legal-variation'"
+          :city="city"
+          :date="dateValueStr"
+          :options="legalPercentageOptions"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+        <div class="is-legal-variation-dropdown">
+          <Dropfilters
+            @onSubmit="changeFilters($event)"
+            @onReset="changeFilters()"
+            :city="city"
+            :options="legalPercentageOptions"
+          ></Dropfilters>
+        </div>
+      </div>
+
+      <div class="stats-section-row" v-if="city !== 'all'">
+        <div class="stats-section">
+          <Graph
+            :id="'chloropleth-map'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+
+        <div class="stats-section">
+          <Graph
+            :id="'map'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+      </div>
+
+      <div
+        class="stats-section -large"
+        v-if="
+          city !== 'all' &&
+          cityDropdownOptions.find((value) => value.value === city)
+            ?.multipleCities
+        "
+      >
+        <Graph
+          :id="'chloropleth-cities-map'"
+          :date="dateValueStr"
+          :city="city"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </div>
+
+      <div class="stats-section -large">
+        <Graph
+          :id="'is-legal-per-surface'"
+          :date="dateValueStr"
+          :city="city"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </div>
+
+      <div v-if="city === 'all'" class="stats-section -large">
+        <Graph
+          :id="'price-variation'"
+          :date="dateValueStr"
+          :city="city"
+          @errorOutput="getErrorMessage($event)"
+        ></Graph>
+      </div>
+
+      <div v-if="city !== 'all'" class="stats-section-row">
+        <div class="stats-section">
+          <Graph
+            :id="'price-difference'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+
+        <div class="stats-section">
+          <Graph
+            :id="'price-variation'"
+            :date="dateValueStr"
+            :city="city"
+            @errorOutput="getErrorMessage($event)"
+          ></Graph>
+        </div>
+      </div>
+    </div>
     <div
       class="fixed-btn"
       :class="{ 'show-on-mobile': showCloseButton }"
-      @click="unmount"
+      @click="isMounted = false"
     >
       <FixedButton>
-        <StrokeIcon :width="'20px'" :height="'20px'" />
+        <StrokeIcon :width="'18px'" :height="'18px'" />
       </FixedButton>
     </div>
-  </div>
+  </Page2Wrapper>
 </template>
 
-<script>
-import { ref, watchEffect, onMounted } from "vue";
-import BounceLoader from 'vue-spinner/src/BounceLoader.vue';
-import { useRoute } from "vue-router";
-import StrokeIcon from "@/icons/StrokeIcon.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
-import GoogleRecaptcha from "@/shared/GoogleRecaptcha.vue";
-import FixedButton from "@/shared/FixedButton.vue";
-import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import Dropdown from "@/shared/Dropdown.vue";
-import Dropfilters from "@/shared/Dropfilters.vue";
-import Graph from "@/shared/Graph.vue";
-import Slider from "@vueform/slider";
+<script setup>
 import { domain } from "@/helper/config";
+import StrokeIcon from "@/icons/StrokeIcon.vue";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/ui/select";
+import Dropfilters from "@/shared/Dropfilters.vue";
+import FixedButton from "@/shared/FixedButton.vue";
+import Graph from "@/shared/Graph.vue";
+import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+import SectionTitle from "@/shared/SectionTitle.vue";
+import Slider from "@vueform/slider";
+import { onBeforeUnmount, onMounted, ref, watch, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 
-import { kebabize, camelize } from "../tools/kebabier";
+import { camelize, kebabize } from "../tools/kebabier";
 
 import "@vueform/slider/themes/default.css";
 
-export default {
-  name: "Stats",
-  components: {
-    BounceLoader,
-    GoogleRecaptcha,
-    SectionTitle,
-    Page2Wrapper,
-    StrokeIcon,
-    FixedButton,
-    Dropdown,
-    Dropfilters,
-    Graph,
-    Slider,
-  },
-  mounted: function() {
-    this.isMounted = true;
-    this.needCaptcha();
-    this.setDateValueStr(this.dateValue);
-  },
-  beforeUnmount: function() {
-    this.controller.abort();
-  },
-  computed: {
-    getDatesFromValues() {
-      return this.dateValueStr;
-    },
-  },
-  setup() {
-    const route = useRoute();
-    const showCloseButton = ref(true);
-    const isLegalVariation = ref(null);
-    const legalPercentageFiltersCount = ref(0);
-    const cityDropdownOptions = ref([]);
+const route = useRoute();
+const router = useRouter();
+const showCloseButton = ref(true);
+const isLegalVariation = ref(null);
+const cityDropdownOptions = ref([]);
+const isMounted = ref(false);
+const city = ref(camelize(route.params.city) || "paris");
+const serverError = ref("");
+const welcomeData = ref(null);
+const isWelcomeTextLoaded = ref(false);
+const dateValueStr = ref("");
+const isCitySelectOpen = ref(false);
 
-    // Date of the first ad in the db
-    const realStartDate = new Date("2019-10-22");
-    const realEndDate = new Date();
-    // Number of days between the first ad in the db and today
-    const maxDateValue = Math.round(
-      (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
-    );
-    // Number of days between the first ad in the db and 3 months before today
-    const minDateValue = Math.round(
-      (new Date(realEndDate.setMonth(realEndDate.getMonth() - 3)) -
-        realStartDate) /
-        (1000 * 60 * 60 * 24)
-    );
+const controller = new AbortController();
 
-    const initialLegalPercentageOptions = {
-      surfaceValue: [9, 100],
-      roomValue: [1, 6],
-      furnishedValue: "all",
-      districtValues: [],
-      isParticulierValue: "all",
-    };
+// Date of the first ad in the db
+const realStartDate = new Date("2019-10-22");
+const realEndDate = new Date();
+// Number of days between the first ad in the db and today
+const maxDateValue = Math.round(
+  (realEndDate - realStartDate) / (1000 * 60 * 60 * 24)
+);
+// Number of days between the first ad in the db and 6 months before today
+const minDateValue = Math.round(
+  (new Date(realEndDate.setMonth(realEndDate.getMonth() - 6)) - realStartDate) /
+    (1000 * 60 * 60 * 24)
+);
+const dateValue = ref([minDateValue, maxDateValue]);
 
-    const legalPercentageOptions = ref({
-      ...initialLegalPercentageOptions,
-    });
+const initialLegalPercentageOptions = {
+  surfaceValue: [9, 100],
+  roomValue: [1, 6],
+  furnishedValue: "all",
+  isParticulierValue: "all",
+};
 
-    watchEffect(
-      () => {
-        if (legalPercentageOptions.value) {
-          let cpt = 0;
-          Object.keys(legalPercentageOptions.value).forEach((key) => {
-            if (
-              JSON.stringify(legalPercentageOptions.value[key]) !==
-              JSON.stringify(initialLegalPercentageOptions[key])
-            ) {
-              cpt += 1;
-            }
-          });
+const legalPercentageOptions = ref({
+  ...initialLegalPercentageOptions,
+});
 
-          legalPercentageFiltersCount.value = cpt;
-        }
-      },
-      {
-        flush: "post",
+watch(route, (newValue, oldValue) => {
+  if (newValue.params.city !== oldValue.oldValue) {
+    const value = newValue.params.city;
+    city.value = value && camelize(value);
+    changeFilters();
+    onFetchWelcome(null);
+    isWelcomeTextLoaded.value = false;
+  }
+});
+
+const fetchCities = async () => {
+  try {
+    const rawResult = await fetch(`${domain}cities/list`);
+    const res = await rawResult.json();
+    if (res.message === "token expired") throw res;
+
+    cityDropdownOptions.value = Object.keys(res).reduce((prev, city, index) => {
+      if (index === 0) {
+        prev.push({
+          value: "all",
+          label: "Tout",
+        });
       }
-    );
 
-    const fetchCities = async () => {
-      try {
-        const rawResult = await fetch(`${domain}cities/list`)
-        const res = await rawResult.json()
-        if (res.message === "token expired") throw res
-
-        cityDropdownOptions.value = Object.keys(res).reduce((prev, city, index) => {
-          if (index === 0) {
-            prev.push({
-              value: "all",
-              label: "Tout",
-            })
-          }
-
-          if (prev.some((value) => value.value === res[city].mainCity)) {
-            return prev.map((data) => {
-              return (data.value === res[city].mainCity) ? {
+      if (prev.some((value) => value.value === res[city].mainCity)) {
+        return prev.map((data) => {
+          return data.value === res[city].mainCity
+            ? {
                 ...data,
                 multipleCities: true,
-              } : {
-                ...data,
               }
-            })
-          }
-
-          prev.push({
-            value: res[city].mainCity,
-            label: res[city].displayName.mainCity,
-            multipleCities: false,
-          })
-          return prev
-        }, []);
-      } catch (err) {
-        console.error(err);
+            : {
+                ...data,
+              };
+        });
       }
-    };
 
-    onMounted(async () => {
-      await fetchCities();
+      prev.push({
+        value: res[city].mainCity,
+        label: res[city].displayName.mainCity,
+        multipleCities: false,
+      });
+      return prev;
+    }, []);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+onMounted(async () => {
+  await fetchCities();
+  isMounted.value = true;
+  setDateValueStr(dateValue.value);
+  onFetchWelcome();
+});
+
+onBeforeUnmount(() => {
+  controller.abort();
+});
+
+const getErrorMessage = (err) => {
+  let responseBody;
+  responseBody = err.response;
+  if (!responseBody) {
+    responseBody = err;
+  } else {
+    responseBody = err.response.data || responseBody;
+  }
+
+  if (err.message === "token expired") {
+    welcomeData.value = null;
+  }
+
+  return responseBody.message || JSON.stringify(responseBody);
+};
+
+const onFetchWelcome = () => {
+  fetch(`${domain}stats/welcome/${city.value}`, {
+    signal: controller.signal,
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.message === "token expired") {
+        throw res;
+      } else {
+        return res;
+      }
+    })
+    .then((res) => {
+      welcomeData.value = res;
+      isWelcomeTextLoaded.value = true;
+    })
+    .catch((err) => {
+      serverError.value = getErrorMessage(err);
     });
+};
 
-    return {
-      showCloseButton,
-      isLegalVariation,
-      controller: new AbortController(),
-      isMounted: ref(false),
-      city: ref(camelize(route.params.city) || "paris"),
-      status: ref(""),
-      sucessfulServerResponse: ref(""),
-      serverError: ref(""),
-      welcomeData: ref(null),
-      isWelcomeTextLoaded: ref(false),
-      cityDropdownOptions,
-      initialLegalPercentageOptions,
-      legalPercentageOptions,
-      legalPercentageFiltersCount,
-      realStartDate,
-      dateValue: ref([minDateValue, maxDateValue]),
-      maxDateValue,
-      dateValueStr: ref(""),
-    };
-  },
-  watch: {
-    "$route.params.city": function(value) {
-      this.city = value && camelize(value);
-      this.changeFilters()
-      this.onFetchWelcome(null);
-      this.isWelcomeTextLoaded = false;
-    },
-  },
-  methods: {
-    // helper to get a displayable message to the user
-    getErrorMessage(err) {
-      let responseBody;
-      responseBody = err.response;
-      if (!responseBody) {
-        responseBody = err;
-      } else {
-        responseBody = err.response.data || responseBody;
-      }
+const changeCity = (opt) => {
+  router.push({ path: kebabize(opt) });
+};
 
-      if (err.message === "token expired") {
-        this.status = "";
-        this.welcomeData = null;
-      }
+const changeFilters = (opt = null) => {
+  legalPercentageOptions.value = opt
+    ? { ...opt }
+    : { ...initialLegalPercentageOptions };
+};
 
-      return responseBody.message || JSON.stringify(responseBody);
-    },
-    needCaptcha: function() {
-      this.status = "submitting";
-      fetch(`${domain}stats/need-captcha`, {
-        signal: this.controller.signal,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          if (res) {
-            this.status = "";
-          } else {
-            this.onFetchWelcome(null);
-          }
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onFetchWelcome: function(recaptchaToken) {
-      fetch(
-        `${domain}stats/welcome/${this.city}?recaptchaToken=${recaptchaToken}`,
-        {
-          signal: this.controller.signal,
-        }
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.message === "token expired") {
-            throw res;
-          } else {
-            return res;
-          }
-        })
-        .then((res) => {
-          this.status = "ok";
-          this.welcomeData = res;
-          this.isWelcomeTextLoaded = true;
-        })
-        .catch((err) => {
-          this.serverError = this.getErrorMessage(err);
-          this.status = "error";
-        });
-    },
-    onCaptchaVerified: function(recaptchaToken) {
-      this.status = "submitting";
-      this.$refs.vueRecaptcha.reset();
-      this.onFetchWelcome(recaptchaToken);
-    },
-    onCaptchaExpired: function() {
-      this.status = "";
-      this.$refs.vueRecaptcha.reset();
-    },
-    changeCity(opt) {
-      if (this.city === opt.value) {
-        return;
-      }
+const getDateFromValue = (value) => {
+  const copy = new Date(Number(realStartDate));
+  copy.setDate(realStartDate.getDate() + value);
+  return copy;
+};
 
-      this.$router.push({ path: kebabize(opt.value) });
-    },
-    changeFilters(opt = null) {
-      if (opt) {
-        this.legalPercentageOptions = { ...opt };
-      } else {
-        this.legalPercentageOptions = { ...this.initialLegalPercentageOptions };
-      }
-    },
-    leave: function() {
-      setTimeout(() => {
-        this.$router.push({ path: "/" });
-      }, 400);
-    },
-    unmount: function() {
-      this.isMounted = false;
-    },
-    getDateFromValue: function(value) {
-      const copy = new Date(Number(this.realStartDate));
-      copy.setDate(this.realStartDate.getDate() + value);
-      return copy;
-    },
-    dateValueFct: function(value) {
-      return this.getDateFromValue(value).toLocaleDateString();
-    },
-    getDateValueStr: function(dateValue) {
-      const date = [
-        this.getDateFromValue(dateValue[0]),
-        this.getDateFromValue(dateValue[1]),
-      ];
+const dateValueFct = (value) => {
+  return getDateFromValue(value).toLocaleDateString();
+};
 
-      const currDate1 = date[0].getDate();
-      const currMonth1 = date[0].getMonth() + 1; //Months are zero based
-      const currYear1 = date[0].getFullYear();
+const getDateValueStr = (dateValue) => {
+  const date = [getDateFromValue(dateValue[0]), getDateFromValue(dateValue[1])];
 
-      const currDate2 = date[1].getDate();
-      const currMonth2 = date[1].getMonth() + 1; //Months are zero based
-      const currYear2 = date[1].getFullYear();
+  const currDate1 = date[0].getDate();
+  const currMonth1 = date[0].getMonth() + 1; // Months are zero based
+  const currYear1 = date[0].getFullYear();
 
-      return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
-    },
-    setDateValueStr: function(dateValue) {
-      this.dateValueStr = this.getDateValueStr(dateValue);
-    },
-  },
+  const currDate2 = date[1].getDate();
+  const currMonth2 = date[1].getMonth() + 1; // Months are zero based
+  const currYear2 = date[1].getFullYear();
+
+  return `${currYear1}-${currMonth1}-${currDate1},${currYear2}-${currMonth2}-${currDate2}`;
+};
+
+const setDateValueStr = (dateValue) => {
+  dateValueStr.value = getDateValueStr(dateValue);
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/variables.scss";
+@use "@/assets/scss/variables.scss" as *;
 
-#stats {
+.welcome-section,
+.graph-list {
+  min-width: 100%;
+}
+
+.welcome-section {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
-.recaptcha {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.page2-wrapper {
-  padding: 24px;
-  box-sizing: border-box;
-  align-items: baseline;
-}
-
-.entire-page-centered {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  width: 100%;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all ease 400ms;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .graph-list {
-  width: 100%;
-}
-
-.entire-page-centered > .spinner {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  padding: 1.25rem;
 }
 
 .title {
@@ -559,12 +430,10 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   padding: 1.25rem;
-  width: 90%;
   margin-bottom: 1.25rem;
 }
 
 .welcome-section .city-dropdown {
-  min-width: 200px;
   flex: 1;
 }
 
@@ -594,16 +463,11 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  line-height: 1.625rem;
 
   & div > span.yellow {
     color: $yellow;
   }
-}
-
-.welcome > .welcome-spinner {
-  min-height: 5rem;
-  display: flex;
-  justify-content: center;
 }
 
 .is-legal-variation-dropdown {
