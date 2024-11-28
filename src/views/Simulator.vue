@@ -93,6 +93,7 @@
                           variant="outline"
                           role="combobox"
                           :aria-expanded="isAddressPopoverOpen"
+                          :disabled="districtDropdownOptions.length === 1"
                         >
                           {{
                             addressSelected
@@ -813,6 +814,12 @@ const handleSelectCity = async (city) => {
   setDateBuiltRangeDropdownOptions([...currentCityInformation.dateBuiltRange]);
   form.setFieldValue('city', city);
 
+  if (form.values.district) {
+    form.setFieldValue('district', null);
+  }
+
+  addressSelected.value = "";
+
   if (districtDropdownOptions.value.length === 1) {
     form.setFieldValue("district", districtDropdownOptions.value[0].value);
   }
@@ -972,7 +979,7 @@ watch(
 
   div.global-content {
     display: block;
-    padding: 1.25rem;
+    padding: 4rem 1.25rem;
     width: 100%;
     box-sizing: border-box;
     overflow-y: auto;
@@ -1040,7 +1047,6 @@ watch(
     width: 100vw;
     height: 100vh;
     position: fixed;
-    padding: 2rem 0;
     top: 0;
     left: 0;
     z-index: 2;
