@@ -6,7 +6,10 @@
         target="_blank"
       >
         <div class="item-content">
-          <img src="@/assets/images/logo-leboncoin.png" alt="logo-leboncoin" />
+          <img
+            src="@/assets/images/logo-leboncoin.png"
+            alt="logo-leboncoin"
+          >
           <p>LeBoncoin</p>
         </div>
       </a>
@@ -17,15 +20,24 @@
         target="_blank"
       >
         <div class="item-content">
-          <img src="@/assets/images/logo-seloger.png" alt="logo-seloger" />
+          <img
+            src="@/assets/images/logo-seloger.png"
+            alt="logo-seloger"
+          >
           <p>SeLoger</p>
         </div>
       </a>
     </li>
     <li class="website-item">
-      <a href="https://www.pap.fr/annonce/locations-appartement-paris-75-g439" target="_blank">
+      <a
+        href="https://www.pap.fr/annonce/locations-appartement-paris-75-g439"
+        target="_blank"
+      >
         <div class="item-content">
-          <img src="@/assets/images/logo-pap.png" alt="logo-pap" />
+          <img
+            src="@/assets/images/logo-pap.png"
+            alt="logo-pap"
+          >
           <p>PAP</p>
         </div>
       </a>
@@ -36,7 +48,10 @@
         target="_blank"
       >
         <div class="item-content">
-          <img src="@/assets/images/logo-figaroimmo.png" alt="logo-figaroimmo" />
+          <img
+            src="@/assets/images/logo-figaroimmo.png"
+            alt="logo-figaroimmo"
+          >
           <p>Le Figaro Immo</p>
         </div>
       </a>
@@ -47,7 +62,10 @@
         target="_blank"
       >
         <div class="item-content">
-          <img src="@/assets/images/logo-orpi.png" alt="logo-orpi" />
+          <img
+            src="@/assets/images/logo-orpi.png"
+            alt="logo-orpi"
+          >
           <p>Orpi</p>
         </div>
       </a>
@@ -58,7 +76,10 @@
         target="_blank"
       >
         <div class="item-content">
-          <img src="@/assets/images/logo-superimmo.png" alt="logo-superimmo" />
+          <img
+            src="@/assets/images/logo-superimmo.png"
+            alt="logo-superimmo"
+          >
           <p>SuperImmo</p>
         </div>
       </a>
@@ -69,7 +90,10 @@
         target="_blank"
       >
         <div class="item-content">
-          <img src="@/assets/images/logo-logicimmo.png" alt="logo-logicimmo" />
+          <img
+            src="@/assets/images/logo-logicimmo.png"
+            alt="logo-logicimmo"
+          >
           <p>LogicImmo</p>
         </div>
       </a>

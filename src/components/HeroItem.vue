@@ -3,12 +3,18 @@
     <div class="hero-heading">
       <h1>
         <div>
-          <router-link to="video" class="yellow-text">
+          <router-link
+            to="video"
+            class="yellow-text"
+          >
             Encadrement
           </router-link>
         </div>
         est une extension pour vous aider dans votre recherche de location à
-        <div v-if="cities.length" class="city-word">
+        <div
+          v-if="cities.length"
+          class="city-word"
+        >
           <span :class="`typing ${cities[currentCity].id}`">
             <span class="uno">{{
               city.slice(0, cities[currentCity].text.length / 3)
@@ -24,8 +30,7 @@
                 (cities[currentCity].text.length / 3) * 2,
                 cities[currentCity].text.length
               )
-            }}</span> </span
-          >|
+            }}</span> </span>|
         </div>
       </h1>
       <h2>

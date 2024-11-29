@@ -1,13 +1,23 @@
 <template>
   <div id="video">
     <div class="content">
-      <video autoplay muted controls>
-        <source src="@/assets/video/prez.mp4" type="video/mp4" />
+      <video
+        autoplay
+        muted
+        controls
+      >
+        <source
+          src="@/assets/video/prez.mp4"
+          type="video/mp4"
+        >
       </video>
     </div>
     <router-link to="/">
       <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
+        <StrokeIcon
+          :width="'18px'"
+          :height="'18px'"
+        />
       </FixedButton>
     </router-link>
   </div>

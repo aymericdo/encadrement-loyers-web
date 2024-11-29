@@ -1,11 +1,13 @@
 <template>
-  <Page2Wrapper :isMounted="isMounted">
+  <Page2Wrapper :is-mounted="isMounted">
     <div class="p-2 md:p-8">
       <div class="title">
         <h1>
           Aucune donnée n'est collectée par l'extension, hormis celle
           nécessaire au calcul et à la réalisation de quelques
-          <router-link to="/stats">statistiques</router-link>. Aucune donnée
+          <router-link to="/stats">
+            statistiques
+          </router-link>. Aucune donnée
           utilisateur n'est collectée.
         </h1>
         <h1>↓</h1>
@@ -16,35 +18,32 @@
         En vertu de l'article 6 de la loi n° 2004-575 du 21 juin 2004 pour la
         confiance dans l'économie numérique, il est précisé aux utilisateurs
         du site
-        <a href="https://encadrement-loyers.fr/"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr/">https://encadrement-loyers.fr/</a>
         l'identité des différents intervenants dans le cadre de sa réalisation
         et de son suivi :
       </p>
       <p>
         <strong>Propriétaire</strong> : Aymeric Dominique – – bd Voltaire,
         75011, Paris, France
-        <br />
+        <br>
         <strong>Créateur</strong> :
         <a href="https://encadrement-loyers.fr/">Aymeric Dominique</a>
-        <br />
+        <br>
         <strong>Responsable publication</strong> : Aymeric Dominique –
-        aymeric@encadrement-loyers.fr <br />Le responsable publication est une
+        aymeric@encadrement-loyers.fr <br>Le responsable publication est une
         personne physique ou une personne morale.
-        <br />
+        <br>
         <strong>Webmaster</strong> : Aymeric Dominique –
         aymeric@encadrement-loyers.fr
-        <br />
-        <strong>Hébergeur</strong> : Netlify – San Francisco, US <br />Crédits
-        : Thomas Legrand <br />Le modèle de mentions légales est offert par
+        <br>
+        <strong>Hébergeur</strong> : Netlify – San Francisco, US <br>Crédits
+        : Thomas Legrand <br>Le modèle de mentions légales est offert par
         Subdelirium.com
         <a
           target="_blank"
           href="https://www.subdelirium.com/generateur-de-mentions-legales/"
           alt="generateur de mentions légales"
-          >Générateur de mentions légales</a
-        >
+        >Générateur de mentions légales</a>
       </p>
 
       <h3>
@@ -53,16 +52,12 @@
       </h3>
       <p>
         L’utilisation du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         implique l’acceptation pleine et entière des conditions générales
         d’utilisation ci-après décrites. Ces conditions d’utilisation sont
         susceptibles d’être modifiées ou complétées à tout moment, les
         utilisateurs du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         sont donc invités à les consulter de manière régulière.
       </p>
       <p>
@@ -73,9 +68,7 @@
       </p>
       <p>
         Le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         est mis à jour régulièrement par Aymeric Dominique. De la même façon,
         les mentions légales peuvent être modifiées à tout moment : elles
         s’imposent néanmoins à l’utilisateur qui est invité à s’y référer le
@@ -84,17 +77,13 @@
       <h3>3. Description des services fournis.</h3>
       <p>
         Le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         a pour objet de fournir une information concernant l’ensemble des
         activités de la société.
       </p>
       <p>
         Aymeric Dominique s’efforce de fournir sur le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         des informations aussi précises que possible. Toutefois, il ne pourra
         être tenue responsable des omissions, des inexactitudes et des
         carences dans la mise à jour, qu’elles soient de son fait ou du fait
@@ -102,14 +91,10 @@
       </p>
       <p>
         Tous les informations indiquées sur le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         sont données à titre indicatif, et sont susceptibles d’évoluer. Par
         ailleurs, les renseignements figurant sur le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         ne sont pas exhaustifs. Ils sont donnés sous réserve de modifications
         ayant été apportées depuis leur mise en ligne.
       </p>
@@ -153,9 +138,7 @@
         Aymeric Dominique ne pourra également être tenue responsable des
         dommages indirects (tels par exemple qu’une perte de marché ou perte
         d’une chance) consécutifs à l’utilisation du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >.
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>.
       </p>
       <p>
         Des espaces interactifs (possibilité de poser des questions dans
@@ -179,27 +162,19 @@
       </p>
       <p>
         A l'occasion de l'utilisation du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >, peuvent êtres recueillies : l'URL des liens par l'intermédiaire
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>, peuvent êtres recueillies : l'URL des liens par l'intermédiaire
         desquels l'utilisateur a accédé au site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >, le fournisseur d'accès de l'utilisateur, l'adresse de protocole
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>, le fournisseur d'accès de l'utilisateur, l'adresse de protocole
         Internet (IP) de l'utilisateur.
       </p>
       <p>
         En tout état de cause Aymeric Dominique ne collecte des informations
         personnelles relatives à l'utilisateur que pour le besoin de certains
         services proposés par le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >. L'utilisateur fournit ces informations en toute connaissance de
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>. L'utilisateur fournit ces informations en toute connaissance de
         cause, notamment lorsqu'il procède par lui-même à leur saisie. Il est
         alors précisé à l'utilisateur du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         l’obligation ou non de fournir ces informations.
       </p>
       <p>
@@ -213,18 +188,14 @@
       </p>
       <p>
         Aucune information personnelle de l'utilisateur du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         n'est publiée à l'insu de l'utilisateur, échangée, transférée, cédée
         ou vendue sur un support quelconque à des tiers. Seule l'hypothèse du
         rachat de Aymeric Dominique et de ses droits permettrait la
         transmission des dites informations à l'éventuel acquéreur qui serait
         à son tour tenu de la même obligation de conservation et de
         modification des données vis à vis de l'utilisateur du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >.
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>.
       </p>
       <p>
         Le site n'est pas déclaré à la CNIL car il ne recueille pas
@@ -238,9 +209,7 @@
       <h3>8. Liens hypertextes et cookies.</h3>
       <p>
         Le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         contient un certain nombre de liens hypertextes vers d’autres sites,
         mis en place avec l’autorisation de Aymeric Dominique. Cependant,
         Aymeric Dominique n’a pas la possibilité de vérifier le contenu des
@@ -249,9 +218,7 @@
       </p>
       <p>
         La navigation sur le site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         est susceptible de provoquer l’installation de cookie(s) sur
         l’ordinateur de l’utilisateur. Un cookie est un fichier de petite
         taille, qui ne permet pas l’identification de l’utilisateur, mais qui
@@ -296,9 +263,7 @@
       <h3>9. Droit applicable et attribution de juridiction.</h3>
       <p>
         Tout litige en relation avec l’utilisation du site
-        <a href="https://encadrement-loyers.fr//"
-          >https://encadrement-loyers.fr/</a
-        >
+        <a href="https://encadrement-loyers.fr//">https://encadrement-loyers.fr/</a>
         est soumis au droit français. Il est fait attribution exclusive de
         juridiction aux tribunaux compétents de Paris.
       </p>
@@ -325,7 +290,10 @@
     </div>
     <div @click="isMounted = false">
       <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
+        <StrokeIcon
+          :width="'18px'"
+          :height="'18px'"
+        />
       </FixedButton>
     </div>
   </Page2Wrapper>

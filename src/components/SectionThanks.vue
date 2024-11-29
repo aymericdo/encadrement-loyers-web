@@ -1,26 +1,43 @@
 <template>
   <Section class="section-thanks">
     <div class="col">
-      <SectionTitle class="title">Remerciements</SectionTitle>
+      <SectionTitle class="title">
+        Remerciements
+      </SectionTitle>
       <div class="data-provider">
         <div class="image alda">
-          <a href="https://www.alda.eus/" target="_blank">
-            <img src="@/assets/images/alda_logo.png" alt="Photo logo Alda" />
+          <a
+            href="https://www.alda.eus/"
+            target="_blank"
+          >
+            <img
+              src="@/assets/images/alda_logo.png"
+              alt="Photo logo Alda"
+            >
           </a>
           <span>Alda</span>
         </div>
         <div class="image">
-          <a href="https://opendata.paris.fr/pages/home/" target="_blank">
+          <a
+            href="https://opendata.paris.fr/pages/home/"
+            target="_blank"
+          >
             <img
               src="@/assets/images/data-paris.png"
               alt="Photo de logo data paris"
-            />
+            >
           </a>
           <span>Open Data Paris</span>
         </div>
         <div class="image">
-          <a href="https://opendata.apur.org/" target="_blank">
-            <img src="@/assets/images/data-apur.png" alt="Photo logo Apur" />
+          <a
+            href="https://opendata.apur.org/"
+            target="_blank"
+          >
+            <img
+              src="@/assets/images/data-apur.png"
+              alt="Photo logo Apur"
+            >
           </a>
           <span>Open Data Apur</span>
         </div>
@@ -29,16 +46,22 @@
             href="https://opendata.lillemetropole.fr/pages/home/"
             target="_blank"
           >
-            <img src="@/assets/images/mel-lille.png" alt="Photo logo MEL" />
+            <img
+              src="@/assets/images/mel-lille.png"
+              alt="Photo logo MEL"
+            >
           </a>
           <span>Open Data Lille</span>
         </div>
         <div class="image">
-          <a href="https://data.grandlyon.com/" target="_blank">
+          <a
+            href="https://data.grandlyon.com/"
+            target="_blank"
+          >
             <img
               src="@/assets/images/grand-lyon.jpeg"
               alt="Photo logo Grand Lyon"
-            />
+            >
           </a>
           <span>Open Data Lyon</span>
         </div>
@@ -48,8 +71,8 @@
 </template>
 
 <script setup>
-import Section from "@/shared/Section.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
+import Section from "@/shared/SectionItem.vue";
+import SectionTitle from "@/shared/SectionTitleItem.vue";
 </script>
 
 <style lang="scss" scoped>

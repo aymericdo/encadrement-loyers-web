@@ -1,27 +1,31 @@
 <template>
   <div class="sidebar">
     <div
+      v-if="isPanelOpen"
       class="sidebar-backdrop"
       @click="emits('toggleClosing', false)"
-      v-if="isPanelOpen"
-    ></div>
+    />
     <transition name="slide">
-      <div v-if="isPanelOpen" class="sidebar-panel">
+      <div
+        v-if="isPanelOpen"
+        class="sidebar-panel"
+      >
         <Burger
           class="sidebar-burger"
-          :isBurgerActive="isPanelOpen"
-          :isFixed="false"
-          @togglingSidebar="emits('toggleClosing', false)"
-          ><span></span
-        ></Burger>
-        <slot></slot>
+          :is-burger-active="isPanelOpen"
+          :is-fixed="false"
+          @toggling-sidebar="emits('toggleClosing', false)"
+        >
+          <span />
+        </Burger>
+        <slot />
       </div>
     </transition>
   </div>
 </template>
 
 <script setup>
-  import Burger from "@/components/menu/Burger.vue";
+  import Burger from "@/components/menu/BurgerItem.vue";
   import { toRefs } from 'vue'
 
   const props = defineProps({

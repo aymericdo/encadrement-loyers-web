@@ -1,53 +1,71 @@
 <template>
-  <DropdownMenu :open="isOpen" @update:open="isOpen = $event">
-    <DropdownMenuTrigger asChild>
+  <DropdownMenu
+    :open="isOpen"
+    @update:open="isOpen = $event"
+  >
+    <DropdownMenuTrigger as-child>
       <Button
         variant="default"
         class="hover:bg-accent hover:text-accent-foreground"
       >
         Filtres
-        <span v-if="filtersCount > 0" class="badge-count">{{
+        <span
+          v-if="filtersCount > 0"
+          class="badge-count"
+        >{{
           filtersCount
         }}</span>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent class="w-screen md:absolute md:w-80 lg:w-96">
-      <form class="p-4 space-y-6" @submit="onSubmit">
-        <FormField v-slot="{ componentField }" name="surface">
+      <form
+        class="p-4 space-y-6"
+        @submit="onSubmit"
+      >
+        <FormField
+          v-slot="{ componentField }"
+          name="surface"
+        >
           <FormItem class="pb-4">
             <FormLabel>Surface (m²)</FormLabel>
             <FormControl>
               <DualRangeSlider
                 v-bind="componentField"
                 :label="(value) => value"
-                labelPosition="bottom"
+                label-position="bottom"
                 :min="9"
                 :max="100"
                 :step="1"
-                :defaultValue="[9, 100]"
+                :default-value="[9, 100]"
               />
             </FormControl>
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }"  name="rooms">
+        <FormField
+          v-slot="{ componentField }"
+          name="rooms"
+        >
           <FormItem class="pb-4">
             <FormLabel>Nombre de pièce(s)</FormLabel>
             <FormControl>
               <DualRangeSlider
                 v-bind="componentField"
                 :label="(value) => value"
-                labelPosition="bottom"
+                label-position="bottom"
                 :min="1"
                 :max="6"
                 :step="1"
-                :defaultValue="[1, 6]"
+                :default-value="[1, 6]"
               />
             </FormControl>
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="furnished">
+        <FormField
+          v-slot="{ componentField }"
+          name="furnished"
+        >
           <FormItem>
             <FormLabel>Meublé</FormLabel>
             <Select
@@ -69,7 +87,10 @@
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="particulier">
+        <FormField
+          v-slot="{ componentField }"
+          name="particulier"
+        >
           <FormItem>
             <FormLabel>Particulier</FormLabel>
             <Select
@@ -92,10 +113,16 @@
         </FormField>
 
         <div class="flex justify-between mt-4">
-          <Button type="button" variant="outline" @click="onReset">
+          <Button
+            type="button"
+            variant="outline"
+            @click="onReset"
+          >
             Réinitialiser
           </Button>
-          <Button type="submit">Appliquer</Button>
+          <Button type="submit">
+            Appliquer
+          </Button>
         </div>
       </form>
     </DropdownMenuContent>

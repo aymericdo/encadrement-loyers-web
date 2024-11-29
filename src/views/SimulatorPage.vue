@@ -1,9 +1,13 @@
 <template>
-  <Page2Wrapper :isMounted="isMounted">
+  <Page2Wrapper :is-mounted="isMounted">
     <div class="flex items-center justify-center flex-1 p-4">
       <div class="option-list">
         <transition name="slide-side-r2l">
-          <div key="1" v-show="!displayMoreInfo" class="global-content">
+          <div
+            v-show="!displayMoreInfo"
+            key="1"
+            class="global-content"
+          >
             <form class="space-y-6">
               <FormField name="city">
                 <FormItem>
@@ -19,22 +23,22 @@
                           {{
                             form.values.city
                               ? cityDropdownOptions
-                                  .flatMap((group) => group.options)
-                                  .find(
-                                    (option) =>
-                                      option.value === form.values.city
-                                  )?.label
+                                .flatMap((group) => group.options)
+                                .find(
+                                  (option) =>
+                                    option.value === form.values.city
+                                )?.label
                               : "Entre ta ville"
                           }}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent
                         class="popover-content"
-                        v-bind:style="{
+                        :style="{
                           width: 'var(--radix-popover-trigger-width)',
                         }"
                       >
-                        <Command @update:modelValue="handleSelectCity">
+                        <Command @update:model-value="handleSelectCity">
                           <CommandInput
                             class="h-9"
                             placeholder="Rechercher une ville..."
@@ -98,22 +102,22 @@
                           {{
                             addressSelected
                               ? addressDropdownOptions.find(
-                                  (option) => option.value === addressSelected
-                                )?.label
+                                (option) => option.value === addressSelected
+                              )?.label
                               : "Entre ton adresse"
                           }}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent
                         class="popover-content"
-                        v-bind:style="{
+                        :style="{
                           width: 'var(--radix-popover-trigger-width)',
                         }"
                       >
                         <Command
-                          @update:searchTerm="handleSearchingAddress"
-                          :filterFunction="(list) => list"
-                          @update:modelValue="
+                          :filter-function="(list) => list"
+                          @update:search-term="handleSearchingAddress"
+                          @update:model-value="
                             (addressSelected) =>
                               form.setFieldValue(
                                 'district',
@@ -163,11 +167,21 @@
                   </FormItem>
                 </FormField>
 
-                <FormField v-slot="{ componentField }" name="district">
+                <FormField
+                  v-slot="{ componentField }"
+                  name="district"
+                >
                   <FormItem>
                     <FormLabel>Ou</FormLabel>
-                    <Select v-bind="componentField" :open="isCitySelectOpen" @update:open="isCitySelectOpen = $event">
-                      <SelectTrigger :open="isCitySelectOpen" :disabled="districtDropdownOptions.length === 1">
+                    <Select
+                      v-bind="componentField"
+                      :open="isCitySelectOpen"
+                      @update:open="isCitySelectOpen = $event"
+                    >
+                      <SelectTrigger
+                        :open="isCitySelectOpen"
+                        :disabled="districtDropdownOptions.length === 1"
+                      >
                         <SelectValue :placeholder="'Choisis ta zone'" />
                       </SelectTrigger>
                       <SelectContent>
@@ -176,14 +190,15 @@
                             v-for="option in Object.keys(
                               districtGroupByDropdownOptions
                             )"
+                            :key="option"
                           >
                             <SelectLabel>{{ option }}</SelectLabel>
                             <SelectItem
-                              :key="value"
                               v-for="{
                                 label,
                                 value,
                               } in districtGroupByDropdownOptions[option]"
+                              :key="value"
                               :value="value"
                             >
                               {{ label }}
@@ -193,6 +208,7 @@
                         <template v-else>
                           <SelectGroup
                             v-for="option in districtDropdownOptions"
+                            :key="option.value"
                           >
                             <SelectItem
                               :key="option.value"
@@ -209,11 +225,18 @@
               </div>
 
               <div v-show="hasHouse">
-                <FormField v-slot="{ componentField }" name="house">
+                <FormField
+                  v-slot="{ componentField }"
+                  name="house"
+                >
                   <FormItem>
                     <FormLabel>Maison</FormLabel>
 
-                    <Select v-bind="componentField" :open="isHasHouseSelectOpen" @update:open="isHasHouseSelectOpen = $event">
+                    <Select
+                      v-bind="componentField"
+                      :open="isHasHouseSelectOpen"
+                      @update:open="isHasHouseSelectOpen = $event"
+                    >
                       <SelectTrigger :open="isHasHouseSelectOpen">
                         <SelectValue />
                       </SelectTrigger>
@@ -233,13 +256,19 @@
                 </FormField>
               </div>
 
-              <FormField v-slot="{ componentField }" name="price">
+              <FormField
+                v-slot="{ componentField }"
+                name="price"
+              >
                 <FormItem>
                   <FormLabel class="flex items-center">
                     Loyer
                     <HoverCard>
                       <HoverCardTrigger as-child>
-                        <Button variant="primary" type="button">
+                        <Button
+                          variant="primary"
+                          type="button"
+                        >
                           <InfoCircledIcon />
                         </Button>
                       </HoverCardTrigger>
@@ -269,8 +298,7 @@
                       >
                         <span
                           class="flex items-center justify-center size-6 text-muted-foreground"
-                          >€</span
-                        >
+                        >€</span>
                       </span>
                     </div>
                   </FormControl>
@@ -278,9 +306,14 @@
                 </FormItem>
               </FormField>
 
-              <FormField v-slot="{ componentField }" name="surface">
+              <FormField
+                v-slot="{ componentField }"
+                name="surface"
+              >
                 <FormItem>
-                  <FormLabel class="flex items-center"> Surface </FormLabel>
+                  <FormLabel class="flex items-center">
+                    Surface
+                  </FormLabel>
                   <FormControl>
                     <div class="relative items-center w-full">
                       <Input
@@ -296,20 +329,26 @@
                       >
                         <span
                           class="flex items-center justify-center size-6 text-muted-foreground"
-                          >m²</span
-                        >
+                        >m²</span>
                       </span>
                     </div>
                   </FormControl>
                 </FormItem>
               </FormField>
 
-              <FormField v-slot="{ componentField }" name="rooms">
+              <FormField
+                v-slot="{ componentField }"
+                name="rooms"
+              >
                 <FormItem>
                   <FormLabel class="flex items-center">
                     Nombre de pièce(s)
                   </FormLabel>
-                  <Select v-bind="componentField" :open="isRoomsSelectOpen" @update:open="isRoomsSelectOpen = $event">
+                  <Select
+                    v-bind="componentField"
+                    :open="isRoomsSelectOpen"
+                    @update:open="isRoomsSelectOpen = $event"
+                  >
                     <SelectTrigger :open="isRoomsSelectOpen">
                       <SelectValue />
                     </SelectTrigger>
@@ -328,10 +367,19 @@
                 </FormItem>
               </FormField>
 
-              <FormField v-slot="{ componentField }" name="furnished">
+              <FormField
+                v-slot="{ componentField }"
+                name="furnished"
+              >
                 <FormItem>
-                  <FormLabel class="flex items-center">Meublé</FormLabel>
-                  <Select v-bind="componentField" :open="isFurnishedSelectOpen" @update:open="isFurnishedSelectOpen = $event">
+                  <FormLabel class="flex items-center">
+                    Meublé
+                  </FormLabel>
+                  <Select
+                    v-bind="componentField"
+                    :open="isFurnishedSelectOpen"
+                    @update:open="isFurnishedSelectOpen = $event"
+                  >
                     <SelectTrigger :open="isFurnishedSelectOpen">
                       <SelectValue />
                     </SelectTrigger>
@@ -351,12 +399,19 @@
               </FormField>
 
               <div v-show="dateBuiltValueDropdownOptions.length">
-                <FormField v-slot="{ componentField }" name="dateBuilt">
+                <FormField
+                  v-slot="{ componentField }"
+                  name="dateBuilt"
+                >
                   <FormItem>
                     <FormLabel class="flex items-center">
                       Date de construction
                     </FormLabel>
-                    <Select v-bind="componentField" :open="isDateBuiltSelectOpen" @update:open="isDateBuiltSelectOpen = $event">
+                    <Select
+                      v-bind="componentField"
+                      :open="isDateBuiltSelectOpen"
+                      @update:open="isDateBuiltSelectOpen = $event"
+                    >
                       <SelectTrigger :open="isDateBuiltSelectOpen">
                         <SelectValue />
                       </SelectTrigger>
@@ -380,11 +435,14 @@
         </transition>
 
         <transition name="slide-side-l2r">
-          <div v-if="displayMoreInfo" class="global-content">
+          <div
+            v-if="displayMoreInfo"
+            class="global-content"
+          >
             <div
               key="2"
               class="grid"
-              v-bind:style="{
+              :style="{
                 'grid-template-columns': `repeat(${
                   simulationResults?.length + 1
                 }, 2fr)`,
@@ -393,53 +451,57 @@
               <span class="label rounded-tl-md">Année de construction</span>
               <span
                 v-for="(simulationResult, index) in simulationResults"
+                :key="simulationResult.yearBuilt"
                 :class="{
                   'rounded-tr-md': index === simulationResults.length - 1,
                 }"
-                v-bind:key="simulationResult.yearBuilt"
               >
                 {{ simulationResult.yearBuilt }}
               </span>
               <span class="label">Prix maximum au m²</span>
               <span
                 v-for="simulationResult in simulationResults"
-                v-bind:key="simulationResult.yearBuilt"
-                >{{ simulationResult.maxPrice }}€
+                :key="simulationResult.yearBuilt"
+              >{{ simulationResult.maxPrice }}€
               </span>
-              <span class="label" :class="{ 'rounded-bl-md': isLegal }"
-                >Prix maximum hors charges</span
-              >
+              <span
+                class="label"
+                :class="{ 'rounded-bl-md': isLegal }"
+              >Prix maximum hors charges</span>
               <span
                 v-for="(simulationResult, index) in simulationResults"
+                :key="simulationResult.yearBuilt"
                 :class="{
                   '-last-before-exceeding-section': !isLegal,
                   'rounded-br-md':
                     isLegal && index === simulationResults.length - 1,
                 }"
-                v-bind:key="simulationResult.yearBuilt"
-                >{{ simulationResult.maxTotalPrice }}€
+              >{{ simulationResult.maxTotalPrice }}€
               </span>
               <template v-if="!isLegal">
-                <span class="label -exceeding-label rounded-bl-md"
-                  >Dépassement</span
-                >
+                <span class="label -exceeding-label rounded-bl-md">Dépassement</span>
                 <span
                   v-for="(simulationResult, index) in simulationResults"
+                  :key="simulationResult.yearBuilt"
                   class="exceeding"
                   :class="{
                     'rounded-br-md': index === simulationResults.length - 1,
                   }"
-                  v-bind:key="simulationResult.yearBuilt"
-                  >+{{
-                    +(
-                      form.values.price - simulationResult.maxTotalPrice
-                    ).toFixed(2)
-                  }}€
+                >+{{
+                  +(
+                    form.values.price - simulationResult.maxTotalPrice
+                  ).toFixed(2)
+                }}€
                 </span>
               </template>
             </div>
-            <div class="pushy-text" v-if="!isLegal">
-              <h4 class="my-4 text-lg font-bold">Et maintenant ?</h4>
+            <div
+              v-if="!isLegal"
+              class="pushy-text"
+            >
+              <h4 class="my-4 text-lg font-bold">
+                Et maintenant ?
+              </h4>
               <p>
                 Une fois <b>le bail signé</b>, s'il est <b>non-conforme</b> et
                 qu'aucune <b>mention justificative</b> n'apparait dans les
@@ -449,19 +511,19 @@
 
               <p>
                 Pour plus d’informations,
-                <b
-                  ><a :href="simulationResults[0].moreInfo" target="_blank">
-                    voir le site de votre {{ isMultipleCities ? "agglomération" : "ville" }}
-                  </a></b
-                >.
+                <b><a
+                  :href="simulationResults[0].moreInfo"
+                  target="_blank"
+                >
+                  voir le site de votre {{ isMultipleCities ? "agglomération" : "ville" }}
+                </a></b>.
               </p>
 
               <p v-if="mainCitySelected === 'paysBasque'">
-                Pour avoir de l'aide dans vos démarches, contactez l'<b
-                  ><a :href="'https://www.alda.eus/contact/'" target="_blank"
-                    >association de défense des locataires Alda</a
-                  ></b
-                >.
+                Pour avoir de l'aide dans vos démarches, contactez l'<b><a
+                  :href="'https://www.alda.eus/contact/'"
+                  target="_blank"
+                >association de défense des locataires Alda</a></b>.
               </p>
 
               <h4>Articles intéressants</h4>
@@ -495,24 +557,29 @@
                   :loading="simulationResultsLoading"
                   color="#fdcd56"
                   :size="'20px'"
-                >
-                </BounceLoader>
+                />
               </template>
               <template v-else>
                 {{ isLegal ? "Conforme" : "Non conforme" }}
               </template>
             </span>
-            <Button type="button" class="my-2" variant="secondary" @click="onClickMoreInfo" :disabled="simulationResultsLoading">
+            <Button
+              type="button"
+              class="my-2"
+              variant="secondary"
+              :disabled="simulationResultsLoading"
+              @click="onClickMoreInfo"
+            >
               <template v-if="displayMoreInfo">
                 <span class="rotate-[90deg]">
-                  <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                  <ArrowIcon :icon-color="'black'" />
                 </span>
                 <span>Retour</span>
               </template>
               <template v-else>
                 <span>Cliquez pour plus d'info</span>
                 <span class="rotate-[270deg]">
-                  <ArrowIcon :iconColor="'black'"></ArrowIcon>
+                  <ArrowIcon :icon-color="'black'" />
                 </span>
               </template>
             </Button>
@@ -520,14 +587,22 @@
         </transition>
 
         <div class="flex items-center justify-end w-full px-5 pb-4">
-          <Button type="button" @click="onReset">Réinitialiser</Button>
+          <Button
+            type="button"
+            @click="onReset"
+          >
+            Réinitialiser
+          </Button>
         </div>
       </div>
     </div>
 
     <div @click="handleClose">
       <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
+        <StrokeIcon
+          :width="'18px'"
+          :height="'18px'"
+        />
       </FixedButton>
     </div>
   </Page2Wrapper>

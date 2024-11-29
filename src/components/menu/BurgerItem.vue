@@ -4,13 +4,19 @@
     :class="{ active: isBurgerActive, fixed: isFixed }"
     @click.prevent="toggle"
   >
-    <button type="button" class="burger-button" title="Menu">
-      <span class="burger-bar burger-bar--1"></span>
-      <span class="burger-bar burger-bar--2"></span>
-      <span class="burger-bar burger-bar--3"></span>
+    <button
+      type="button"
+      class="burger-button"
+      title="Menu"
+    >
+      <span class="burger-bar burger-bar--1" />
+      <span class="burger-bar burger-bar--2" />
+      <span class="burger-bar burger-bar--3" />
     </button>
     <slot>
-      <div class="logo">Menu</div>
+      <div class="logo">
+        Menu
+      </div>
     </slot>
   </div>
 </template>

@@ -1,9 +1,9 @@
 <template>
-  <Page2Wrapper :isMounted="isMounted">
-    <SectionTitle class="mx-auto title"
-      >Observatoire de l'encadrement des loyers à
-      {{ city.charAt(0).toUpperCase() + city.slice(1) }}</SectionTitle
-    >
+  <Page2Wrapper :is-mounted="isMounted">
+    <SectionTitle class="mx-auto title">
+      Observatoire de l'encadrement des loyers à
+      {{ city.charAt(0).toUpperCase() + city.slice(1) }}
+    </SectionTitle>
     <div class="graph-list">
       <div class="row -paragraph">
         <p>
@@ -17,7 +17,9 @@
         </p>
         <p>
           En complément,
-          <router-link to="/stats">cette page</router-link> résume plus
+          <router-link to="/stats">
+            cette page
+          </router-link> résume plus
           globalement l'état de l'encadrement sur plusieurs des villes où il est
           en application.
         </p>
@@ -27,14 +29,13 @@
         <a
           target="_blank"
           href="https://www.fondation-abbe-pierre.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers"
-          >L'Observatoire 2024</a
-        >
+        >L'Observatoire 2024</a>
       </div>
 
       <div class="row slider-section">
         <Slider
-          class="slider"
           v-model="monthValue"
+          class="slider"
           :min="1"
           :max="3"
           :format="monthFormatValueFct"
@@ -50,29 +51,32 @@
           :id="'is-legal-per-website'"
           :city="city"
           :date="datesValues"
-          @errorOutput="getErrorMessage($event)"
-        ></Graph>
+          @error-output="getErrorMessage($event)"
+        />
       </Section>
       <Section class="stats-section -large">
         <Graph
           :id="'is-legal-per-renter'"
           :city="city"
           :date="datesValues"
-          @errorOutput="getErrorMessage($event)"
-        ></Graph>
+          @error-output="getErrorMessage($event)"
+        />
       </Section>
       <Section class="stats-section -large">
         <Graph
           :id="'is-legal-per-classic-renter'"
           :city="city"
           :date="datesValues"
-          @errorOutput="getErrorMessage($event)"
-        ></Graph>
+          @error-output="getErrorMessage($event)"
+        />
       </Section>
     </div>
     <div @click="isMounted = false">
       <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
+        <StrokeIcon
+          :width="'18px'"
+          :height="'18px'"
+        />
       </FixedButton>
     </div>
   </Page2Wrapper>
@@ -80,12 +84,12 @@
 
 <script setup>
 import { ref, watchEffect, onBeforeUnmount, onMounted } from "vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
+import SectionTitle from "@/shared/SectionTitleItem.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import Section from "@/shared/Section.vue";
-import Graph from "@/shared/Graph.vue";
+import Section from "@/shared/SectionItem.vue";
+import Graph from "@/shared/GraphItem.vue";
 import { domain } from "@/helper/config";
 import Slider from "@vueform/slider";
 

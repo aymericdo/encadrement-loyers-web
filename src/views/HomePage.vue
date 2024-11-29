@@ -1,10 +1,10 @@
 <template>
   <div id="home">
-    <Menu></Menu>
+    <Menu />
     <router-view />
     <div
       class="center-wrapper"
-      v-bind:class="{ inactive: route.name !== 'home' }"
+      :class="{ inactive: route.name !== 'home' }"
     >
       <div>
         <Hero />
@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-  import Hero from "@/components/Hero.vue";
+  import Hero from "@/components/HeroItem.vue";
   import SectionWhy from "@/components/SectionWhy.vue";
   import SectionWhere from "@/components/SectionWhere.vue";
   import SectionHow from "@/components/SectionHow.vue";
@@ -30,8 +30,8 @@
   import SectionThanks from "@/components/SectionThanks.vue";
   import SectionBlog from "@/components/SectionBlog.vue";
   import SectionUs from "@/components/SectionUs.vue";
-  import Footer from "@/components/Footer.vue";
-  import Menu from "@/components/menu/Menu.vue";
+  import Footer from "@/components/FooterItem.vue";
+  import Menu from "@/components/menu/MenuItem.vue";
 
   import { onMounted } from "vue";
 

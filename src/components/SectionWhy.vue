@@ -12,9 +12,9 @@
 </template>
 
 <script setup>
-  import Section from "@/shared/Section.vue";
-  import SectionRightPart from "@/shared/SectionRightPart.vue";
-  import SectionTitle from "@/shared/SectionTitle.vue";
+  import Section from "@/shared/SectionItem.vue";
+  import SectionRightPart from "@/shared/SectionRightPartItem.vue";
+  import SectionTitle from "@/shared/SectionTitleItem.vue";
 </script>
 
 <style scoped></style>

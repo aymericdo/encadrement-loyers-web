@@ -11,7 +11,7 @@
             <img
               src="@/assets/images/aymeric.jpeg"
               alt="Photo de Aymeric Dominique"
-            />
+            >
           </a>
           <span>Développeur</span>
         </div>
@@ -23,7 +23,7 @@
             <img
               src="@/assets/images/thomas.jpeg"
               alt="Photo de Thomas Legrand"
-            />
+            >
           </a>
           <span>Data Scientist</span>
         </div>
@@ -35,25 +35,25 @@
             <img
               src="@/assets/images/lucien.jpeg"
               alt="Photo de Lucien Landanger"
-            />
+            >
           </a>
           <span>Designer</span>
         </div>
       </div>
-      <br class="footer-br" />
+      <br class="footer-br">
       <span class="buy-us-coffee">
-        <a href="https://buymeacoff.ee/DnzzL" target="_blank"
-          >☕️ Buy us a coffee</a
-        > </span
-      >&nbsp;
+        <a
+          href="https://buymeacoff.ee/DnzzL"
+          target="_blank"
+        >☕️ Buy us a coffee</a> </span>&nbsp;
     </SectionRightPart>
   </Section>
 </template>
 
 <script setup>
-import Section from "@/shared/Section.vue";
-import SectionRightPart from "@/shared/SectionRightPart.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
+import Section from "@/shared/SectionItem.vue";
+import SectionRightPart from "@/shared/SectionRightPartItem.vue";
+import SectionTitle from "@/shared/SectionTitleItem.vue";
 </script>
 
 <style lang="scss" scoped>

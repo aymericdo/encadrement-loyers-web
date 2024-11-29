@@ -1,5 +1,5 @@
 <template>
-  <Page2Wrapper :isMounted="isMounted">
+  <Page2Wrapper :is-mounted="isMounted">
     <div class="p-2 md:p-8">
       <h2>Complément de loyer</h2>
       <h4>Bien que très limité, il est techniquement possible de dépasser l'encadrement des loyers de manière légale.</h4>
@@ -30,7 +30,6 @@
           <li>une cuisine équipée</li>
           <li>la proximité des transports en commun</li>
         </ul>
-
       </div>
       <p><b>Ces décisions constituent un début de jurisprudence de première instance et il faudrait, pour les consolider, quelques décisions d'appel.</b></p>
 
@@ -52,18 +51,29 @@
       </ul>
       <p>
         <span>Source : </span>
-        <a href="https://www.legifrance.gouv.fr/jorf/article_jo/JORFARTI000046186753#:~:text=Article%2013%20%2D%20LOI%20n%C2%B0,'achat%20(1)%20%2D%20L%C3%A9gifrance" target="_blank">legifrance.gouv.fr</a>
+        <a
+          href="https://www.legifrance.gouv.fr/jorf/article_jo/JORFARTI000046186753#:~:text=Article%2013%20%2D%20LOI%20n%C2%B0,'achat%20(1)%20%2D%20L%C3%A9gifrance"
+          target="_blank"
+        >legifrance.gouv.fr</a>
       </p>
       <p><b>Certains de ces critères nécessiteront probablement de la jurisprudence qui viendra préciser leur degré d’appréciation.</b></p>
 
       <br>
       <br>
 
-      <div><a href="https://immobilier.lefigaro.fr/article/la-loi-se-durcit-autour-de-l-encadrement-des-loyers_f53afd86-0c23-11ed-b3fc-252e8fc48bdd/" target="_blank">Article intéressant</a></div> 
+      <div>
+        <a
+          href="https://immobilier.lefigaro.fr/article/la-loi-se-durcit-autour-de-l-encadrement-des-loyers_f53afd86-0c23-11ed-b3fc-252e8fc48bdd/"
+          target="_blank"
+        >Article intéressant</a>
+      </div> 
     </div>
     <div @click="isMounted = false">
       <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
+        <StrokeIcon
+          :width="'18px'"
+          :height="'18px'"
+        />
       </FixedButton>
     </div>
   </Page2Wrapper>

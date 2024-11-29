@@ -1,31 +1,56 @@
 <template>
-  <div id="menu" class="menu">
+  <div
+    id="menu"
+    class="menu"
+  >
     <nav class="main-nav">
       <Burger
-        :isBurgerActive="isPanelOpen"
-        @togglingSidebar="togglingSidebar(true)"
-      ></Burger>
+        :is-burger-active="isPanelOpen"
+        @toggling-sidebar="togglingSidebar(true)"
+      />
     </nav>
-    <Sidebar :isPanelOpen="isPanelOpen" @toggleClosing="togglingSidebar(false)">
+    <Sidebar
+      :is-panel-open="isPanelOpen"
+      @toggle-closing="togglingSidebar(false)"
+    >
       <ul class="sidebar-panel-nav">
         <li>
-          <router-link to="/" @click="togglingSidebar(false)">Encadrement</router-link>
+          <router-link
+            to="/"
+            @click="togglingSidebar(false)"
+          >
+            Encadrement
+          </router-link>
         </li>
         <li>
           <a
             class="encadrement-redirect"
             href="https://selection.encadrement-loyers.fr"
-            >Sélection d'annonces conformes</a
+          >Sélection d'annonces conformes</a>
+        </li>
+        <li>
+          <router-link
+            to="/stats"
+            @click="togglingSidebar(false)"
           >
+            Stats
+          </router-link>
         </li>
         <li>
-          <router-link to="/stats" @click="togglingSidebar(false)">Stats</router-link>
+          <router-link
+            to="/observatoire"
+            @click="togglingSidebar(false)"
+          >
+            Observatoire
+          </router-link>
         </li>
         <li>
-          <router-link to="/observatoire" @click="togglingSidebar(false)">Observatoire</router-link>
-        </li>
-        <li>
-          <router-link to="/simulator" @click="togglingSidebar(false)">Vérifiez votre loyer</router-link>
+          <router-link
+            to="/simulator"
+            @click="togglingSidebar(false)"
+          >
+            Vérifiez votre loyer
+          </router-link>
         </li>
       </ul>
     </Sidebar>
@@ -33,8 +58,8 @@
 </template>
 
 <script setup>
-  import Burger from "@/components/menu/Burger.vue";
-  import Sidebar from "@/components/menu/Sidebar.vue";
+  import Burger from "@/components/menu/BurgerItem.vue";
+  import Sidebar from "@/components/menu/SidebarItem.vue";
   import { ref } from "vue";
 
   const isPanelOpen = ref(false);

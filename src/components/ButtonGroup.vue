@@ -1,17 +1,31 @@
 <template>
   <div class="button-row">
-    <div class="button-group -only-laptop" v-bind:class="{ '-firefox': isFirefox }">
+    <div
+      class="button-group -only-laptop"
+      :class="{ '-firefox': isFirefox }"
+    >
       <a
         href="https://chrome.google.com/webstore/detail/encadrement/nkmghhgmpbngkbjnhpomddeglkpkkfeo?hl=fr"
         target="_blank"
       >
         <button id="chrome">
-          <ChromeIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#fff' : '#050505'" />Installez sur Chrome
+          <ChromeIcon
+            :width="'20px'"
+            :height="'20px'"
+            :icon-color="isFirefox ? '#fff' : '#050505'"
+          />Installez sur Chrome
         </button>
       </a>
-      <a href="https://addons.mozilla.org/fr/firefox/addon/encadrement/" target="_blank">
+      <a
+        href="https://addons.mozilla.org/fr/firefox/addon/encadrement/"
+        target="_blank"
+      >
         <button id="firefox">
-          <FirefoxIcon :width="'20px'" :height="'20px'" :iconColor="isFirefox ? '#050505' : '#fff'" />Installez sur Firefox
+          <FirefoxIcon
+            :width="'20px'"
+            :height="'20px'"
+            :icon-color="isFirefox ? '#050505' : '#fff'"
+          />Installez sur Firefox
         </button>
       </a>
     </div>

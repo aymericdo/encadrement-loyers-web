@@ -1,48 +1,43 @@
 <template>
-  <Page2Wrapper :isMounted="isMounted">
+  <Page2Wrapper :is-mounted="isMounted">
     <div class="welcome-section">
-      <SectionTitle class="title">Stats</SectionTitle>
+      <SectionTitle class="title">
+        Stats
+      </SectionTitle>
 
       <div class="row">
         <div class="welcome">
-          <div v-if="!isWelcomeTextLoaded" class="flex justify-center">
+          <div
+            v-if="!isWelcomeTextLoaded"
+            class="flex justify-center"
+          >
             <BounceLoader
               class="spinner"
               :loading="!isWelcomeTextLoaded"
               color="#fdcd56"
               :size="'60px'"
-            ></BounceLoader>
+            />
           </div>
           <template v-if="isWelcomeTextLoaded">
             <div>
               <span>Sur les</span>
-              <span class="yellow"
-                >&nbsp;{{ welcomeData.numberRents }}&nbsp;</span
-              >
+              <span class="yellow">&nbsp;{{ welcomeData.numberRents }}&nbsp;</span>
               <span>annonces étudiées au total</span>
               <template v-if="city !== 'all'">
-                à<span class="yellow"
-                  >&nbsp;{{
-                    cityDropdownOptions.find((c) => c.value === city).label
-                  }}</span
-                >
+                à<span class="yellow">&nbsp;{{
+                  cityDropdownOptions.find((c) => c.value === city).label
+                }}</span>
               </template>
               <span>,</span>
-              <span class="yellow"
-                >&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span
-              >
+              <span class="yellow">&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span>
               <span>sont non conformes.</span>
             </div>
             <div>
               <span>Pour les annonces d'une surface inférieure à</span>
-              <span class="yellow"
-                >&nbsp;{{ welcomeData.pivotSurface }}m²</span
-              ><span>, il y a</span>
-              <span class="yellow"
-                >&nbsp;{{
-                  welcomeData.isIllegalPercentageUnderPivot
-                }}%&nbsp;</span
-              >
+              <span class="yellow">&nbsp;{{ welcomeData.pivotSurface }}m²</span><span>, il y a</span>
+              <span class="yellow">&nbsp;{{
+                welcomeData.isIllegalPercentageUnderPivot
+              }}%&nbsp;</span>
               <span>d'annonces non conformes.</span>
             </div>
           </template>
@@ -62,8 +57,8 @@
               <SelectGroup>
                 <SelectItem
                   v-for="{ label, value } in cityDropdownOptions"
-                  :value="value"
                   :key="value"
+                  :value="value"
                 >
                   {{ label }}
                 </SelectItem>
@@ -74,8 +69,8 @@
       </div>
       <div class="row">
         <Slider
-          class="slider"
           v-model="dateValue"
+          class="slider"
           :min="0"
           :max="maxDateValue"
           :format="dateValueFct"
@@ -87,31 +82,34 @@
     <div class="graph-list">
       <div class="stats-section -large">
         <Graph
-          ref="isLegalVariation"
           :id="'is-legal-variation'"
+          ref="isLegalVariation"
           :city="city"
           :date="dateValueStr"
           :options="legalPercentageOptions"
-          @errorOutput="getErrorMessage($event)"
-        ></Graph>
+          @error-output="getErrorMessage($event)"
+        />
         <div class="is-legal-variation-dropdown">
           <Dropfilters
-            @onSubmit="changeFilters($event)"
-            @onReset="changeFilters()"
             :city="city"
             :options="legalPercentageOptions"
-          ></Dropfilters>
+            @on-submit="changeFilters($event)"
+            @on-reset="changeFilters()"
+          />
         </div>
       </div>
 
-      <div class="stats-section-row" v-if="city !== 'all'">
+      <div
+        v-if="city !== 'all'"
+        class="stats-section-row"
+      >
         <div class="stats-section">
           <Graph
             :id="'chloropleth-map'"
             :date="dateValueStr"
             :city="city"
-            @errorOutput="getErrorMessage($event)"
-          ></Graph>
+            @error-output="getErrorMessage($event)"
+          />
         </div>
 
         <div class="stats-section">
@@ -119,25 +117,25 @@
             :id="'map'"
             :date="dateValueStr"
             :city="city"
-            @errorOutput="getErrorMessage($event)"
-          ></Graph>
+            @error-output="getErrorMessage($event)"
+          />
         </div>
       </div>
 
       <div
-        class="stats-section -large"
         v-if="
           city !== 'all' &&
-          cityDropdownOptions.find((value) => value.value === city)
-            ?.multipleCities
+            cityDropdownOptions.find((value) => value.value === city)
+              ?.multipleCities
         "
+        class="stats-section -large"
       >
         <Graph
           :id="'chloropleth-cities-map'"
           :date="dateValueStr"
           :city="city"
-          @errorOutput="getErrorMessage($event)"
-        ></Graph>
+          @error-output="getErrorMessage($event)"
+        />
       </div>
 
       <div class="stats-section -large">
@@ -145,27 +143,33 @@
           :id="'is-legal-per-surface'"
           :date="dateValueStr"
           :city="city"
-          @errorOutput="getErrorMessage($event)"
-        ></Graph>
+          @error-output="getErrorMessage($event)"
+        />
       </div>
 
-      <div v-if="city === 'all'" class="stats-section -large">
+      <div
+        v-if="city === 'all'"
+        class="stats-section -large"
+      >
         <Graph
           :id="'price-variation'"
           :date="dateValueStr"
           :city="city"
-          @errorOutput="getErrorMessage($event)"
-        ></Graph>
+          @error-output="getErrorMessage($event)"
+        />
       </div>
 
-      <div v-if="city !== 'all'" class="stats-section-row">
+      <div
+        v-if="city !== 'all'"
+        class="stats-section-row"
+      >
         <div class="stats-section">
           <Graph
             :id="'price-difference'"
             :date="dateValueStr"
             :city="city"
-            @errorOutput="getErrorMessage($event)"
-          ></Graph>
+            @error-output="getErrorMessage($event)"
+          />
         </div>
 
         <div class="stats-section">
@@ -173,8 +177,8 @@
             :id="'price-variation'"
             :date="dateValueStr"
             :city="city"
-            @errorOutput="getErrorMessage($event)"
-          ></Graph>
+            @error-output="getErrorMessage($event)"
+          />
         </div>
       </div>
     </div>
@@ -184,7 +188,10 @@
       @click="isMounted = false"
     >
       <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
+        <StrokeIcon
+          :width="'18px'"
+          :height="'18px'"
+        />
       </FixedButton>
     </div>
   </Page2Wrapper>
@@ -201,13 +208,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
-import Dropfilters from "@/shared/Dropfilters.vue";
+import Dropfilters from "@/shared/DropfiltersItem.vue";
 import FixedButton from "@/shared/FixedButton.vue";
-import Graph from "@/shared/Graph.vue";
+import Graph from "@/shared/GraphItem.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
+import SectionTitle from "@/shared/SectionTitleItem.vue";
 import Slider from "@vueform/slider";
-import { onBeforeUnmount, onMounted, ref, watch, watchEffect } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import BounceLoader from "vue-spinner/src/BounceLoader.vue";
 

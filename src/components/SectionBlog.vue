@@ -1,25 +1,32 @@
 <template>
   <Section class="section-blog">
     <div class="col">
-      <SectionTitle class="title">On parle de nous</SectionTitle>
+      <SectionTitle class="title">
+        On parle de nous
+      </SectionTitle>
       <div class="article-list">
         <blockquote class="twitter-tweet">
-          <p lang="fr" dir="ltr">
+          <p
+            lang="fr"
+            dir="ltr"
+          >
             Hello Twitter, tu te demandes parfois si ton loyer est légal ou
-            abusif ? <br />Nous nous associons au collectif de développeurs
+            abusif ? <br>Nous nous associons au collectif de développeurs
             &quot;Encadrement-loyers&quot; qui lance une extension gratuite pour
-            vérifier si ton loyer est légal. <br />Elle est téléchargable ici :
+            vérifier si ton loyer est légal. <br>Elle est téléchargable ici :
             <a href="https://t.co/fXoXvbVLfk">https://t.co/fXoXvbVLfk</a>
           </p>
           &mdash; Ian Brossat (@IanBrossat)
           <a
             href="https://twitter.com/IanBrossat/status/1400357311743500288?ref_src=twsrc%5Etfw"
-            >June 3, 2021</a
-          >
+          >June 3, 2021</a>
         </blockquote>
 
         <blockquote class="twitter-tweet">
-          <p lang="fr" dir="ltr">
+          <p
+            lang="fr"
+            dir="ltr"
+          >
             Savoir directement si l&#39;annonce d&#39;un logement est illégale :
             c&#39;est possible avec l’application «l’Encadrement». Elle permet
             d’afficher directement sur les sites de location, à côté du montant
@@ -30,24 +37,24 @@
           &mdash; Le Parisien (@le_Parisien)
           <a
             href="https://twitter.com/le_Parisien/status/1224630136764538880?ref_src=twsrc%5Etfw"
-            >February 4, 2020</a
-          >
+          >February 4, 2020</a>
         </blockquote>
 
         <blockquote class="twitter-tweet">
-          <p lang="fr" dir="ltr">
+          <p
+            lang="fr"
+            dir="ltr"
+          >
             Cette application vérifie si votre loyer respecte bien l’encadrement
             <a
               href="https://twitter.com/hashtag/Eco?src=hash&amp;ref_src=twsrc%5Etfw"
-              >#Eco</a
-            >
+            >#Eco</a>
             <a href="https://t.co/7JMoUctwHt">https://t.co/7JMoUctwHt</a>
           </p>
           &mdash; Le Figaro (@Le_Figaro)
           <a
             href="https://twitter.com/Le_Figaro/status/1208975839070752768?ref_src=twsrc%5Etfw"
-            >December 23, 2019</a
-          >
+          >December 23, 2019</a>
         </blockquote>
 
         <iframe
@@ -60,7 +67,7 @@
           frameborder="0"
           allowtransparency="true"
           allow="encrypted-media"
-        ></iframe>
+        />
       </div>
     </div>
   </Section>
@@ -68,8 +75,8 @@
 
 <script setup>
   import { onMounted } from 'vue';
-  import Section from "@/shared/Section.vue";
-  import SectionTitle from "@/shared/SectionTitle.vue";
+  import Section from "@/shared/SectionItem.vue";
+  import SectionTitle from "@/shared/SectionTitleItem.vue";
 
   onMounted(() => {
     const twitterScript = document.createElement("script");

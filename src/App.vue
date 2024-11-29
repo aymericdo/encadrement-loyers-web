@@ -2,10 +2,16 @@
   <div id="app-component">
     <router-view />
     <audio ref="asymetrie">
-      <source src="@/assets/sounds/asymetrie.mp3" type="audio/mp3" />
+      <source
+        src="@/assets/sounds/asymetrie.mp3"
+        type="audio/mp3"
+      >
     </audio>
     <audio ref="gstaad">
-      <source src="@/assets/sounds/gstaad.mp3" type="audio/mp3" />
+      <source
+        src="@/assets/sounds/gstaad.mp3"
+        type="audio/mp3"
+      >
     </audio>
   </div>
 </template>

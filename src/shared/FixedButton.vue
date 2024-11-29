@@ -1,5 +1,8 @@
 <template>
-  <button class="-blink" v-bind:class="{ '-bounce': bounce }">
+  <button
+    class="-blink"
+    :class="{ '-bounce': bounce }"
+  >
     <slot />
   </button>
 </template>

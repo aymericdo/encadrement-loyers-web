@@ -1,5 +1,5 @@
 <template>
-  <Page2Wrapper :isMounted="isMounted">
+  <Page2Wrapper :is-mounted="isMounted">
     <div class="p-2 md:p-8">
       <p>
         Nous calculons <b>le montant maximum du loyer</b> en fonction des éléments ci-dessous tirés de l'annonce :
@@ -42,7 +42,10 @@
     </div>
     <div @click="isMounted = false">
       <FixedButton>
-        <StrokeIcon :width="'18px'" :height="'18px'" />
+        <StrokeIcon
+          :width="'18px'"
+          :height="'18px'"
+        />
       </FixedButton>
     </div>
   </Page2Wrapper>

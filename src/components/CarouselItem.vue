@@ -12,17 +12,17 @@
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       }"
-      @slideChange="onSlideChange"
+      @slide-change="onSlideChange"
     >
       <swiper-slide
         v-for="image in images"
+        :key="image"
         :class="'slide'"
-        v-bind:key="image"
       >
         <img
           :src="image"
           :alt="`screenshot de l'extension`"
-        />
+        >
       </swiper-slide>
 
       <div class="button-group">

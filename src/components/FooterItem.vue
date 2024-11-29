@@ -7,30 +7,55 @@
         href="https://www.facebook.com/encadrementloyers"
         target="_blank"
       >
-        <FacebookIcon :width="'32px'" :height="'32px'" />
+        <FacebookIcon
+          :width="'32px'"
+          :height="'32px'"
+        />
       </a>
-      <a class="twitter" href="https://twitter.com/_encadrement" target="_blank">
-        <TwitterIcon :width="'32px'" :height="'32px'" />
+      <a
+        class="twitter"
+        href="https://twitter.com/_encadrement"
+        target="_blank"
+      >
+        <TwitterIcon
+          :width="'32px'"
+          :height="'32px'"
+        />
       </a>
-      <a class="instagram" href="https://www.instagram.com/encadrement_loyers/" target="_blank">
-        <InstagramIcon :width="'32px'" :height="'32px'" />
+      <a
+        class="instagram"
+        href="https://www.instagram.com/encadrement_loyers/"
+        target="_blank"
+      >
+        <InstagramIcon
+          :width="'32px'"
+          :height="'32px'"
+        />
       </a>
     </p>
     <p>Aucune donnée n'est collectée par l'extension, hormis celle nécessaire au calcul et à la réalisation de quelques statistiques.</p>
     <p>
       Aucune donnée utilisateur n'est collectée.&nbsp;
-      <router-link to="legal">Mentions légales</router-link>
+      <router-link to="legal">
+        Mentions légales
+      </router-link>
     </p>
     <p>
-      Pour contribuer à faire connaitre l'encadrement, et notre démarche, voici un <a href="https://docs.google.com/document/d/1292FRvLPtRvQTLSeVnN1WO_BdrkqVCTzaQo9d02p2FY/edit?usp=sharing" target="_blank">flyer</a> à imprimer et distribuer.
+      Pour contribuer à faire connaitre l'encadrement, et notre démarche, voici un <a
+        href="https://docs.google.com/document/d/1292FRvLPtRvQTLSeVnN1WO_BdrkqVCTzaQo9d02p2FY/edit?usp=sharing"
+        target="_blank"
+      >flyer</a> à imprimer et distribuer.
     </p>
     <p>
-      En cas de questions, vous pouvez nous contacter ici : <a href="mailto:support@encadrement-loyers.fr" target="_blank">support@encadrement-loyers.fr</a>
+      En cas de questions, vous pouvez nous contacter ici : <a
+        href="mailto:support@encadrement-loyers.fr"
+        target="_blank"
+      >support@encadrement-loyers.fr</a>
     </p>
   </Section>
 </template>
 <script setup>
-  import Section from "@/shared/Section.vue";
+  import Section from "@/shared/SectionItem.vue";
   import FacebookIcon from "@/icons/FacebookIcon.vue";
   import InstagramIcon from "@/icons/InstagramIcon.vue";
   import TwitterIcon from "@/icons/TwitterIcon.vue";

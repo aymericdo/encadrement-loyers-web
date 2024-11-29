@@ -1,8 +1,20 @@
 <template>
   <div class="container">
-    <BounceLoader class="spinner" :loading="!isGraphLoaded" color="#fdcd56" :size="'60px'"></BounceLoader>
-    <div v-if="isGraphLoaded && !errorMessage.length" :id="id" class="graph"></div>
-    <div class="error-message" v-if="isGraphLoaded && errorMessage.length">
+    <BounceLoader
+      class="spinner"
+      :loading="!isGraphLoaded"
+      color="#fdcd56"
+      :size="'60px'"
+    />
+    <div
+      v-if="isGraphLoaded && !errorMessage.length"
+      :id="id"
+      class="graph"
+    />
+    <div
+      v-if="isGraphLoaded && errorMessage.length"
+      class="error-message"
+    >
       <span v-if="errorMessage === 'not_enough_data'">
         Pas assez de données
       </span>

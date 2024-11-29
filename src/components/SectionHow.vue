@@ -17,7 +17,7 @@
         <img
           src="@/assets/images/infographie_encadrement.png"
           alt="Infographie sur le fonctionnement de l'extension"
-        />
+        >
         <router-link to="/learn-more">
           <span class="learn-more">Plus d'info</span>
         </router-link>
@@ -27,10 +27,10 @@
 </template>
 
 <script setup>
-import Section from "@/shared/Section.vue";
-import SectionRightPart from "@/shared/SectionRightPart.vue";
-import SectionTitle from "@/shared/SectionTitle.vue";
-import Carousel from "./Carousel.vue";
+import Section from "@/shared/SectionItem.vue";
+import SectionRightPart from "@/shared/SectionRightPartItem.vue";
+import SectionTitle from "@/shared/SectionTitleItem.vue";
+import Carousel from "./CarouselItem.vue";
 </script>
 
 <style lang="scss" scoped>
