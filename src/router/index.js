@@ -70,7 +70,7 @@ const routes = [
       import("../views/ObservatoirePage.vue"),
   },
   {
-    path: "/*",
+    path: "/:catchAll(.*)",
     component: FourOhFour,
   },
 ];
