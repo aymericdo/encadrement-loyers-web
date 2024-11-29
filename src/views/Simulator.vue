@@ -1,6 +1,6 @@
 <template>
   <Page2Wrapper :isMounted="isMounted">
-    <div class="flex items-center justify-center flex-1">
+    <div class="flex items-center justify-center flex-1 p-4">
       <div class="option-list">
         <transition name="slide-side-r2l">
           <div key="1" v-show="!displayMoreInfo" class="global-content">
@@ -166,7 +166,7 @@
                 <FormField v-slot="{ componentField }" name="district">
                   <FormItem>
                     <FormLabel>Ou</FormLabel>
-                    <Select v-bind="componentField">
+                    <Select v-bind="componentField" :open="isCitySelectOpen" @update:open="isCitySelectOpen = $event">
                       <SelectTrigger :open="isCitySelectOpen" :disabled="districtDropdownOptions.length === 1">
                         <SelectValue :placeholder="'Choisis ta zone'" />
                       </SelectTrigger>
@@ -213,8 +213,8 @@
                   <FormItem>
                     <FormLabel>Maison</FormLabel>
 
-                    <Select v-bind="componentField">
-                      <SelectTrigger>
+                    <Select v-bind="componentField" :open="isHasHouseSelectOpen" @update:open="isHasHouseSelectOpen = $event">
+                      <SelectTrigger :open="isHasHouseSelectOpen">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -309,8 +309,8 @@
                   <FormLabel class="flex items-center">
                     Nombre de pièce(s)
                   </FormLabel>
-                  <Select v-bind="componentField">
-                    <SelectTrigger>
+                  <Select v-bind="componentField" :open="isRoomsSelectOpen" @update:open="isRoomsSelectOpen = $event">
+                    <SelectTrigger :open="isRoomsSelectOpen">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -330,9 +330,9 @@
 
               <FormField v-slot="{ componentField }" name="furnished">
                 <FormItem>
-                  <FormLabel class="flex items-center"> Meublé </FormLabel>
-                  <Select v-bind="componentField">
-                    <SelectTrigger>
+                  <FormLabel class="flex items-center">Meublé</FormLabel>
+                  <Select v-bind="componentField" :open="isFurnishedSelectOpen" @update:open="isFurnishedSelectOpen = $event">
+                    <SelectTrigger :open="isFurnishedSelectOpen">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -356,8 +356,8 @@
                     <FormLabel class="flex items-center">
                       Date de construction
                     </FormLabel>
-                    <Select v-bind="componentField">
-                      <SelectTrigger>
+                    <Select v-bind="componentField" :open="isDateBuiltSelectOpen" @update:open="isDateBuiltSelectOpen = $event">
+                      <SelectTrigger :open="isDateBuiltSelectOpen">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -616,7 +616,13 @@ const isMounted = ref(false);
 const loading = ref(true);
 
 const isCitySelectOpen = ref(false);
+const isHasHouseSelectOpen = ref(false);
+const isRoomsSelectOpen = ref(false);
+const isFurnishedSelectOpen = ref(false);
+const isDateBuiltSelectOpen = ref(false);
+const isCityPopoverOpen = ref(false);
 const isAddressPopoverOpen = ref(false);
+
 const addressSelected = ref("");
 
 const cityDropdownOptions = ref([]);
@@ -942,8 +948,6 @@ const handleClose = () => {
   isMounted.value = false;
 };
 
-const isCityPopoverOpen = ref(false);
-
 onMounted(async () => {
   await fetchCities();
   isMounted.value = true;
@@ -977,9 +981,9 @@ watch(
   flex-direction: column;
   max-height: 100%;
 
-  div.global-content {
+  .global-content {
     display: block;
-    padding: 4rem 1.25rem;
+    padding: 1.25rem;
     width: 100%;
     box-sizing: border-box;
     overflow-y: auto;
@@ -1058,7 +1062,11 @@ watch(
     z-index: 2;
     margin-top: 0;
     border: none;
-    overflow-y: auto;
+    
+    .global-content {
+      padding-top: 2rem;
+    }
+    // overflow-y: auto;
   }
 }
 
