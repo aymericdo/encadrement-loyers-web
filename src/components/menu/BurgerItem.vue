@@ -47,7 +47,7 @@
     emits("togglingSidebar", !isBurgerActive.value);
   }
 </script>
-<style>
+<style scoped>
 button {
   cursor: pointer;
 }

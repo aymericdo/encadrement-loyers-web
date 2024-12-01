@@ -130,26 +130,6 @@ const getErrorMessage = (err) => {
   return responseBody.message || JSON.stringify(responseBody);
 };
 
-const onFetchWelcome = () => {
-  fetch(`${domain}stats/welcome/${city.value}`, {
-    signal: controller.signal,
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.message === "token expired") {
-        throw res;
-      } else {
-        return res;
-      }
-    })
-    .then((res) => {
-      welcomeData.value = res;
-    })
-    .catch((err) => {
-      serverError.value = getErrorMessage(err);
-    });
-};
-
 const getMonthNbValue = (value) => {
   switch (value) {
     case 1:
