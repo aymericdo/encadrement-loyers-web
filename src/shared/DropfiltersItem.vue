@@ -5,8 +5,7 @@
   >
     <DropdownMenuTrigger as-child>
       <Button
-        variant="default"
-        class="hover:bg-accent hover:text-accent-foreground"
+        variant="outline"
       >
         Filtres
         <span
