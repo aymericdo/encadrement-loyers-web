@@ -266,7 +266,7 @@
                     <HoverCard>
                       <HoverCardTrigger as-child>
                         <Button
-                          variant="primary"
+                          variant="default"
                           type="button"
                         >
                           <InfoCircledIcon />
