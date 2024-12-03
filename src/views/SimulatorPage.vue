@@ -268,6 +268,7 @@
                         <Button
                           variant="default"
                           type="button"
+                          class="ml-2"
                         >
                           <InfoCircledIcon />
                         </Button>
