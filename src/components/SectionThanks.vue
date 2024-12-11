@@ -17,6 +17,18 @@
           </a>
           <span>Alda</span>
         </div>
+        <div class="image cnhp">
+          <a
+            href="https://www.collectifcnhp.org/accueil"
+            target="_blank"
+          >
+            <img
+              src="@/assets/images/cnhp_logo.png"
+              alt="Photo logo CNHP"
+            >
+          </a>
+          <span>Le Collectif National des Habitants Permanents</span>
+        </div>
         <div class="image">
           <a
             href="https://opendata.paris.fr/pages/home/"
