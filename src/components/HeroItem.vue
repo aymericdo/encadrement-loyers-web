@@ -237,6 +237,16 @@ onBeforeUnmount(() => {
   }
 }
 
+.city-word .typing.grenoble {
+  > .uno {
+    color: #165d7f;
+  }
+
+  > .tres {
+    color: #165d7f;
+  }
+}
+
 .yellow-text {
   color: $yellow;
   display: inline-block;
