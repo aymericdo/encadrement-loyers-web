@@ -30,6 +30,18 @@
                                 )?.label
                               : "Entre ta ville"
                           }}
+                          <Button
+                            v-if="form.values.city"
+                            variant="ghost"
+                            size="icon"
+                            @click="form.setFieldValue('city', ''); form.setFieldValue('district', null);"
+                            aria-label="Effacer"
+                          >
+                            <StrokeIcon
+                              :width="'18px'"
+                              :height="'18px'"
+                            />
+                          </Button>
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent
@@ -960,10 +972,13 @@ const handleSearchingAddress = debounce(
   300
 );
 
-const handleFetchSimulatorResult = debounce(
-  async () => await fetchSimulatorResult(),
-  300
-);
+const handleFetchSimulatorResult = debounce(async () => {
+  if (!form.meta.value.valid) return
+
+  simulationResultsLoading.value = true
+  await fetchSimulatorResult()
+  simulationResultsLoading.value = false
+}, 250)
 
 const fetchingAddress = async (address) => {
   if (address.trim().length < 4) {
@@ -1010,7 +1025,6 @@ const fetchSimulatorResult = async () => {
 
     simulationResults.value = res;
     isLegal.value = res.some((r) => r.isLegal);
-    simulationResultsLoading.value = false;
   } catch (err) {
     console.error(err);
   }
@@ -1029,17 +1043,9 @@ onMounted(async () => {
   isMounted.value = true;
 });
 
-watch(
-  () => form.controlledValues.value,
-  async () => {
-    setTimeout(() => {
-      if (form.meta.value.valid) {
-        simulationResultsLoading.value = true;
-        handleFetchSimulatorResult();
-      }
-    }, 10)
-  }
-);
+watch(() => form.controlledValues.value, () => {
+  handleFetchSimulatorResult()
+})
 </script>
 
 <style lang="scss" scoped>
