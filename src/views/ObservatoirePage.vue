@@ -321,6 +321,7 @@ watchEffect(
 
   > p {
     width: 50%;
+    margin-bottom: 1rem;
   }
 }
 
