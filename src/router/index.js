@@ -59,11 +59,6 @@ const routes = [
       import("../views/AdoptionPage.vue"),
   },
   {
-    name: "stats-abbe-pierre",
-    path: "/stats-abbe-pierre",
-    redirect: "observatoire",
-  },
-  {
     name: "observatoire",
     path: "/observatoire",
     component: () =>

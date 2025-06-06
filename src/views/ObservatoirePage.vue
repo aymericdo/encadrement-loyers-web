@@ -8,7 +8,7 @@
       <div class="row -paragraph">
         <p>
           Pour le premier baromètre de l’Observatoire de l’Encadrement des
-          Loyers à Paris, la Fondation Abbé Pierre nous a contactés pour leur
+          Loyers à Paris, la Fondation pour le Logement nous a contactés pour leur
           fournir les données que nous avons collectées.
         </p>
         <p>
@@ -28,7 +28,7 @@
       <div class="row">
         <a
           target="_blank"
-          href="https://www.fondation-abbe-pierre.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers"
+          href="https://www.fondationpourlelogement.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers"
         >L'Observatoire 2024</a>
       </div>
 
