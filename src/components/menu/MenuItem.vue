@@ -17,7 +17,6 @@
         <li>
           <router-link
             to="/"
-            @click="togglingSidebar(false)"
           >
             Encadrement
           </router-link>
@@ -26,7 +25,7 @@
           <a
             class="encadrement-redirect"
             href="https://selection.encadrement-loyers.fr"
-          >Sélection d'annonces conformes</a>
+          >Sélection d'annonces</a>
         </li>
         <li>
           <router-link
