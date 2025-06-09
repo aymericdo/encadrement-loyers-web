@@ -30,6 +30,8 @@
         Si l’année de construction n’est pas indiquée dans l’annonce, elle peut être retrouvée si l’adresse complète du logement est connue.
       </p>
 
+      <Carousel />
+
       <h3 class="text-xl font-semibold mt-6 mb-2">Principe général</h3>
       <p>
         Nos estimations sont toujours arrondies à la hausse, afin de fournir une fourchette maximale réaliste.
@@ -41,6 +43,12 @@
         Lorsqu’une annonce ne fournit que le code postal, nous nous basons sur le quartier le plus cher de l’arrondissement
         pour effectuer le calcul. L’estimation pourra ensuite être revue à la baisse dès que l’adresse exacte est connue.
       </p>
+
+      <h3 class="text-xl font-semibold mt-6 mb-2">Conclusion</h3>
+      <img
+        src="@/assets/images/infographie_encadrement.png"
+        alt="Infographie sur le fonctionnement de l'extension"
+      >
     </div>
 
     <div @click="isMounted = false">
@@ -56,7 +64,8 @@
 
 <script setup>
   import StrokeIcon from "@/icons/StrokeIcon.vue";	
-  import Page2Wrapper from "@/shared/Page2Wrapper.vue";	
+  import Page2Wrapper from "@/shared/Page2Wrapper.vue";
+  import Carousel from "@/components/CarouselItem.vue";
   import FixedButton from "@/shared/FixedButton.vue";
   import { onMounted, ref } from "vue";
 

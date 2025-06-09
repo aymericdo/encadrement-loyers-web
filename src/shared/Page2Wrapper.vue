@@ -6,7 +6,7 @@
     >
       <div
         v-if="isMounted"
-        class="center-wrapper w-full flex flex-col items-center flex-1 p-4"
+        class="center-wrapper w-full flex flex-col flex-1 p-4"
       >
         <slot />
       </div>

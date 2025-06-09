@@ -4,7 +4,7 @@
       <h1>
         <div>
           <span
-            class="yellow-text"
+            class="title text-[#fdcd56]"
           >
             Encadrement
           </span>
@@ -245,8 +245,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.yellow-text {
-  color: $yellow;
+.title {
   display: inline-block;
   text-decoration: none;
 

@@ -1,18 +1,17 @@
 <template>
   <div id="home">
-    <!-- <Menu /> -->
     <NavBar />
     <div
       class="center-wrapper"
       :class="{ inactive: route.name !== 'home' }"
     >
       <div>
-        <Hero class="mt-10" />
+        <Hero class="mt-16" />
         <SectionWhy />
         <SectionHow />
+        <SectionDisclaimer />
         <SectionUs />
         <!-- <SectionWhere /> -->
-        <SectionDisclaimer />
         <SectionDownload id="download" />
         <SectionBlog />
         <SectionThanks />
