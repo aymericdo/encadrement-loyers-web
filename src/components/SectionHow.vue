@@ -57,4 +57,8 @@ import { Button } from '@/shadcn/ui/button'
   display: flex;
   flex-direction: column;
 }
+
+iframe {
+  max-width: 100%;
+}
 </style>
