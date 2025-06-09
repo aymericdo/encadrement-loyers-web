@@ -1,12 +1,12 @@
 <template>
-  <div class="wrapper h-screen w-full flex overflow-y-auto">
+  <div class="wrapper h-screen w-full flex overflow-x-hidden overflow-y-auto">
     <transition
       name="slide-fade"
       @leave="leave"
     >
       <div
         v-if="isMounted"
-        class="center-wrapper w-full flex flex-col flex-1 p-4"
+        class="center-wrapper w-full flex flex-col items-center flex-1 p-4"
       >
         <slot />
       </div>

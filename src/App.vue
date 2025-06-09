@@ -1,12 +1,14 @@
 <template>
   <div id="app-component">
     <router-view />
+
     <audio ref="asymetrie">
       <source
         src="@/assets/sounds/asymetrie.mp3"
         type="audio/mp3"
       >
     </audio>
+
     <audio ref="gstaad">
       <source
         src="@/assets/sounds/gstaad.mp3"
@@ -86,25 +88,5 @@
 html,
 body {
   margin: 0;
-}
-
-ul li {
-  list-style: none;
-}
-
-a,
-a:visited {
-  color: $yellow;
-  transition: color ease 0.3s;
-
-  &:hover {
-    color: $darkeryellow;
-  }
-}
-
-button:focus {
-  outline-style: none !important;
-  box-shadow: none !important;
-  border-color: transparent;
 }
 </style>

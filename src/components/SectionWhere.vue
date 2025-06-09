@@ -1,5 +1,5 @@
 <template>
-  <Section class="section-wherey">
+  <Section class="section-where">
     <SectionTitle>Où ?</SectionTitle>
     <SectionRightPart>
       <WebsiteList />

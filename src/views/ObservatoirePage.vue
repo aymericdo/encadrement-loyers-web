@@ -1,76 +1,97 @@
 <template>
   <Page2Wrapper :is-mounted="isMounted">
-    <SectionTitle class="mx-auto title">
-      Observatoire de l'encadrement des loyers à
-      {{ city.charAt(0).toUpperCase() + city.slice(1) }}
-    </SectionTitle>
-    <div class="graph-list">
-      <div class="row -paragraph">
-        <p>
-          Pour le premier baromètre de l’Observatoire de l’Encadrement des
-          Loyers à Paris, la Fondation pour le Logement nous a contactés pour leur
-          fournir les données que nous avons collectées.
-        </p>
-        <p>
-          Ce fut avec plaisir que nous leur avons partagé nos informations,
-          ainsi que les graphiques que nous pouvons vous présenter ci-dessous.
-        </p>
-        <p>
-          En complément,
-          <router-link to="/stats">
-            cette page
-          </router-link> résume plus
-          globalement l'état de l'encadrement sur plusieurs des villes où il est
-          en application.
-        </p>
-      </div>
+    <div class="prose w-full max-w-3xl mx-auto p-4">
+      <h2 class="text-4xl font-bold mb-8">
+        Observatoire de l'encadrement des loyers à
+        {{ city.charAt(0).toUpperCase() + city.slice(1) }}
+      </h2>
+      <div class="graph-list">
+        <div class="row -paragraph">
+          <p>
+            Pour le baromètre annuel de l’Observatoire de l’Encadrement des
+            Loyers à Paris, la Fondation pour le Logement nous a contactés pour leur
+            fournir les données que nous avons collectées.
+          </p>
+          <p>
+            Ce fut avec plaisir que nous leur avons partagé nos informations,
+            ainsi que les graphiques que nous pouvons vous présenter ci-dessous.
+          </p>
 
-      <div class="row">
-        <a
-          target="_blank"
-          href="https://www.fondationpourlelogement.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers"
-        >L'Observatoire 2024</a>
-      </div>
+          <div class="image">
+            <a
+              href="https://www.fondationpourlelogement.fr/"
+              target="_blank"
+            >
+              <img
+                src="@/assets/images/logo-fpll.png"
+                alt="Fondation pour le logement"
+              >
+            </a>
+            <span>La Fondation pour le Logement des Défavorisés</span>
+          </div>
 
-      <div class="row slider-section">
-        <Slider
-          v-model="monthValue"
-          class="slider"
-          :min="1"
-          :max="3"
-          :format="monthFormatValueFct"
-        />
-      </div>
+          <p class="mt-4">
+            En complément,
+            <router-link
+              class="text-[#fdcd56]"
+              to="/stats"
+            >
+              <span>cette page</span>
+            </router-link> résume plus
+            globalement l'état de l'encadrement sur plusieurs des villes où il est
+            en application.
+          </p>
+        </div>
 
-      <div class="row">
-        <span>sur les {{ monthsNb }} derniers mois</span>
-      </div>
+        <div class="row">
+          <a
+            target="_blank"
+            class="text-[#fdcd56]"
+            href="https://www.fondationpourlelogement.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers"
+          >L'Observatoire 2024</a>
+        </div>
 
-      <Section class="stats-section -large -first">
-        <Graph
-          :id="'is-legal-per-website'"
-          :city="city"
-          :date="datesValues"
-          @error-output="getErrorMessage($event)"
-        />
-      </Section>
-      <Section class="stats-section -large">
-        <Graph
-          :id="'is-legal-per-renter'"
-          :city="city"
-          :date="datesValues"
-          @error-output="getErrorMessage($event)"
-        />
-      </Section>
-      <Section class="stats-section -large">
-        <Graph
-          :id="'is-legal-per-classic-renter'"
-          :city="city"
-          :date="datesValues"
-          @error-output="getErrorMessage($event)"
-        />
-      </Section>
+        <div class="row slider-section">
+          <Slider
+            v-model="monthValue"
+            class="slider"
+            :min="1"
+            :max="3"
+            :format="monthFormatValueFct"
+          />
+        </div>
+
+        <div class="row">
+          <span>sur les {{ monthsNb }} derniers mois</span>
+        </div>
+
+        <Section class="stats-section -large -first">
+          <Graph
+            :id="'is-legal-per-website'"
+            :city="city"
+            :date="datesValues"
+            @error-output="getErrorMessage($event)"
+          />
+        </Section>
+        <Section class="stats-section -large">
+          <Graph
+            :id="'is-legal-per-renter'"
+            :city="city"
+            :date="datesValues"
+            @error-output="getErrorMessage($event)"
+          />
+        </Section>
+        <Section class="stats-section -large">
+          <Graph
+            :id="'is-legal-per-classic-renter'"
+            :city="city"
+            :date="datesValues"
+            @error-output="getErrorMessage($event)"
+          />
+        </Section>
+      </div>
     </div>
+
     <div @click="isMounted = false">
       <FixedButton>
         <StrokeIcon
@@ -90,17 +111,13 @@ import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/SectionItem.vue";
 import Graph from "@/shared/GraphItem.vue";
-import { domain } from "@/helper/config";
 import Slider from "@vueform/slider";
-
-import { useRouter } from "vue-router";
 
 import "@vueform/slider/themes/default.css";
 
 const monthValue = ref(2);
 const isMounted = ref(false);
 const city = ref("paris");
-const serverError = ref("");
 const welcomeData = ref(null);
 
 const controller = new AbortController();
@@ -183,21 +200,10 @@ watchEffect(
 
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;
-
-#stats {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-}
-
 .graph-list > .row {
   display: flex;
   justify-content: center;
+  overflow-x: auto;
 }
 
 .graph-list > .row > .slider {
@@ -216,12 +222,10 @@ watchEffect(
   line-height: 16px;
 }
 
-.entire-page-centered {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  width: 100%;
+.image {
+  width: 300px;
+  text-align: center;
+  line-height: 1.25rem;
 }
 
 .graph {
@@ -229,16 +233,6 @@ watchEffect(
   max-height: 100%;
   overflow-y: hidden;
   overflow-x: auto;
-}
-
-:deep(.title) {
-  max-width: 100%;
-  width: 700px;
-
-  & > h3 {
-    margin-top: 42px;
-    margin-bottom: 8px;
-  }
 }
 
 .graph-list {
@@ -258,14 +252,6 @@ watchEffect(
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-}
-
-.welcome {
-  max-width: 700px;
-
-  & > span.yellow {
-    color: $yellow;
-  }
 }
 
 .stats-section {
@@ -320,7 +306,6 @@ watchEffect(
   align-items: center;
 
   > p {
-    width: 50%;
     margin-bottom: 1rem;
   }
 }
@@ -330,29 +315,5 @@ watchEffect(
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-@media screen and (max-width: $mobileSize) {
-  .stats-section,
-  .stats-section.-large,
-  .stats-section.-high {
-    height: 500px;
-    width: 100%;
-    margin-right: 0;
-  }
-
-  .sub-column {
-    width: 100%;
-  }
-
-  .stats-section-row {
-    flex-wrap: wrap;
-  }
-
-  .row.-paragraph {
-    > p {
-      width: 100%;
-    }
-  }
 }
 </style>

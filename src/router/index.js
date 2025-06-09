@@ -7,14 +7,6 @@ const routes = [
     path: "/",
     name: "home",
     component: Home,
-    children: [{
-      name: "video",
-      path: "/video",
-      // route level code-splitting
-      // this generates a separate chunk (stats.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../views/VideoPage.vue"),
-    },]
   },
   {
     name: "legal",
@@ -43,12 +35,17 @@ const routes = [
   {
     name: "simulator",
     path: "/simulator",
+    redirect: { name: 'verifiez-votre-loyer' }
+  },
+  {
+    name: "verifiez-votre-loyer",
+    path: "/verifiez-votre-loyer",
     component: () =>
       import("../views/SimulatorPage.vue"),
   },
   {
-    name: "learn-more",
-    path: "/learn-more",
+    name: "methodologie",
+    path: "/methodologie",
     component: () =>
       import("../views/LearnMorePage.vue"),
   },

@@ -1,45 +1,48 @@
 <template>
   <Page2Wrapper :is-mounted="isMounted">
-    <div class="p-2 md:p-8">
+    <div class="prose w-full max-w-3xl mx-auto p-4">
+      <h2 class="text-4xl font-bold my-8">
+        Méthodologie
+      </h2>
+
       <p>
-        Nous calculons <b>le montant maximum du loyer</b> en fonction des éléments ci-dessous tirés de l'annonce :
+        Nous estimons le loyer maximal autorisé en nous basant sur plusieurs informations extraites de l’annonce :
       </p>
-      <ul class="p-6">
+
+      <ul class="list-disc list-inside mb-4">
         <li>Adresse</li>
-        <li>Nombre de pièce(s)</li>
+        <li>Nombre de pièces</li>
         <li>Meublé ou non</li>
         <li>Année de construction</li>
         <li>Surface</li>
       </ul>
-      <br>
-      <h4>Adresse</h4>
+
+      <h3 class="text-xl font-semibold mt-6 mb-2">Adresse</h3>
       <p>
-        Pour obtenir <b>l'adresse</b>, nous utilisons les données présentes dans l'annonce pour
-        déterminer <b>si possible l'adresse exacte</b> (numéro + nom de rue).
+        Lorsque l’adresse complète est disponible (numéro et nom de rue), nous l’utilisons pour affiner l’estimation.
+        <br>
+        Si ce n’est pas le cas, nous faisons l’estimation la plus précise possible à partir des éléments disponibles : 
+        code postal, stations de métro proches ou nom du quartier.
       </p>
+
+      <h3 class="text-xl font-semibold mt-6 mb-2">Année de construction</h3>
       <p>
-        Si ce n'est pas possible, nous faisons l'estimation la plus précise possible (code postal, stations de métro, quartier).
+        Si l’année de construction n’est pas indiquée dans l’annonce, elle peut être retrouvée si l’adresse complète du logement est connue.
       </p>
-      <h4>Année de construction</h4>
+
+      <h3 class="text-xl font-semibold mt-6 mb-2">Principe général</h3>
       <p>
-        L'année de construction, si elle n'est pas précisée dans l'annonce, peut être determinée 
-        si nous avons l'adresse exacte.
+        Nos estimations sont toujours arrondies à la hausse, afin de fournir une fourchette maximale réaliste.
+        <br>
+        Cela garantit une estimation juste, mais toujours en faveur du bailleur.
       </p>
-      <br>
-      <h4>Méthodologie</h4>
+
       <p>
-        Dans tous les cas, toutes nos estimations sont calculées en <b>arrondissant au plus haut</b>, de façon à fournir les chiffres les plus justes possibles.
-      </p>
-      <p>
-        (Toujours à l'avantage du bailleur donc.)
-      </p>
-      <p>
-        Si nous avons que le code postal, alors nous basons notre calcul sur
-        le quartier <b>le plus cher de l'arrondissement.</b>
-        De cette façon, nos estimations de loyers peuvent être revues, <b>toujours à la baisse</b>,
-        une fois en possession de l'adresse précise du logement.
+        Lorsqu’une annonce ne fournit que le code postal, nous nous basons sur le quartier le plus cher de l’arrondissement
+        pour effectuer le calcul. L’estimation pourra ensuite être revue à la baisse dès que l’adresse exacte est connue.
       </p>
     </div>
+
     <div @click="isMounted = false">
       <FixedButton>
         <StrokeIcon
@@ -65,12 +68,6 @@
 </script>	
 
 <style lang="scss" scoped>	
-@use "@/assets/scss/variables.scss" as *;
-
-h4 {
-  font-weight: bold;
-}
-
 ul li {
   list-style: initial;
 }

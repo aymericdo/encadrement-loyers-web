@@ -1,7 +1,9 @@
 <template>
   <Page2Wrapper :is-mounted="isMounted">
-    <div class="p-2 md:p-8">
-      <h2>Complément de loyer</h2>
+    <div class="prose w-full max-w-3xl mx-auto p-4">
+      <h2 class="text-4xl font-bold my-8">
+        Complément de loyer
+      </h2>
       <h4>Bien que très limité, il est techniquement possible de dépasser l'encadrement des loyers de manière légale.</h4>
       <br>
 
@@ -52,6 +54,7 @@
       <p>
         <span>Source : </span>
         <a
+          class="text-[#fdcd56]"
           href="https://www.legifrance.gouv.fr/jorf/article_jo/JORFARTI000046186753#:~:text=Article%2013%20%2D%20LOI%20n%C2%B0,'achat%20(1)%20%2D%20L%C3%A9gifrance"
           target="_blank"
         >legifrance.gouv.fr</a>
@@ -63,6 +66,7 @@
 
       <div>
         <a
+          class="text-[#fdcd56]"
           href="https://immobilier.lefigaro.fr/article/la-loi-se-durcit-autour-de-l-encadrement-des-loyers_f53afd86-0c23-11ed-b3fc-252e8fc48bdd/"
           target="_blank"
         >Article intéressant</a>
@@ -93,13 +97,6 @@
 </script>
 
 <style lang="scss" scoped>
-@use "@/assets/scss/variables.scss" as *;
-
-h2 {
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
 ul li {
   list-style: initial;
 }

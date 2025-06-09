@@ -1,19 +1,20 @@
 <template>
   <div id="home">
-    <Menu />
-    <router-view />
+    <!-- <Menu /> -->
+    <NavBar />
     <div
       class="center-wrapper"
       :class="{ inactive: route.name !== 'home' }"
     >
       <div>
-        <Hero />
+        <Hero class="mt-10" />
         <SectionWhy />
-        <SectionWhere />
         <SectionHow />
-        <SectionDisclaimer />
-        <SectionBlog />
         <SectionUs />
+        <!-- <SectionWhere /> -->
+        <SectionDisclaimer />
+        <SectionDownload id="download" />
+        <SectionBlog />
         <SectionThanks />
         <Footer />
       </div>
@@ -30,22 +31,13 @@
   import SectionThanks from "@/components/SectionThanks.vue";
   import SectionBlog from "@/components/SectionBlog.vue";
   import SectionUs from "@/components/SectionUs.vue";
+  import SectionDownload from "@/components/SectionDownload.vue";
   import Footer from "@/components/FooterItem.vue";
-  import Menu from "@/components/menu/MenuItem.vue";
+  import NavBar from "@/components/NavBar.vue";
 
-  import { onMounted } from "vue";
+  import { useRoute } from "vue-router";
 
-  import { useRouter, useRoute } from "vue-router";
-
-  const router = useRouter()
   const route = useRoute()
-
-  onMounted(() => {
-    if (route.name === "home" && !localStorage.getItem('isFirstVisitDone')) {
-      router.push({ path: "video" });
-      localStorage.setItem('isFirstVisitDone', true);
-    }
-  })
 </script>
 
 <style lang="scss" scoped>

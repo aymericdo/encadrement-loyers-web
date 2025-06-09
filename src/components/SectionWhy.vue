@@ -3,10 +3,19 @@
     <SectionTitle>Pourquoi ?</SectionTitle>
     <SectionRightPart>
       <p>
-        L'extension a pour but d'informer, et d'avertir les futurs locataires
-        que certains loyers ne respectent pas l'encadrement des loyers, en
-        vigueur depuis le 01/07/2019.
+        Trop de loyers ne respectent pas l'encadrement pourtant obligatoire dans beaucoup de villes sur la base de la loi ELAN (2018).
       </p>
+      <a
+        href="https://www.service-public.fr/particuliers/vosdroits/F1314"
+        target="_blank"
+      >
+        <Button
+          type="button"
+          class="text-white mt-2"
+        >
+          Plus d'info
+        </Button>
+      </a>
     </SectionRightPart>
   </Section>
 </template>
@@ -15,6 +24,7 @@
   import Section from "@/shared/SectionItem.vue";
   import SectionRightPart from "@/shared/SectionRightPartItem.vue";
   import SectionTitle from "@/shared/SectionTitleItem.vue";
+  import { Button } from '@/shadcn/ui/button'
 </script>
 
 <style scoped></style>

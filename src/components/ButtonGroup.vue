@@ -29,17 +29,6 @@
         </button>
       </a>
     </div>
-    <div class="button-group simulator">
-      <h3 class="-only-mobile">
-        Revenez sur votre ordinateur pour télécharger l'extension 😉,
-        et en attendant...
-      </h3>
-      <router-link to="/simulator">
-        <button id="simulator">
-          Vérifiez votre loyer
-        </button>
-      </router-link>
-    </div>
   </div>
 </template>
 
@@ -57,35 +46,11 @@ const isFirefox = ref(typeof InstallTrigger !== "undefined")
 .button-group {
   display: flex;
   flex-direction: row;
-  margin-top: 88px;
 }
 
 .button-row {
   display: flex;
   flex-direction: row;
-}
-
-.button-group.simulator {
-  position: relative;
-  margin-left: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-  > h3 {
-    text-align: center;
-  }
-
-  &::after {
-    content: '';
-    width: 0;
-    height: 80%;
-    position: absolute;
-    border: 1px solid $lightgrey;
-    top: 50%;
-    left: -1rem;
-    transform: translate(-50%, -50%);
-  }
 }
 
 .button-group.-firefox {
