@@ -93,7 +93,9 @@
                             variant="text"
                             type="button"
                             class="text-white"
-                          >Stats</Button>
+                          >
+                            Stats
+                          </Button>
                         </NavigationMenuLink>
                       </RouterLink>
                     </NavigationMenuItem>
@@ -104,7 +106,9 @@
                             variant="text"
                             type="button"
                             class="text-white"
-                          >Observatoire 2024</Button>
+                          >
+                            Observatoire 2024
+                          </Button>
                         </NavigationMenuLink>
                       </RouterLink>
                     </NavigationMenuItem>
@@ -115,7 +119,9 @@
                             variant="text"
                             type="button"
                             class="text-white"
-                          >Vérifiez votre loyer</Button>
+                          >
+                            Vérifiez votre loyer
+                          </Button>
                         </NavigationMenuLink>
                       </RouterLink>
                     </NavigationMenuItem>
@@ -126,7 +132,9 @@
                           type="button"
                           class="border border-[#fdcd56] text-[#fdcd56] hover:bg-[#fdcd56] hover:text-black transition-colors"
                           @click="scrollToDownload"
-                        >Installer l'extension</Button>
+                        >
+                          Installer l'extension
+                        </Button>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   </template>
