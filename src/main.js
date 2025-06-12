@@ -12,5 +12,7 @@ Sentry.init({
   environment: import.meta.env.NODE_ENV,
 });
 
+console.log('test')
+
 app.use(router);
 app.mount("#app");
