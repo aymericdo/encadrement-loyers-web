@@ -2,26 +2,30 @@
   <Section class="section-how">
     <SectionTitle>Comment ?</SectionTitle>
     <SectionRightPart>
-      <h4>
-        L’extension vous donne automatiquement le prix maximum estimé que vous
-        devriez payer
-      </h4>
-      <p>Selon les critères trouvés sur l'annonce.</p>
-      <Carousel />
-      <h4>Accédez aux détails du calcul</h4>
-      <p>
-        En cliquant sur la petite icône de l'extension, à droite de la barre
-        d'URL.
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/HL7YEsiLKo8?si=D9JBO9tLz5CI7kPs"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      />
+      <p
+        class="mt-4"
+      >
+        Une extension navigateur qui vous donne automatiquement le prix maximum estimé que vous
+        devriez payer.
       </p>
-      <div class="infographic">
-        <img
-          src="@/assets/images/infographie_encadrement.png"
-          alt="Infographie sur le fonctionnement de l'extension"
+      <router-link to="/methodologie">
+        <Button
+          type="button"
+          class="text-white mt-2"
         >
-        <router-link to="/learn-more">
-          <span class="learn-more">Plus d'info</span>
-        </router-link>
-      </div>
+          Plus d'info
+        </Button>
+      </router-link>
     </SectionRightPart>
   </Section>
 </template>
@@ -30,29 +34,18 @@
 import Section from "@/shared/SectionItem.vue";
 import SectionRightPart from "@/shared/SectionRightPartItem.vue";
 import SectionTitle from "@/shared/SectionTitleItem.vue";
-import Carousel from "./CarouselItem.vue";
+import { Button } from '@/shadcn/ui/button'
 </script>
 
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;
 
-h4 {
-  margin: 0;
-  margin-bottom: 8px;
-  color: $yellow;
-  line-height: 34px;
-  letter-spacing: -0.22px;
-  font-weight: 500;
-}
-
-span.learn-more {
-  font-size: 16px;
-  font-weight: 500;
-  float: right;
-}
-
 .infographic {
   display: flex;
   flex-direction: column;
+}
+
+iframe {
+  max-width: 100%;
 }
 </style>

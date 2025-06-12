@@ -1,45 +1,34 @@
 <template>
-  <div class="button-row">
-    <div
-      class="button-group -only-laptop"
-      :class="{ '-firefox': isFirefox }"
+  <div
+    class="button-group"
+    :class="{ '-firefox': isFirefox }"
+  >
+    <a
+      href="https://chrome.google.com/webstore/detail/encadrement/nkmghhgmpbngkbjnhpomddeglkpkkfeo?hl=fr"
+      target="_blank"
+      class="mb-4"
     >
-      <a
-        href="https://chrome.google.com/webstore/detail/encadrement/nkmghhgmpbngkbjnhpomddeglkpkkfeo?hl=fr"
-        target="_blank"
-      >
-        <button id="chrome">
-          <ChromeIcon
-            :width="'20px'"
-            :height="'20px'"
-            :icon-color="isFirefox ? '#fff' : '#050505'"
-          />Installez sur Chrome
-        </button>
-      </a>
-      <a
-        href="https://addons.mozilla.org/fr/firefox/addon/encadrement/"
-        target="_blank"
-      >
-        <button id="firefox">
-          <FirefoxIcon
-            :width="'20px'"
-            :height="'20px'"
-            :icon-color="isFirefox ? '#050505' : '#fff'"
-          />Installez sur Firefox
-        </button>
-      </a>
-    </div>
-    <div class="button-group simulator">
-      <h3 class="-only-mobile">
-        Revenez sur votre ordinateur pour télécharger l'extension 😉,
-        et en attendant...
-      </h3>
-      <router-link to="/simulator">
-        <button id="simulator">
-          Vérifiez votre loyer
-        </button>
-      </router-link>
-    </div>
+      <button id="chrome">
+        <ChromeIcon
+          :width="'20px'"
+          :height="'20px'"
+          :icon-color="isFirefox ? '#fff' : '#050505'"
+        />Installez sur Chrome
+      </button>
+    </a>
+    <a
+      href="https://addons.mozilla.org/fr/firefox/addon/encadrement/"
+      target="_blank"
+      class="mb-4"
+    >
+      <button id="firefox">
+        <FirefoxIcon
+          :width="'20px'"
+          :height="'20px'"
+          :icon-color="isFirefox ? '#050505' : '#fff'"
+        />Installez sur Firefox
+      </button>
+    </a>
   </div>
 </template>
 
@@ -57,35 +46,7 @@ const isFirefox = ref(typeof InstallTrigger !== "undefined")
 .button-group {
   display: flex;
   flex-direction: row;
-  margin-top: 88px;
-}
-
-.button-row {
-  display: flex;
-  flex-direction: row;
-}
-
-.button-group.simulator {
-  position: relative;
-  margin-left: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-  > h3 {
-    text-align: center;
-  }
-
-  &::after {
-    content: '';
-    width: 0;
-    height: 80%;
-    position: absolute;
-    border: 1px solid $lightgrey;
-    top: 50%;
-    left: -1rem;
-    transform: translate(-50%, -50%);
-  }
+  flex-wrap: wrap;
 }
 
 .button-group.-firefox {
@@ -127,48 +88,6 @@ const isFirefox = ref(typeof InstallTrigger !== "undefined")
 
   & > svg {
     margin-right: 16px;
-  }
-}
-
-.-only-mobile {
-  display: none;
-}
-
-@media screen and (max-width: $mobileSize) {
-  .button-group {
-    margin-top: 12px;
-  }
-
-  .button-row {
-    border-radius: 8px;
-    background: white;
-    padding-bottom: 1rem;
-  }
-    
-  .button-group.simulator {
-    margin-left: 0;
-    &::after {
-      display: none;
-    }
-  }
-
-  .-only-laptop {
-    display: none;
-
-    button {
-      height: inherit;
-    }
-  }
-
-  h3.-only-mobile {
-    color: black;
-    padding: 0.5rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
-
-  .-only-mobile {
-    display: block;
   }
 }
 

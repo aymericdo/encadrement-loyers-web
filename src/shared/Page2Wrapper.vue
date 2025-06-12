@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper h-screen w-full flex overflow-y-auto">
+  <div class="wrapper h-screen w-full flex overflow-x-hidden overflow-y-auto">
     <transition
       name="slide-fade"
       @leave="leave"

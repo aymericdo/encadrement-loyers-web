@@ -1,11 +1,14 @@
 <template>
   <Page2Wrapper :is-mounted="isMounted">
-    <div class="p-2 md:p-8">
+    <div class="prose w-full max-w-3xl mx-auto p-4">
       <div class="title">
         <h1>
           Aucune donnée n'est collectée par l'extension, hormis celle
           nécessaire au calcul et à la réalisation de quelques
-          <router-link to="/stats">
+          <router-link
+            to="/stats"
+            class="text-[#fdcd56]"
+          >
             statistiques
           </router-link>. Aucune donnée
           utilisateur n'est collectée.
@@ -319,8 +322,8 @@
   padding: 3em 1em;
   box-sizing: border-box;
   align-items: center;
-  width: 100vw;
   min-height: 100vh;
+  text-align: center;
   display: flex;
   justify-content: center;
   align-content: center;

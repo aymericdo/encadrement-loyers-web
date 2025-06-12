@@ -2,7 +2,10 @@
   <Section class="section-us">
     <SectionTitle>Qui sommes nous ?</SectionTitle>
     <SectionRightPart>
-      <div class="nosgrossesteutés">
+      <p>
+        Face aux abus des loyers, nous sommes des bénévoles mobilisés pour offrir un outil gratuit et accessible à tous les locataires.
+      </p>
+      <div class="nosgrossesteutés mt-10">
         <div>
           <a
             href="https://www.linkedin.com/in/aymeric-dominique/"
@@ -13,7 +16,11 @@
               alt="Photo de Aymeric Dominique"
             >
           </a>
-          <span>Développeur</span>
+          <span
+            class="text-sm mt-4"
+          >
+            Développeur
+          </span>
         </div>
         <div>
           <a
@@ -25,7 +32,11 @@
               alt="Photo de Thomas Legrand"
             >
           </a>
-          <span>Data Scientist</span>
+          <span
+            class="text-sm mt-4"
+          >
+            Développeur
+          </span>
         </div>
         <div>
           <a
@@ -37,15 +48,13 @@
               alt="Photo de Lucien Landanger"
             >
           </a>
-          <span>Designer</span>
+          <span
+            class="text-sm mt-4"
+          >
+            Designer
+          </span>
         </div>
       </div>
-      <br class="footer-br">
-      <span class="buy-us-coffee">
-        <a
-          href="https://buymeacoff.ee/DnzzL"
-          target="_blank"
-        >☕️ Buy us a coffee</a> </span>&nbsp;
     </SectionRightPart>
   </Section>
 </template>
@@ -73,13 +82,8 @@ import SectionTitle from "@/shared/SectionTitleItem.vue";
 }
 
 .nosgrossesteutés img {
-  width: 150px;
-  height: 150px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
-}
-
-.buy-us-coffee {
-  display: flex;
-  justify-content: center;
 }
 </style>

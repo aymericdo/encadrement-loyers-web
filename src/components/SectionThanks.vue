@@ -77,6 +77,30 @@
           </a>
           <span>Open Data Lyon</span>
         </div>
+        <div class="image">
+          <a
+            href="https://www.observatoires-des-loyers.org/"
+            target="_blank"
+          >
+            <img
+              src="@/assets/images/observatoires-des-loyers.png"
+              alt="Observatoires des loyers"
+            >
+          </a>
+          <span>Observatoires des loyers</span>
+        </div>
+        <div class="image">
+          <a
+            href="https://www.fondationpourlelogement.fr/"
+            target="_blank"
+          >
+            <img
+              src="@/assets/images/logo-fpll.png"
+              alt="Fondation pour le logement"
+            >
+          </a>
+          <span>La Fondation pour le Logement des Défavorisés</span>
+        </div>
       </div>
     </div>
   </Section>

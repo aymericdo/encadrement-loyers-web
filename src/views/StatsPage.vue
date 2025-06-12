@@ -21,21 +21,21 @@
           <template v-if="isWelcomeTextLoaded">
             <div>
               <span>Sur les</span>
-              <span class="yellow">&nbsp;{{ welcomeData.numberRents }}&nbsp;</span>
+              <span class="text-[#fdcd56]">&nbsp;{{ welcomeData.numberRents }}&nbsp;</span>
               <span>annonces étudiées au total</span>
               <template v-if="city !== 'all'">
-                à<span class="yellow">&nbsp;{{
+                à<span class="text-[#fdcd56]">&nbsp;{{
                   cityDropdownOptions.find((c) => c.value === city).label
                 }}</span>
               </template>
               <span>,</span>
-              <span class="yellow">&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span>
+              <span class="text-[#fdcd56]">&nbsp;{{ welcomeData.isIllegalPercentage }}%&nbsp;</span>
               <span>sont non conformes.</span>
             </div>
             <div>
               <span>Pour les annonces d'une surface inférieure à</span>
-              <span class="yellow">&nbsp;{{ welcomeData.pivotSurface }}m²</span><span>, il y a</span>
-              <span class="yellow">&nbsp;{{
+              <span class="text-[#fdcd56]">&nbsp;{{ welcomeData.pivotSurface }}m²</span><span>, il y a</span>
+              <span class="text-[#fdcd56]">&nbsp;{{
                 welcomeData.isIllegalPercentageUnderPivot
               }}%&nbsp;</span>
               <span>d'annonces non conformes.</span>
@@ -471,10 +471,6 @@ const setDateValueStr = (dateValue) => {
   flex-direction: column;
   justify-content: center;
   line-height: 1.625rem;
-
-  & div > span.yellow {
-    color: $yellow;
-  }
 }
 
 .is-legal-variation-dropdown {

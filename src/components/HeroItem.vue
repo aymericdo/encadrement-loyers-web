@@ -3,14 +3,13 @@
     <div class="hero-heading">
       <h1>
         <div>
-          <router-link
-            to="video"
-            class="yellow-text"
+          <span
+            class="title text-[#fdcd56]"
           >
             Encadrement
-          </router-link>
+          </span>
         </div>
-        est une extension pour vous aider dans votre recherche de location à
+        Vérifiez en un clic si un loyer dépasse les plafonds autorisés à
         <div
           v-if="cities.length"
           class="city-word"
@@ -34,11 +33,10 @@
         </div>
       </h1>
       <h2>
-        Vérifiez si les annonces sont conformes ou non à la loi de l’encadrement
-        des loyers.
+        Notre extension analyse les annonces pour vous indiquer si le loyer est conforme à la loi.
       </h2>
     </div>
-    <ButtonGroup />
+    <!-- <ButtonGroup /> -->
   </div>
 </template>
 
@@ -247,8 +245,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.yellow-text {
-  color: $yellow;
+.title {
   display: inline-block;
   text-decoration: none;
 
@@ -260,14 +257,6 @@ onBeforeUnmount(() => {
     height: 4px;
     left: 0;
     display: flow-root;
-  }
-
-  &:hover {
-    color: $darkeryellow;
-
-    &::after {
-      background-color: $darkeryellow;
-    }
   }
 }
 </style>
