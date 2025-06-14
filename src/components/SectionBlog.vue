@@ -5,6 +5,43 @@
         On parle de nous
       </SectionTitle>
       <div class="article-list mt-10">
+        <div
+          @click="openArticle('https://www.lemonde.fr/argent/article/2024/04/23/encadrement-des-loyers-les-depassements-restent-monnaie-courante_6229353_1657007.html')"
+          role="button"
+          aria-label="Lire l'article du Monde"
+          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <div class="flex items-center space-x-3 mb-3">
+            <img
+              src="@/assets/images/logo-le-monde.webp"
+              alt="Logo Le Monde"
+              class="h-12 w-12 object-contain flex-shrink-0"
+            >
+            <div>
+              <p class="text-sm font-semibold text-gray-900">
+                Le Monde
+              </p>
+              <p class="text-xs text-gray-500">
+                23 avril 2024
+              </p>
+            </div>
+          </div>
+
+          <h3
+            class="text-gray-900 font-semibold text-lg mb-2 leading-tight"
+          >
+            Encadrement des loyers : les dépassements restent monnaie courante
+          </h3>
+          <p class="text-gray-700 text-sm mb-3 line-clamp-3">
+            Les villes françaises qui plafonnent les loyers peinent à faire appliquer la règle. A Paris, le montant moyen d’un dépassement excède 150 euros par mois.
+          </p>
+          <div
+            class="text-blue-600 text-sm font-medium hover:underline"
+          >
+            Lire l'article sur Le Monde &rarr;
+          </div>
+        </div>
+
         <blockquote class="twitter-tweet">
           <p
             lang="fr"
@@ -27,24 +64,6 @@
             lang="fr"
             dir="ltr"
           >
-            Savoir directement si l&#39;annonce d&#39;un logement est illégale :
-            c&#39;est possible avec l’application «l’Encadrement». Elle permet
-            d’afficher directement sur les sites de location, à côté du montant
-            du loyer, le prix auquel il devrait légalement être loué &gt;
-            <a href="https://t.co/WQCOajpV2J">https://t.co/WQCOajpV2J</a>
-            <a href="https://t.co/MrdQrg7sEp">pic.twitter.com/MrdQrg7sEp</a>
-          </p>
-          &mdash; Le Parisien (@le_Parisien)
-          <a
-            href="https://twitter.com/le_Parisien/status/1224630136764538880?ref_src=twsrc%5Etfw"
-          >February 4, 2020</a>
-        </blockquote>
-
-        <blockquote class="twitter-tweet">
-          <p
-            lang="fr"
-            dir="ltr"
-          >
             Cette application vérifie si votre loyer respecte bien l’encadrement
             <a
               href="https://twitter.com/hashtag/Eco?src=hash&amp;ref_src=twsrc%5Etfw"
@@ -57,17 +76,42 @@
           >December 23, 2019</a>
         </blockquote>
 
-        <iframe
-          class="facebook"
-          src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Floueragile%2Fposts%2F2429261067286129&width=350&show_text=true&height=585&appId"
-          width="350"
-          height="585"
-          style="border:none;overflow:hidden"
-          scrolling="no"
-          frameborder="0"
-          allowtransparency="true"
-          allow="encrypted-media"
-        />
+        <div
+          @click="openArticle('https://www.leparisien.fr/immobilier/encadrement-des-loyers-a-paris-cette-application-epingle-les-annonces-de-location-illegales-04-02-2020-8252145.php')"
+          role="button"
+          aria-label="Lire l'article du Parisien"
+          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <div class="flex items-center space-x-3 mb-3">
+            <img
+              src="@/assets/images/logo-le-parisien.png"
+              alt="Logo Le Parisien"
+              class="h-12 w-12 object-contain flex-shrink-0"
+            >
+            <div>
+              <p class="text-sm font-semibold text-gray-900">
+                Le Parisien
+              </p>
+              <p class="text-xs text-gray-500">
+                4 février 2020
+              </p>
+            </div>
+          </div>
+
+          <h3
+            class="text-gray-900 font-semibold text-lg mb-2 leading-tight"
+          >
+            Encadrement des loyers à Paris : cette application épingle les annonces de location «illégales»
+          </h3>
+          <p class="text-gray-700 text-sm mb-3 line-clamp-3">
+            Téléchargeable sur les navigateurs Internet Chrome et Mozilla, l’application «l’Encadrement» permet d’afficher directement sur les sites de location, à côté du montant du loyer, le prix auquel il devrait légalement être loué.
+          </p>
+          <div
+            class="text-blue-600 text-sm font-medium hover:underline"
+          >
+            Lire l'article sur Le Parisien &rarr;
+          </div>
+        </div>
       </div>
     </div>
   </Section>
@@ -88,6 +132,10 @@
     );
     document.head.appendChild(twitterScript);
   });
+
+  function openArticle(url) {
+    window.open(url, "_blank");
+  }
 </script>
 <style lang="scss" scoped>
 @use "@/assets/scss/variables.scss" as *;
@@ -108,9 +156,11 @@
 </style>
 
 <style lang="scss">
-.twitter-tweet {
+.twitter-tweet,
+.article {
   width: 350px !important;
   margin-top: 0 !important;
+  height: fit-content;
 }
 
 .article-list {
@@ -119,7 +169,7 @@
   flex-wrap: wrap;
 
   & > * {
-    padding-bottom: 2rem;
+    margin-bottom: 2rem;
     max-width: 100%;
   }
 
