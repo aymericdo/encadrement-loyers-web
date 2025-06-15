@@ -59,6 +59,43 @@
           >June 3, 2021</a>
         </blockquote>
 
+        <div
+          @click="openArticle('https://www.leparisien.fr/immobilier/la-ville-de-paris-et-la-fondation-abbe-pierre-vont-traquer-les-loyers-abusifs-03-06-2021-IBM2DSHCQNDRJNOJZ6QOSCIP34.php')"
+          role="button"
+          aria-label="Lire l'article du Parisien"
+          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <div class="flex items-center space-x-3 mb-3">
+            <img
+              src="@/assets/images/logo-le-parisien.png"
+              alt="Logo Le Parisien"
+              class="h-12 w-12 object-contain flex-shrink-0"
+            >
+            <div>
+              <p class="text-sm font-semibold text-gray-900">
+                Le Parisien
+              </p>
+              <p class="text-xs text-gray-500">
+                3 juin 2021
+              </p>
+            </div>
+          </div>
+
+          <h3
+            class="text-gray-900 font-semibold text-lg mb-2 leading-tight"
+          >
+            Encadrement des loyers : comment la Ville de Paris et la Fondation Abbé Pierre vont traquer les abus
+          </h3>
+          <p class="text-gray-700 text-sm mb-3 line-clamp-3">
+            EXCLUSIF. En s’appuyant sur les informations collectées par une application gratuite, ces deux acteurs prévoient d’épingler dans un baromètre annuel les sites immobiliers dont les annonces ne respectent pas le plafonnement des loyers. Du «Name and shame» au service de l’encadrement des loyers.
+          </p>
+          <div
+            class="text-blue-600 text-sm font-medium hover:underline"
+          >
+            Lire l'article sur Le Parisien &rarr;
+          </div>
+        </div>
+
         <blockquote class="twitter-tweet">
           <p
             lang="fr"
