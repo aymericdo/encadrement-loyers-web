@@ -1,5 +1,5 @@
 <template>
-  <Section class="section-thanks">
+  <Section>
     <div class="col">
       <SectionTitle class="title">
         Remerciements

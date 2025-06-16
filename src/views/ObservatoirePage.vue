@@ -105,12 +105,11 @@
 
 <script setup>
 import { ref, watchEffect, onBeforeUnmount, onMounted } from "vue";
-import SectionTitle from "@/shared/SectionTitleItem.vue";
 import StrokeIcon from "@/icons/StrokeIcon.vue";
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import Section from "@/shared/SectionItem.vue";
-import Graph from "@/shared/GraphItem.vue";
+import Graph from "@/shared/CityGraphItem.vue";
 import Slider from "@vueform/slider";
 
 import "@vueform/slider/themes/default.css";
@@ -275,16 +274,6 @@ watchEffect(
 .stats-section.-high {
   height: 1020px;
   width: calc(50% - 10px);
-}
-
-.sub-column {
-  display: flex;
-  flex-direction: column;
-  width: calc(50% - 10px);
-}
-
-.sub-column > .stats-section {
-  width: 100%;
 }
 
 .stats-section-row {

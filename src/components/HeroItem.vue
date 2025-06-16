@@ -36,18 +36,24 @@
         Notre extension analyse les annonces pour vous indiquer si le loyer est conforme à la loi.
       </h2>
     </div>
-    <!-- <ButtonGroup /> -->
   </div>
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { domain } from "@/helper/config";
-import ButtonGroup from '@/components/ButtonGroup.vue'
+import { onBeforeUnmount, ref, watch, toRefs } from 'vue';
+
+const props = defineProps({
+  cities: {
+    type: [Object],
+  },
+});
+
+const {
+  cities,
+} = toRefs(props);
 
 const currentCity = ref(0);
 const currentLetter = ref(0);
-const cities = ref([]);
 
 let interval = null;
 const city = ref('');
@@ -75,28 +81,10 @@ const writeCity = (speed) => {
   }, speed);
 }
 
-const fetchCities = async () => {
-  try {
-    const rawResult = await fetch(`${domain}cities/list`)
-    const res = await rawResult.json()
-    if (res.message === "token expired") throw res
-
-    cities.value = Object.keys(res).reduce((prev, city) => {
-      prev.push({
-        id: res[city].mainCity,
-        text: `${res[city].displayName.city}.`,
-      })
-      return prev
-    }, []).sort(() => 0.5 - Math.random());
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-onMounted(async () => {
-  await fetchCities();
-  writeCity(250);
-});
+watch(
+  () => cities.value,
+  () => writeCity(250),
+);
 
 onBeforeUnmount(() => {
   if (interval) clearInterval(interval);

@@ -81,7 +81,7 @@
 
     <div class="graph-list">
       <div class="stats-section -large">
-        <Graph
+        <CityGraph
           :id="'is-legal-variation'"
           ref="isLegalVariation"
           :city="city"
@@ -104,7 +104,7 @@
         class="stats-section-row"
       >
         <div class="stats-section">
-          <Graph
+          <CityGraph
             :id="'chloropleth-map'"
             :date="dateValueStr"
             :city="city"
@@ -113,7 +113,7 @@
         </div>
 
         <div class="stats-section">
-          <Graph
+          <CityGraph
             :id="'map'"
             :date="dateValueStr"
             :city="city"
@@ -130,7 +130,7 @@
         "
         class="stats-section -large"
       >
-        <Graph
+        <CityGraph
           :id="'chloropleth-cities-map'"
           :date="dateValueStr"
           :city="city"
@@ -139,7 +139,7 @@
       </div>
 
       <div class="stats-section -large">
-        <Graph
+        <CityGraph
           :id="'is-legal-per-surface'"
           :date="dateValueStr"
           :city="city"
@@ -151,7 +151,7 @@
         v-if="city === 'all'"
         class="stats-section -large"
       >
-        <Graph
+        <CityGraph
           :id="'price-variation'"
           :date="dateValueStr"
           :city="city"
@@ -164,7 +164,7 @@
         class="stats-section-row"
       >
         <div class="stats-section">
-          <Graph
+          <CityGraph
             :id="'price-difference'"
             :date="dateValueStr"
             :city="city"
@@ -173,7 +173,7 @@
         </div>
 
         <div class="stats-section">
-          <Graph
+          <CityGraph
             :id="'price-variation'"
             :date="dateValueStr"
             :city="city"
@@ -210,7 +210,7 @@ import {
 } from "@/shadcn/ui/select";
 import Dropfilters from "@/shared/DropfiltersItem.vue";
 import FixedButton from "@/shared/FixedButton.vue";
-import Graph from "@/shared/GraphItem.vue";
+import CityGraph from "@/shared/CityGraphItem.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import SectionTitle from "@/shared/SectionTitleItem.vue";
 import Slider from "@vueform/slider";
@@ -501,16 +501,6 @@ const setDateValueStr = (dateValue) => {
   width: calc(50% - 10px);
 }
 
-.sub-column {
-  display: flex;
-  flex-direction: column;
-  width: calc(50% - 10px);
-}
-
-.sub-column > .stats-section {
-  width: 100%;
-}
-
 .stats-section-row {
   display: flex;
 }
@@ -538,10 +528,6 @@ const setDateValueStr = (dateValue) => {
     height: 500px;
     width: 100%;
     margin-right: 0;
-  }
-
-  .sub-column {
-    width: 100%;
   }
 
   .stats-section-row {
