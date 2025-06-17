@@ -126,6 +126,8 @@
 </script>
 
 <style lang="scss" scoped>
+@use "@/assets/scss/variables.scss" as *;
+
 .title {
   max-width: inherit;
 }
@@ -133,6 +135,14 @@
 .chart-section {
   width: 552px;
   cursor: pointer;
+  
+  &:hover {
+    color: $yellow;
+
+    :deep(.container) {
+      border-color: $yellow;
+    }
+  }
 }
 
 .stats-section {
