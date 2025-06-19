@@ -13,10 +13,8 @@
         <SectionWhy />
         <SectionHow />
         <SectionDisclaimer />
+        <SectionStats />
         <SectionUs />
-        <SectionStats
-          :cities="cities"
-        />
         <SectionDownload id="download" />
         <SectionBlog />
         <SectionThanks />
