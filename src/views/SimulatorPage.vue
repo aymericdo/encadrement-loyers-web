@@ -8,6 +8,9 @@
             key="1"
             class="global-content"
           >
+            <h2 class="text-xl font-semibold mb-4">
+              Faites vous-même le calcul en remplissant chaque champ et découvrez si votre loyer dépasse le maximum autorisé.
+            </h2>
             <form class="space-y-6">
               <FormField name="city">
                 <FormItem>
