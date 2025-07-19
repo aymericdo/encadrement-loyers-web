@@ -8,8 +8,11 @@
             key="1"
             class="global-content"
           >
-            <h2 class="text-xl font-semibold mb-4">
-              Faites vous-même le calcul en remplissant chaque champ et découvrez si votre loyer dépasse le maximum autorisé.
+            <h1 class="text-xl font-bold my-4">
+              Simulation de votre plafonnement de loyer
+            </h1>
+            <h2 class="text-lg font-semibold my-4">
+              Faites vous-même le calcul en remplissant chaque champ et découvrez si votre loyer dépasse le maximum autorisé grâce au simulateur.
             </h2>
             <form class="space-y-6">
               <FormField name="city">
