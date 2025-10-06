@@ -47,8 +47,8 @@
           <a
             target="_blank"
             class="text-[#fdcd56]"
-            href="https://www.fondationpourlelogement.fr/nos-publications/communiques-de-presse/4eme-barometre-de-lencadrement-des-loyers"
-          >L'Observatoire 2024</a>
+            href="https://www.fondationpourlelogement.fr/encadrement-des-loyers-le-grand-ecart/"
+          >L'Observatoire 2025</a>
         </div>
 
         <div class="row slider-section">
