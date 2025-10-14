@@ -975,7 +975,7 @@ const onReset = async () => {
 
 const handleSearchingAddress = debounce(
   async (address) => await fetchingAddress(address),
-  300
+  500
 );
 
 const handleFetchSimulatorResult = debounce(async () => {
