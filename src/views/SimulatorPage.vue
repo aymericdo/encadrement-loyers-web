@@ -502,26 +502,29 @@
                 <template
                   v-for="(simulationResult, index) in simulationResults"
                   :key="simulationResult.yearBuilt"
-                ><span
-                  v-if="simulationResult.maxTotalPrice < form.values.price"
-                  class="exceeding"
-                  :class="{
-                    'rounded-br-md': index === simulationResults.length - 1,
-                  }">
-                  +{{
-                    +(
-                      form.values.price - simulationResult.maxTotalPrice
-                    ).toFixed(2)
-                  }}€
-                </span>
-                <span
-                  v-else
-                  class="not-exceeding"
-                  :class="{
-                    'rounded-br-md': index === simulationResults.length - 1,
-                  }">
-                  OK
-                </span>
+                >
+                  <span
+                    v-if="simulationResult.maxTotalPrice < form.values.price"
+                    class="exceeding"
+                    :class="{
+                      'rounded-br-md': index === simulationResults.length - 1,
+                    }"
+                  >
+                    +{{
+                      +(
+                        form.values.price - simulationResult.maxTotalPrice
+                      ).toFixed(2)
+                    }}€
+                  </span>
+                  <span
+                    v-else
+                    class="not-exceeding"
+                    :class="{
+                      'rounded-br-md': index === simulationResults.length - 1,
+                    }"
+                  >
+                    OK
+                  </span>
                 </template>
               </template>
             </div>
@@ -592,8 +595,8 @@
               <template v-else>
                 {{ isLegal ?
                   simulationResults?.some((simulationResult) => simulationResult.maxTotalPrice < form.values.price) ?
-                  "Potentiellement conforme" :
-                  "Conforme" :
+                    "Potentiellement conforme" :
+                    "Conforme" :
                   "Non conforme"
                 }}
               </template>
