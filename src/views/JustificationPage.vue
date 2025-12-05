@@ -35,7 +35,11 @@
       </div>
       <ul>
         <li>
-          <a href="https://jurislogement.org/la-justification-obligatoire-des-complements-de-loyer/" target="_blank">Tribunal judiciaire de Paris, <b>Jugement du 6 juin 2024, n° 24/02431<b> :</a> les éléments tels que cuisine aménagée, double vitrage, parquet ou cave, ne caractérisent pas un confort exceptionnel en comparaison avec des logements similaire en location dans le secteur. Aussi la vue dégagée sur un boulevard présente un avantage au regard de logements situés sur cour, mais n’a aucun caractère exceptionnel au sens de l’article 140 de la loi du 23 novembre 2018.
+          <a
+            class="text-[#fdcd56]"
+            href="https://jurislogement.org/la-justification-obligatoire-des-complements-de-loyer/"
+            target="_blank"
+          >Tribunal judiciaire de Paris, <b>Jugement du 6 juin 2024, n° 24/02431</b> :</a> les éléments tels que cuisine aménagée, double vitrage, parquet ou cave, ne caractérisent pas un confort exceptionnel en comparaison avec des logements similaire en location dans le secteur. Aussi la vue dégagée sur un boulevard présente un avantage au regard de logements situés sur cour, mais n’a aucun caractère exceptionnel au sens de l’article 140 de la loi du 23 novembre 2018.
         </li>
       </ul>
       <p><b>Ces décisions constituent un début de jurisprudence de première instance et il faudrait, pour les consolider, quelques décisions d'appel.</b></p>
