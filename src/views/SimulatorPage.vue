@@ -497,21 +497,32 @@
                 }"
               >{{ simulationResult.maxTotalPrice }}€
               </span>
-              <template v-if="!isLegal">
-                <span class="label -exceeding-label rounded-bl-md">Dépassement</span>
-                <span
+              <template v-if="simulationResults.some((simulationResult) => simulationResult.maxTotalPrice < form.values.price)">
+                <span class="label rounded-bl-md">Dépassement</span>
+                <template
                   v-for="(simulationResult, index) in simulationResults"
                   :key="simulationResult.yearBuilt"
+                ><span
+                  v-if="simulationResult.maxTotalPrice < form.values.price"
                   class="exceeding"
                   :class="{
                     'rounded-br-md': index === simulationResults.length - 1,
-                  }"
-                >+{{
-                  +(
-                    form.values.price - simulationResult.maxTotalPrice
-                  ).toFixed(2)
-                }}€
+                  }">
+                  +{{
+                    +(
+                      form.values.price - simulationResult.maxTotalPrice
+                    ).toFixed(2)
+                  }}€
                 </span>
+                <span
+                  v-else
+                  class="not-exceeding"
+                  :class="{
+                    'rounded-br-md': index === simulationResults.length - 1,
+                  }">
+                  OK
+                </span>
+                </template>
               </template>
             </div>
             <div
@@ -579,7 +590,12 @@
                 />
               </template>
               <template v-else>
-                {{ isLegal ? "Conforme" : "Non conforme" }}
+                {{ isLegal ?
+                  simulationResults?.some((simulationResult) => simulationResult.maxTotalPrice < form.values.price) ?
+                  "Potentiellement conforme" :
+                  "Conforme" :
+                  "Non conforme"
+                }}
               </template>
             </span>
             <Button
@@ -1104,10 +1120,6 @@ watch(() => form.controlledValues.value, () => {
     font-weight: bold;
     text-align: left;
     line-height: normal;
-
-    &.-exceeding-label {
-      border-right-color: red;
-    }
   }
 
   .-last-before-exceeding-section {
@@ -1117,6 +1129,11 @@ watch(() => form.controlledValues.value, () => {
   > .exceeding {
     font-weight: 500;
     color: red;
+  }
+
+  > .not-exceeding {
+    font-weight: 500;
+    color: #69e882;
   }
 }
 
