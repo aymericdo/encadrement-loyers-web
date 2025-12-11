@@ -259,16 +259,7 @@ watchEffect(
   align-items: center;
   width: calc(50% - 10px);
   height: 500px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-
-  &:first-of-type {
-    margin-top: 60px;
-  }
-
-  &:last-of-type {
-    margin-bottom: 60px;
-  }
+  margin-bottom: 1.25rem;
 }
 
 .stats-section.-high {
@@ -278,6 +269,7 @@ watchEffect(
 
 .stats-section-row {
   display: flex;
+  justify-content: space-between;
 }
 
 .stats-section.-large {

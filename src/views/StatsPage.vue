@@ -488,12 +488,7 @@ const setDateValueStr = (dateValue) => {
   align-items: center;
   width: calc(50% - 10px);
   height: 500px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-
-  &:last-of-type {
-    margin: 0;
-  }
+  margin-bottom: 1.25rem;
 }
 
 .stats-section.-high {
@@ -503,6 +498,7 @@ const setDateValueStr = (dateValue) => {
 
 .stats-section-row {
   display: flex;
+  justify-content: space-between;
 }
 
 .stats-section.-large {
