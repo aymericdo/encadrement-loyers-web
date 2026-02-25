@@ -92,7 +92,7 @@
                           <Button
                             variant="text"
                             type="button"
-                            class="text-white"
+                            class="cursor-pointer text-white"
                           >
                             Stats
                           </Button>
@@ -105,7 +105,7 @@
                           <Button
                             variant="text"
                             type="button"
-                            class="text-white"
+                            class="cursor-pointer text-white"
                           >
                             Observatoire 2025
                           </Button>
@@ -118,7 +118,7 @@
                           <Button
                             variant="text"
                             type="button"
-                            class="text-white"
+                            class="cursor-pointer text-white"
                           >
                             Vérifiez votre loyer
                           </Button>
@@ -130,7 +130,7 @@
                         <Button
                           variant="text"
                           type="button"
-                          class="border border-[#fdcd56] text-[#fdcd56] hover:bg-[#fdcd56] hover:text-black transition-colors"
+                          class="cursor-pointer border border-[#fdcd56] text-[#fdcd56] hover:bg-[#fdcd56] hover:text-black transition-colors"
                           @click="scrollToDownload"
                         >
                           Installer l'extension
