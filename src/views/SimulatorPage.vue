@@ -313,7 +313,7 @@
                         :max="10000"
                       />
                       <span
-                        class="absolute inset-y-0 flex items-center justify-center px-2 end-0"
+                        class="absolute inset-y-0 flex items-center justify-center px-2 inset-e-0"
                       >
                         <span
                           class="flex items-center justify-center size-6 text-muted-foreground"
@@ -344,7 +344,7 @@
                         :max="400"
                       />
                       <span
-                        class="absolute inset-y-0 flex items-center justify-center px-2 end-0"
+                        class="absolute inset-y-0 flex items-center justify-center px-2 inset-e-0"
                       >
                         <span
                           class="flex items-center justify-center size-6 text-muted-foreground"
@@ -609,14 +609,14 @@
               @click="onClickMoreInfo"
             >
               <template v-if="displayMoreInfo">
-                <span class="rotate-[90deg]">
+                <span class="rotate-90">
                   <ArrowIcon :icon-color="'black'" />
                 </span>
                 <span>Retour</span>
               </template>
               <template v-else>
                 <span>Cliquez pour plus d'info</span>
-                <span class="rotate-[270deg]">
+                <span class="rotate-270">
                   <ArrowIcon :icon-color="'black'" />
                 </span>
               </template>

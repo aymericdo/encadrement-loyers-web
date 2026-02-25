@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="wrapper">
-      <nav class="fixed inset-x-0 top-0 z-50 shadow dark:bg-gray-950 bg-[#050505]">
+      <nav class="fixed inset-x-0 top-0 z-50 shadow-sm dark:bg-gray-950 bg-[#050505]">
         <div class="container px-4 md:px-6 py-2">
           <div class="flex h-14 items-center">
             <RouterLink

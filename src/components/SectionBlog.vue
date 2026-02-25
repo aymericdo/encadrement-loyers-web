@@ -9,13 +9,13 @@
           @click="openArticle('https://www.lemonde.fr/argent/article/2024/04/23/encadrement-des-loyers-les-depassements-restent-monnaie-courante_6229353_1657007.html')"
           role="button"
           aria-label="Lire l'article du Monde"
-          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
+          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-xs bg-white hover:shadow-md transition-shadow cursor-pointer"
         >
           <div class="flex items-center space-x-3 mb-3">
             <img
               src="@/assets/images/logo-le-monde.webp"
               alt="Logo Le Monde"
-              class="h-12 w-12 object-contain flex-shrink-0"
+              class="h-12 w-12 object-contain shrink-0"
             >
             <div>
               <p class="text-sm font-semibold text-gray-900">
@@ -63,13 +63,13 @@
           @click="openArticle('https://www.leparisien.fr/immobilier/la-ville-de-paris-et-la-fondation-abbe-pierre-vont-traquer-les-loyers-abusifs-03-06-2021-IBM2DSHCQNDRJNOJZ6QOSCIP34.php')"
           role="button"
           aria-label="Lire l'article du Parisien"
-          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
+          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-xs bg-white hover:shadow-md transition-shadow cursor-pointer"
         >
           <div class="flex items-center space-x-3 mb-3">
             <img
               src="@/assets/images/logo-le-parisien.png"
               alt="Logo Le Parisien"
-              class="h-12 w-12 object-contain flex-shrink-0"
+              class="h-12 w-12 object-contain shrink-0"
             >
             <div>
               <p class="text-sm font-semibold text-gray-900">
@@ -117,13 +117,13 @@
           @click="openArticle('https://www.leparisien.fr/immobilier/encadrement-des-loyers-a-paris-cette-application-epingle-les-annonces-de-location-illegales-04-02-2020-8252145.php')"
           role="button"
           aria-label="Lire l'article du Parisien"
-          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
+          class="article max-w-md p-4 border border-gray-300 rounded-lg shadow-xs bg-white hover:shadow-md transition-shadow cursor-pointer"
         >
           <div class="flex items-center space-x-3 mb-3">
             <img
               src="@/assets/images/logo-le-parisien.png"
               alt="Logo Le Parisien"
-              class="h-12 w-12 object-contain flex-shrink-0"
+              class="h-12 w-12 object-contain shrink-0"
             >
             <div>
               <p class="text-sm font-semibold text-gray-900">
