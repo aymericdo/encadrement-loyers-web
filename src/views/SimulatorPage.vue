@@ -477,6 +477,26 @@
               >
                 {{ simulationResult.yearBuilt }}
               </span>
+              <span class="label">Prix de référence au m²</span>
+              <span
+                v-for="simulationResult in simulationResults"
+                :key="simulationResult.yearBuilt"
+              >{{ simulationResult.refPrice }}€
+              </span>
+              <span
+                class="label ref-total-price"
+                :class="{ 'rounded-bl-md': isLegal }"
+              >Prix de référence hors charges</span>
+              <span
+                v-for="(simulationResult, index) in simulationResults"
+                :key="simulationResult.yearBuilt"
+                class="ref-total-price"
+                :class="{
+                  'rounded-br-md':
+                    isLegal && index === simulationResults.length - 1,
+                }"
+              >{{ simulationResult.refTotalPrice }}€
+              </span>
               <span class="label">Prix maximum au m²</span>
               <span
                 v-for="simulationResult in simulationResults"
@@ -1123,6 +1143,10 @@ watch(() => form.controlledValues.value, () => {
     font-weight: bold;
     text-align: left;
     line-height: normal;
+  }
+
+  > .ref-total-price {
+    border-bottom-width: 4px;
   }
 
   .-last-before-exceeding-section {
