@@ -242,6 +242,38 @@
                 </FormField>
               </div>
 
+              <div v-show="rentalStartDateValueDropdownOptions.length">
+                <FormField
+                  v-slot="{ componentField }"
+                  name="rentalStartDate"
+                >
+                  <FormItem>
+                    <FormLabel>Date de signature du bail</FormLabel>
+
+                    <Select
+                      v-bind="componentField"
+                      :open="isRentalStartDateSelectOpen"
+                      @update:open="isRentalStartDateSelectOpen = $event"
+                    >
+                      <SelectTrigger :open="isRentalStartDateSelectOpen">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            v-for="option in rentalStartDateValueDropdownOptions"
+                            :key="option.value"
+                            :value="option.value"
+                          >
+                            {{ option.label }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                </FormField>
+              </div>
+
               <div v-show="hasHouse">
                 <FormField
                   v-slot="{ componentField }"
@@ -706,6 +738,7 @@ import {
 import FixedButton from "@/shared/FixedButton.vue";
 import Page2Wrapper from "@/shared/Page2Wrapper.vue";
 import { debounce } from "@/tools/debounce";
+import { dateFormatLocale } from "@/tools/date";
 import { CheckIcon, InfoCircledIcon } from "@radix-icons/vue";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from 'vee-validate'
@@ -738,6 +771,7 @@ const initialValues = {
   rooms: undefined,
   furnished: undefined,
   dateBuilt: idkId,
+  rentalStartDate: undefined,
 };
 
 const form = useForm({
@@ -755,10 +789,12 @@ const isFurnishedSelectOpen = ref(false);
 const isDateBuiltSelectOpen = ref(false);
 const isCityPopoverOpen = ref(false);
 const isAddressPopoverOpen = ref(false);
+const isRentalStartDateSelectOpen = ref(false);
 
 const addressSelected = ref("");
 
 const cityDropdownOptions = ref([]);
+const rentalStartDateValueDropdownOptions = ref([]);
 const dateBuiltValueDropdownOptions = ref([]);
 
 const displayMoreInfo = ref(false);
@@ -816,6 +852,32 @@ const roomValueDropdownOptions = [
     label: "4 pièces et plus",
   },
 ];
+
+const setRentalStartDateValueDropdownOptions = (datesRange) => {
+  rentalStartDateValueDropdownOptions.value = datesRange.reduce(
+    (prev, dates) => {
+      const start = new Date(dates.start)
+      const end = new Date(dates.end)
+      start.setDate(start.getDate() + 1)
+
+      if (!dates.end) {
+        prev.push({
+          value: start.toISOString(),
+          label: `À partir du ${start.toLocaleDateString(undefined, dateFormatLocale)}`,
+        });
+      } else {
+        prev.push({
+          value: start.toISOString(),
+          label: `Entre le ${start.toLocaleDateString(undefined, dateFormatLocale)} et le ${end.toLocaleDateString(undefined, dateFormatLocale)}`,
+        });
+      }
+
+      return prev;
+    },
+    []
+  );
+  form.setFieldValue('rentalStartDate', rentalStartDateValueDropdownOptions.value[rentalStartDateValueDropdownOptions.value.length - 1].value);
+};
 
 const setDateBuiltRangeDropdownOptions = (datesRange) => {
   dateBuiltValueDropdownOptions.value = datesRange.reduce(
@@ -927,6 +989,7 @@ const setCityInformation = async (res) => {
           return cityList;
         }, []),
         dateBuiltRange: currentCity.dateBuiltRange,
+        rentControlPeriods: currentCity.rentControlPeriods,
         hasHouse: currentCity.hasHouse,
       });
       return prev;
@@ -951,6 +1014,7 @@ const handleSelectCity = async (city) => {
   isMultipleCities.value = currentCityInformation.cities.length > 1;
   hasHouse.value = !!currentCityInformation?.hasHouse;
   setDateBuiltRangeDropdownOptions([...currentCityInformation.dateBuiltRange]);
+  setRentalStartDateValueDropdownOptions([...currentCityInformation.rentControlPeriods]);
   form.setFieldValue('city', city);
 
   if (form.values.district) {
@@ -1051,6 +1115,7 @@ const fetchSimulatorResult = async () => {
     roomValue: form.values.rooms,
     furnishedValue: form.values.furnished,
     dateBuiltValueStr: form.values.dateBuilt,
+    rentalStartDateStr: form.values.rentalStartDate,
     districtValue: form.values.district,
     isHouseValue: form.values.house || "0",
   };
