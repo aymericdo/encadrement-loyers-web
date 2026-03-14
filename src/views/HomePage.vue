@@ -11,9 +11,9 @@
           :cities="cities"
         />
         <SectionWhy />
+        <SectionStats />
         <SectionHow />
         <SectionDisclaimer />
-        <SectionStats />
         <SectionUs />
         <SectionDownload id="download" />
         <SectionBlog />
