@@ -10,6 +10,18 @@
           class="mt-16"
           :cities="cities"
         />
+        <!-- Mobilisation temporaire : retirer ce bloc à la fin de la campagne. -->
+        <aside class="petition-banner" aria-label="Pétition pour l’encadrement des loyers">
+          <p>Sauvons l’encadrement des loyers.</p>
+          <a
+            href="https://www.change.org/p/sauver-l-encadrement-des-loyers"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Signer la pétition <span aria-hidden="true">↗</span>
+            <span class="sr-only"> (nouvel onglet)</span>
+          </a>
+        </aside>
         <SectionWhy />
         <SectionStats />
         <SectionHow />
@@ -90,6 +102,46 @@
 
 .center-wrapper > div {
   max-width: 100%;
+}
+
+.petition-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: $mobileSize;
+  box-sizing: border-box;
+  margin: 2rem 0;
+  padding: 1.25rem;
+  border: 1px solid $yellow;
+  border-radius: 12px;
+  background-color: $deepgrey;
+
+  p {
+    margin: 0;
+    color: #fff;
+    line-height: 1.5;
+  }
+
+  a {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background-color: $yellow;
+    color: $deepblack;
+    font-weight: 700;
+    line-height: 1.5;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 4px;
+    }
+  }
 }
 
 .fixed-button {
