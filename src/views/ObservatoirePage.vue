@@ -47,8 +47,8 @@
           <a
             target="_blank"
             class="text-[#fdcd56]"
-            href="https://www.fondationpourlelogement.fr/encadrement-des-loyers-le-grand-ecart/"
-          >L'Observatoire 2025</a>
+            href="https://www.fondationpourlelogement.fr/6e-barometre-de-lencadrement-des-loyers-le-grand-ecart-se-creuse/"
+          >L'Observatoire 2026</a>
         </div>
 
         <div class="row slider-section">

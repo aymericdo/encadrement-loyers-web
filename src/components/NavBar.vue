@@ -107,7 +107,7 @@
                             type="button"
                             class="cursor-pointer text-white"
                           >
-                            Observatoire 2025
+                            Observatoire 2026
                           </Button>
                         </NavigationMenuLink>
                       </RouterLink>
