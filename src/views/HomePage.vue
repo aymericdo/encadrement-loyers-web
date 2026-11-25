@@ -10,18 +10,6 @@
           class="mt-16"
           :cities="cities"
         />
-        <!-- Mobilisation temporaire : retirer ce bloc à la fin de la campagne. -->
-        <aside class="petition-banner" aria-label="Pétition pour l’encadrement des loyers">
-          <p>Sauvons l’encadrement des loyers.</p>
-          <a
-            href="https://www.change.org/p/sauver-l-encadrement-des-loyers"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Signer la pétition <span aria-hidden="true">↗</span>
-            <span class="sr-only"> (nouvel onglet)</span>
-          </a>
-        </aside>
         <SectionWhy />
         <SectionStats />
         <SectionHow />
